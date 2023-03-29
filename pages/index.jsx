@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { usePbAuth } from "../contexts/AuthWrapper";
@@ -19,7 +20,7 @@ export default function Home() {
     const resultList = await pb
       .collection("products")
       .getList(1, 50, { expand: "seller" });
-    console.log(resultList);
+    console.log(resultList.items);
     setProducts(resultList?.items);
   }
 
@@ -44,7 +45,12 @@ export default function Home() {
           <div key={key}>
             <div>{data?.name}</div>
             <div>{data?.explain}</div>
-            <div></div>
+            <div>{data?.expand?.seller?.name}</div>
+            <Image
+              src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
+              width={500}
+              height={500}
+            ></Image>
           </div>
         ))}
       </div>
