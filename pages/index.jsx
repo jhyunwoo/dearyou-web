@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
-import { getUserName } from "@/lib/getUserName";
 
 export default function Home() {
   const { user, signOut } = usePbAuth();
@@ -17,7 +16,9 @@ export default function Home() {
   }
 
   async function getProductsLists() {
-    const resultList = await pb.collection("products").getList(1, 50);
+    const resultList = await pb
+      .collection("products")
+      .getList(1, 50, { expand: "seller" });
     console.log(resultList);
     setProducts(resultList?.items);
   }
@@ -43,7 +44,7 @@ export default function Home() {
           <div key={key}>
             <div>{data?.name}</div>
             <div>{data?.explain}</div>
-            <div>{getUserName(data.seller)}</div>
+            <div></div>
           </div>
         ))}
       </div>
