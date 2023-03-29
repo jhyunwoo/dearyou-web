@@ -1,9 +1,13 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePbAuth } from "../contexts/AuthWrapper";
+import pb from "@/lib/pocketbase";
+import { getUserName } from "@/lib/getUserName";
 
 export default function Home() {
   const { user, signOut } = usePbAuth();
+  const [products, setProducts] = useState([]);
   const router = useRouter();
 
   function checkUserAuth() {
@@ -12,14 +16,37 @@ export default function Home() {
     }
   }
 
+  async function getProductsLists() {
+    const resultList = await pb.collection("products").getList(1, 50);
+    console.log(resultList);
+    setProducts(resultList?.items);
+  }
+
   useEffect(() => checkUserAuth(), [user]);
+  useEffect(() => {
+    getProductsLists();
+  }, []);
 
   return (
     <div>
-      <div className="w-full h-screen flex justify-center items-center text-4xl font-extrabold">
+      <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
         DEARYOU Home Page
       </div>
       <button onClick={signOut}>Sign Out</button>
+      <div className="flex p-4 justify-around">
+        <Link href={"/chats"}>chats</Link>
+        <Link href={"/search"}>search</Link>
+        <Link href={"/profile"}>profile</Link>
+      </div>
+      <div>
+        {products.map((data, key) => (
+          <div key={key}>
+            <div>{data?.name}</div>
+            <div>{data?.explain}</div>
+            <div>{getUserName(data.seller)}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
