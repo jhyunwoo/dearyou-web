@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import pb from "../lib/pocketbase";
 
 export default function Search() {
   const [itemData, setItemData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchInput = useRef("");
 
   async function handleSearch(event) {
     event.preventDefault();
+    let searchWord = searchInput.current.value.toLowerCase(); // 검색어
+    if(searchWord.length === 0) return;
 
     // PocketBase에서 products(상품 정보) 컬렉션 가져옴
     let temp = await pb.collection("products").getFullList({
       sort: "-created",
     });
 
-    // 'searchQuery' state를 이용해 검색어 일치하는 상품만 data 리스트에 저장
+    // 'searchWord'(검색어)가 포함된 상품만 data 리스트에 저장
     let data = [];
     for (let i = 0; i < temp.length; i++) {
       if (
-        temp[i].name.indexOf(searchQuery) >= 0 ||
-        temp[i].explain.indexOf(searchQuery) >= 0
+        (temp[i].name).toLowerCase().indexOf(searchWord) >= 0 ||
+        (temp[i].explain).toLowerCase().indexOf(searchWord) >= 0
       ) {
         data.push(temp[i]);
       }
@@ -28,18 +30,14 @@ export default function Search() {
     setItemData(data);
   }
 
-  // *********************************************************
-  // * 이슈 -> 검색어 편집 시 포커스? 가 다른데로 넘어감 (3.29) *
-  // *********************************************************
   // SearchBar -> 'searchQuery' state에 검색어 저장
   function SearchBar() {
     return (
       <form onSubmit={handleSearch}>
         <input
+          ref={searchInput}
           type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)} // onChange를 사용하면 입력 값이 바뀔 때 마다 함수가 실행돼서 입력이 한 글짜식 되는 것 같음
+          placeholder="검색어를 입력하세요..."
         />
         <button type="submit">Search</button>
       </form>
@@ -48,18 +46,28 @@ export default function Search() {
 
   // 검색 결과 표시하는 Ordered List
   function ItemList(props) {
-    return (
-      <ol>
-        {props.data.map((item) => (
-          <li key={item.id}>
-            <hr />
-            <div>{item.name}</div>
-            <div>{item.explain}</div>
-            <div>{item.created}</div>
-          </li>
-        ))}
-      </ol>
-    );
+    if(props.data.length === 0){ // props로 전달받은 검색 결과 목록이 비었을 때
+      return (
+        <h3>검색 결과가 없습니다.</h3>
+      )
+    }
+    else{ // 검색 결과 표시하는 Ordered List
+      return (
+        <div>
+          <h3>검색 결과</h3>
+          <ol>
+            {props.data.map((item) => (
+              <li key={item.id}>
+                <hr />
+                <div>{item.name}</div>
+                <div>{item.explain}</div>
+                <div>{item.created}</div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    }
   }
 
   return (
