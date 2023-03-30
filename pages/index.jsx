@@ -9,6 +9,7 @@ export default function Home() {
   const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
 
+  /** 처음부터 50개의 물품 리스트를 가져오는 함수 */
   async function getProductsLists() {
     const resultList = await pb
       .collection("products")
@@ -20,13 +21,6 @@ export default function Home() {
     getProductsLists();
   }, []);
 
-  // if (!user) {
-  //   return (
-  //     <div>
-  //       <Link href={"/signin"}>Sign In Page</Link>
-  //     </div>
-  //   );
-  // }
   return (
     <ProtectedPage>
       <div>
@@ -49,7 +43,8 @@ export default function Home() {
                 src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
                 width={500}
                 height={500}
-              ></Image>
+                alt={data.name}
+              />
             </div>
           ))}
         </div>
