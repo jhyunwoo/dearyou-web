@@ -5,7 +5,7 @@ import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
 
 export default function SignIn() {
-  const { kakaoSignIn, setUserData, googleSignIn } = usePbAuth();
+  const { setUserData, googleSignIn } = usePbAuth();
 
   const router = useRouter();
 
