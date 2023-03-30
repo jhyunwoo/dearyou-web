@@ -9,6 +9,7 @@ export default function SignIn() {
 
   const router = useRouter();
 
+  /** 사용자 데이터를 userData에 저장하고 홈 페이지로 리다이렉트 */
   const storeUserAndRedirect = (user) => {
     setUserData(user);
     router.replace("/");
@@ -20,7 +21,7 @@ export default function SignIn() {
     const redirectUrl = `${location.origin}/signin`;
     const code = params.get("code");
 
-    // cancel signin logic if not a redirect
+    // 리다이렉트 되지 않으면 로그인 취소
     if (
       !localAuthProvider ||
       !code ||
@@ -62,8 +63,6 @@ export default function SignIn() {
       .catch((err) => {
         console.error(err);
       });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div>

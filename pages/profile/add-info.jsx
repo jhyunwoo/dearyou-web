@@ -24,9 +24,7 @@ export default function AddInfo() {
     };
     if (validStudentId) {
       try {
-        const result = await pb
-          .collection("users")
-          .update(pb.authStore.model.id, userUpdate);
+        await pb.collection("users").update(pb.authStore.model.id, userUpdate);
         // 데이터 업데이트 완료 후 사용자를 메인 페이지로 이동
         router.replace("/");
       } catch {
@@ -55,12 +53,25 @@ export default function AddInfo() {
       <div>Add User Info</div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>이름</div>
-        <input {...register("userName", { required: true })} />
+        <input
+          {...register("userName", {
+            required: true,
+            minLength: { value: 2, message: "올바른 이름을 입력해주세요" },
+            maxLength: { value: 4, message: "올바른 이름을 입력해주세요" },
+          })}
+        />
+        {errors.userName && <span>{errors.userName.message}</span>}
         <div>학번 (6자리)</div>
-        <input {...register("studentId", { required: true })} />
-        {errors.exampleRequired && <span>This field is required</span>}
+        <input
+          {...register("studentId", {
+            required: true,
+            min: { value: 210101, message: "올바른 학번을 입력해주세요" },
+            max: { value: 999999, message: "올바른 학번을 입력해주세요" },
+          })}
+        />
+        {errors.studentId && <span>{errors.studentId.message}</span>}
 
-        <input type="submit" />
+        <button type="submit">제출</button>
       </form>
       <button onClick={checkStudentId}>학번 중복 확인</button>
     </div>
