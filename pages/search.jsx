@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProtectedPage from "@/components/ProtectedPage";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";

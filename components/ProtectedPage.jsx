@@ -16,7 +16,8 @@ export default function ProtectedPage(props) {
     return (
       <div className="w-full h-screen bg-slate-100">
       <div className="text-2xl font-bold">학번과 이름을 등록한 후 이용 가능한 페이지입니다.</div>
-        <Link href={"/profile/add-info"}>학번/이름 설정 페이지</Link>
+        <div><Link href={"/profile/add-info"}>학번/이름 설정 페이지</Link></div>
+        <div><Link href={"/signin"}>Sign In Page</Link></div>
       </div>
     )
   }
