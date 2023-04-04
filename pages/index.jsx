@@ -24,7 +24,7 @@ export default function Home() {
     setProducts(resultList?.items);
   }
 
-  useEffect(() => checkUserAuth(), [user]);
+  // useEffect(() => checkUserAuth(), [user]);
   useEffect(() => {
     getProductsLists();
   }, []);
