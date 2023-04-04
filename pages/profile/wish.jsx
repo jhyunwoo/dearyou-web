@@ -1,7 +1,7 @@
 export default function WishList() {
   return (
-    <div>
+    <ProtectedPage>
       <div>Wish List Page</div>
-    </div>
+    </ProtectedPage>
   );
 }

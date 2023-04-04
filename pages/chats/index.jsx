@@ -1,7 +1,7 @@
 export default function Chats() {
   return (
-    <div>
+    <ProtectedPage>
       <div>Chats</div>
-    </div>
+    </ProtectedPage>
   );
 }

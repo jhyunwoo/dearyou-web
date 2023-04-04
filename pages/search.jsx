@@ -99,10 +99,10 @@ export default function Search() {
   }, []);
 
   return (
-    <div>
+    <ProtectedPage>
       <h1>Search Page</h1>
       <SearchBar />
       <ItemList data={searched} />
-    </div>
+    </ProtectedPage>
   );
 }

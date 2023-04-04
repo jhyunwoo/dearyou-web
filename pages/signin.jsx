@@ -65,9 +65,9 @@ export default function SignIn() {
       });
   }, []);
   return (
-    <div>
+    <ProtectedPage>
       <div>SignIn Page</div>
       <button onClick={googleSignIn}>Sign in with Google</button>
-    </div>
+    </ProtectedPage>
   );
 }
