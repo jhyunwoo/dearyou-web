@@ -8,7 +8,16 @@ import ProtectedPage from "@/components/ProtectedPage";
 export default function Home() {
   const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
-
+  // console.log(user);
+  //seller&buyer에 자신 ID 일치하는 채팅 데이터 불러오는 함수
+  async function getchats(){
+    const myID = user.id;
+    const pb = new PocketBase('https://dearu-pocket.moveto.kr');
+    const resultList = await pb.collection('chats').getList(1, 50, {
+      filter: `seller == "${myID}" || buyer == "${myID}"`,
+    });
+    return resultList;
+  }
   /** 처음부터 50개의 물품 리스트를 가져오는 함수 */
   async function getProductsLists() {
     const resultList = await pb
