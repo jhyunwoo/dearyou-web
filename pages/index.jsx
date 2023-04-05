@@ -19,6 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     getProductsLists();
+    console.log(user);
   }, []);
 
   return (
@@ -27,7 +28,9 @@ export default function Home() {
         <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
           DEARYOU Home Page
         </div>
+        <Link href={"/signin"}>로그인</Link>
         <button onClick={signOut}>Sign Out</button>
+        <button onClick={() => console.log(user)}>사용자 정보</button>
         <div className="flex p-4 justify-around">
           <Link href={"/chats"}>chats</Link>
           <Link href={"/search"}>search</Link>
