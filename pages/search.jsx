@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProtectedPage from "@/components/ProtectedPage";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
@@ -99,10 +100,10 @@ export default function Search() {
   }, []);
 
   return (
-    <div>
+    <ProtectedPage>
       <h1>Search Page</h1>
       <SearchBar />
       <ItemList data={searched} />
-    </div>
+    </ProtectedPage>
   );
 }
