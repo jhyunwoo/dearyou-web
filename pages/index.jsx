@@ -25,20 +25,20 @@ export default function Home() {
     <ProtectedPage>
       <div>
         <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
-          DEARYOU Home Page
+          드려유 Home Page
         </div>
-        <button onClick={signOut}>Sign Out</button>
-        <div className="flex p-4 justify-around">
-          <Link href={"/chats"}>chats</Link>
-          <Link href={"/search"}>search</Link>
-          <Link href={"/profile"}>profile</Link>
+        <div className="flex p-4 justify-around bg-slate-100 mb-7">
+          <Link className="bold" href={"/chats"}>chats</Link>
+          <Link className="bold" href={"/search"}>search</Link>
+          <Link className="bold" href={"/profile"}>profile</Link>
+          <button className="bold" onClick={signOut}>sign out</button>
         </div>
-        <div>
+        <div className="grid grid-cols-1">
           {products.map((data, key) => (
-            <div key={key}>
-              <div>{data?.name}</div>
+            <div className="product" key={key}>
+              <div className="bold">{data?.name}</div>
               <div>{data?.explain}</div>
-              <div>{data?.expand?.seller?.name}</div>
+              <div>등록인: {data?.expand?.seller?.name}</div>
               <Image
                 src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
                 width={500}
