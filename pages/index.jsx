@@ -19,7 +19,6 @@ export default function Home() {
 
   useEffect(() => {
     getProductsLists();
-    console.log(user);
   }, []);
 
   return (
@@ -55,6 +54,7 @@ export default function Home() {
                   width={500}
                   height={500}
                   alt={data.name}
+                  priority={true}
                 />
               </div>
             </Link>
