@@ -19,7 +19,6 @@ export default function Home() {
 
   useEffect(() => {
     getProductsLists();
-    console.log(user);
   }, []);
 
   return (
@@ -30,25 +29,35 @@ export default function Home() {
         </div>
 
         <div className="flex p-4 justify-around bg-slate-100 mb-7">
-          <Link className="bold" href={"/chats"}>chats</Link>
-          <Link className="bold" href={"/search"}>search</Link>
-          <Link className="bold" href={"/profile"}>profile</Link>
-          <button className="bold" onClick={signOut}>sign out</button>
-
+          <Link className="bold" href={"/chats"}>
+            chats
+          </Link>
+          <Link className="bold" href={"/search"}>
+            search
+          </Link>
+          <Link className="bold" href={"/profile"}>
+            profile
+          </Link>
+          <button className="bold" onClick={signOut}>
+            sign out
+          </button>
         </div>
         <div className="grid grid-cols-1">
           {products.map((data, key) => (
-            <div className="product" key={key}>
-              <div className="bold">{data?.name}</div>
-              <div>{data?.explain}</div>
-              <div>등록인: {data?.expand?.seller?.name}</div>
-              <Image
-                src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
-                width={500}
-                height={500}
-                alt={data.name}
-              />
-            </div>
+            <Link href={`/products/${data.id}`} key={key}>
+              <div className="product">
+                <div className="bold">{data?.name}</div>
+                <div>{data?.explain}</div>
+                <div>등록인: {data?.expand?.seller?.name}</div>
+                <Image
+                  src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
+                  width={500}
+                  height={500}
+                  alt={data.name}
+                  priority={true}
+                />
+              </div>
+            </Link>
           ))}
         </div>
       </div>
