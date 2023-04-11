@@ -30,13 +30,13 @@ export default function ProductDetail({ productId }) {
     } else if (gap < 1000 * 60 * 60 * 24) {
       return `${Math.floor(gap / (1000 * 60 * 60))}시간 전`;
     } else if (gap < 1000 * 60 * 60 * 24 * 7) {
-      return "일", Math.floor(gap / (1000 * 60 * 60 * 24));
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24))}일 전`;
     } else if (gap < 1000 * 60 * 60 * 24 * 30) {
-      return "주", Math.floor(gap / (1000 * 60 * 60 * 24 * 7));
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 7))}주 전`;
     } else if (gap < 1000 * 60 * 60 * 24 * 365) {
-      return "달", Math.floor(gap / (1000 * 60 * 60 * 24 * 30));
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 30))}달 전`;
     } else {
-      return "년", Math.floor(gap < 1000 * 60 * 60 * 24 * 365);
+      return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
     }
   }
 
@@ -46,7 +46,6 @@ export default function ProductDetail({ productId }) {
         expand: "seller",
       });
       setProductInfo(record);
-      return record;
     }
 
     getProductInfo();
@@ -72,13 +71,12 @@ export default function ProductDetail({ productId }) {
             <div>{productInfo.name}</div>
             <div>{productInfo.explain}</div>
             <div>
-              {productInfo.expand.seller.name} |{" "}
+              {productInfo.expand.seller.name} |
               {productInfo.expand.seller.studentId}
             </div>
             <div>종류: {productInfo.type}</div>
-            <div onClick={() => getUploadedTime(productInfo.updated)}>
-              check
-            </div>
+            <div>{getUploadedTime(productInfo.updated)}</div>
+            <div>{productInfo.soldDate ? "판매됨" : ""}</div>
           </div>
         ) : (
           ""
