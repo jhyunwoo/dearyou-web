@@ -31,7 +31,7 @@ export default function Search() {
   async function handleSearch(event) {
     event.preventDefault();
     let searchWord = searchInput.current.value.toLowerCase(); // 검색어
-    if(searchWord.length === 0) return;
+    if (searchWord.length === 0) return;
 
     // 'searchWord'(검색어)가 포함된 상품만 data 리스트에 저장
     let data = [];
@@ -39,7 +39,8 @@ export default function Search() {
       if (
         (products[i]?.name).toLowerCase().indexOf(searchWord) >= 0 ||
         (products[i]?.explain).toLowerCase().indexOf(searchWord) >= 0 ||
-        (products[i]?.expand?.seller?.name).toLowerCase().indexOf(searchWord) >= 0
+        (products[i]?.expand?.seller?.name).toLowerCase().indexOf(searchWord) >=
+          0
       ) {
         data.push(products[i]);
       }
@@ -53,42 +54,48 @@ export default function Search() {
   function SearchBar() {
     return (
       <form onSubmit={handleSearch} className="mx-auto text-center mb-7">
-        <input className="border-2 "
+        <input
+          className="border-2 "
           ref={searchInput}
           type="text"
           placeholder="검색어를 입력하세요..."
         />
-        <button type="submit" className="border-2">검색</button>
+        <button type="submit" className="border-2">
+          검색
+        </button>
       </form>
     );
   }
 
   // 검색 결과 표시하는 Ordered List
   function ItemList(props) {
-    if(props.data.length === 0){ // props로 전달받은 검색 결과 목록이 비었을 때
+    if (props.data.length === 0) {
+      // props로 전달받은 검색 결과 목록이 비었을 때
       return (
-        <h3 className="text-2xl font-bold text-center">검색 결과가 없습니다.</h3>
-      )
-    }
-    else{ // 검색 결과 표시하는 Ordered List
+        <h3 className="text-2xl font-bold text-center">
+          검색 결과가 없습니다.
+        </h3>
+      );
+    } else {
+      // 검색 결과 표시하는 Ordered List
       return (
         <div>
           <h3 className="text-2xl font-bold text-center">검색 결과</h3>
           <div className="grid grid-cols-1">
-          {searched.map((data, key) => (
-            <div className="product" key={key}>
-              <div className="h2">{data?.name}</div>
-              <div>{data?.explain}</div>
-              <div>등록인: {data?.expand?.seller?.name}</div>
-              <Image
-                src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
-                width={500}
-                height={500}
-                alt={data.name}
-              />
-            </div>
-          ))}
-        </div>
+            {searched.map((data, key) => (
+              <div className="product" key={key}>
+                <div className="h2">{data?.name}</div>
+                <div>{data?.explain}</div>
+                <div>등록인: {data?.expand?.seller?.name}</div>
+                <Image
+                  src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
+                  width={500}
+                  height={500}
+                  alt={data.name}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
