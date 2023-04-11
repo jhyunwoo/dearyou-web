@@ -22,17 +22,21 @@ export default function ProductDetail({ productId }) {
     let currentTime = new Date().getTime();
     let gap = currentTime - uploadedTime;
     if (gap < 1000 * 60) {
-      console.log("초", Math.floor(gap / 1000));
+      return `${Math.floor(gap / 1000)}초 전`;
     } else if (gap < 1000 * 60 * 10) {
-      console.log("분(1분)", Math.floor(gap / (1000 * 60)));
+      return `${Math.floor(gap / (1000 * 60))}분 전`;
     } else if (gap < 1000 * 60 * 60) {
-      console.log("분(10분)", Math.floor(gap / (1000 * 60 * 10)));
+      return `${Math.floor(gap / (1000 * 60 * 10))}0분 전`;
     } else if (gap < 1000 * 60 * 60 * 24) {
-      console.log("시간", Math.floor(gap / (1000 * 60 * 60)));
+      return `${Math.floor(gap / (1000 * 60 * 60))}시간 전`;
     } else if (gap < 1000 * 60 * 60 * 24 * 7) {
-      console.log("일", Math.floor(gap / (1000 * 60 * 60 * 24)));
+      return "일", Math.floor(gap / (1000 * 60 * 60 * 24));
     } else if (gap < 1000 * 60 * 60 * 24 * 30) {
-      console.log("주", Math.floor(gap / (1000 * 60 * 60 * 24 * 7)));
+      return "주", Math.floor(gap / (1000 * 60 * 60 * 24 * 7));
+    } else if (gap < 1000 * 60 * 60 * 24 * 365) {
+      return "달", Math.floor(gap / (1000 * 60 * 60 * 24 * 30));
+    } else {
+      return "년", Math.floor(gap < 1000 * 60 * 60 * 24 * 365);
     }
   }
 
@@ -42,7 +46,7 @@ export default function ProductDetail({ productId }) {
         expand: "seller",
       });
       setProductInfo(record);
-      console.log(record);
+      return record;
     }
 
     getProductInfo();
