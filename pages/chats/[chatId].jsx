@@ -2,6 +2,7 @@ import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { usePbAuth } from "../../contexts/AuthWrapper";
+import Image from "next/image";
 import pb from "@/lib/pocketbase";
 
 export default function Chat() {
@@ -38,37 +39,44 @@ export default function Chat() {
     const seller = chatInfo.expand['seller'];
     const counterpart = (user.id===buyer.id) ? seller.name : buyer.name; // 대화 상대 이름
 
-    console.log(chatInfo.expand['messages']);
+    //console.log(chatInfo.expand['messages']);
     return (
     <div>
       <h3 className="text-2xl font-bold text-center">{counterpart}님과의 채팅</h3>
       <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
-      <div className="grid grid-cols-1"></div>
+      <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-200">
       {messages?.map((data, key) => (
         <div className="m-2 p-2 border-2 border-gray-500" key={key}>
           <div className="text-blue-800 font-bold">{data?.expand['owner'].name}
             <span className="ml-3 text-gray-500 font-light">{data?.created}</span></div>
+          {data.image.length > 0 ? 
+            <Image
+            src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
+            width={300}
+            height={300}
+            alt={data.id}/>:null}
           <div>{data?.text}</div>
         </div>
       ))}
+      </div>
     </div>);
   }
 
-  async function subChatInfo(){
-    await pb.collection('chats').subscribe('*', function (e) {
-      console.log(e.record);
-    });
+  function ChatInput(){ //채팅 입력
+    // 구현 예정
+
+    // 앞으로 구현할 것
+    // 1. 입력한 내용 pb에 전송 및 저장
+    // 2. ChatHistory 컴포넌트에서 시간순(created)으로 메시지 보여주기
   }
+
   useEffect(() => {
     if(!router.isReady) return;
     getChatInfo();
   }, [router.isReady]);
 
-  useEffect(() => {
-    subChatInfo();
-  })
 
-  if(chatInfo==null){
+  if(chatInfo==null){ // 접속할 수 없는 or 존재하지 않는 chatId일 경우
     return(
       <ProtectedPage>
         <div>Invalid Path</div>
