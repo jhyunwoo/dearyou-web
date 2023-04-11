@@ -44,7 +44,7 @@ export default function Chat() {
     <div>
       <h3 className="text-2xl font-bold text-center">{counterpart}님과의 채팅</h3>
       <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
-      <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-200">
+      <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-100 rounded-2xl">
       {messages?.map((data, key) => (
         <div className="m-2 p-2 border-2 border-gray-500" key={key}>
           <div className="text-blue-800 font-bold">{data?.expand['owner'].name}
