@@ -17,6 +17,16 @@ export default function Home() {
     setProducts(resultList?.items);
   }
 
+  if ("Notification" in window) {
+    // 사용자에게 알림 허용 여부를 요청합니다.
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        // 알림 생성
+        var notification = new Notification("정보 내놔", { body: "줬으면 좋겠어요 ㅎㅎ" });
+      }
+    });
+  }
+
   useEffect(() => {
     getProductsLists();
     console.log(user);
