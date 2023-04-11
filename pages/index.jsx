@@ -19,6 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     getProductsLists();
+    console.log(user);
   }, []);
 
   return (
@@ -27,11 +28,13 @@ export default function Home() {
         <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
           드려유 Home Page
         </div>
+
         <div className="flex p-4 justify-around bg-slate-100 mb-7">
           <Link className="bold" href={"/chats"}>chats</Link>
           <Link className="bold" href={"/search"}>search</Link>
           <Link className="bold" href={"/profile"}>profile</Link>
           <button className="bold" onClick={signOut}>sign out</button>
+
         </div>
         <div className="grid grid-cols-1">
           {products.map((data, key) => (
