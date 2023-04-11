@@ -36,8 +36,8 @@ const AuthWrapper = ({ children }) => {
   }, []);
 
   const setUserData = (pbUser) => {
-    const { id, name, email, username, avatarUrl } = pbUser;
-    setUser({ id, name, email, username, avatarUrl });
+    const { id, name, email, username, studentId, avatarUrl } = pbUser;
+    setUser({ id, name, email, username, studentId, avatarUrl });
   };
 
   const googleSignIn = () => {

@@ -1,7 +1,9 @@
+import ProtectedPage from "@/components/ProtectedPage";
+
 export default function Chat() {
   return (
-    <div>
+    <ProtectedPage>
       <div>Chat</div>
-    </div>
+    </ProtectedPage>
   );
 }

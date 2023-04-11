@@ -1,7 +1,9 @@
+import ProtectedPage from "@/components/ProtectedPage";
+
 export default function Profile() {
   return (
-    <div>
+    <ProtectedPage>
       <div>Profile Page</div>
-    </div>
+    </ProtectedPage>
   );
 }
