@@ -11,13 +11,6 @@ export default function Search() {
   const [products, setProducts] = useState([]);
   const [searched, setSearched] = useState([]);
   const searchInput = useRef("");
-  const router = useRouter();
-
-  function checkUserAuth() {
-    if (!user) {
-      router.replace("/signin");
-    }
-  }
 
   // PocketBase에서 products(상품 정보) 컬렉션 가져옴
   async function getProductsLists() {
@@ -100,8 +93,7 @@ export default function Search() {
       );
     }
   }
-
-  useEffect(() => checkUserAuth(), [user]);
+  
   useEffect(() => {
     getProductsLists();
   }, []);
