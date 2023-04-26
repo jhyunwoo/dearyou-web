@@ -9,9 +9,10 @@ export default function Chat() {
   const { user, signOut } = usePbAuth();
   const router = useRouter();
   const [chatRecord, setChatRecord] = useState(null); // pb에서 받아온 chat 데이터 저장하는 state
-  const chatInput = useRef("");
+  const chatInput = useRef(null);
+  const bottomRef = useRef(null); // 채팅 메시지 Grid의 자동 스크롤 구현에 쓰는 Ref
 
-  async function getChatInfo(){ //채팅 관련 정보 pb에서 가져오는 function
+  async function getChatRecord(){ //채팅 관련 정보 pb에서 가져오는 function
     const chatId = router.query['chatId'];
     const resultList = await pb
       .collection('chats')
@@ -31,7 +32,7 @@ export default function Chat() {
     catch{ return; }
   }
 
-  async function subChatInfo(){ //채팅 관련 정보 subscribe하는 function
+  async function subChatRecord(){ //채팅 관련 정보 subscribe하는 function
     const chatId = router.query['chatId'];
     const resultList = await pb
       .collection('chats')
@@ -47,7 +48,7 @@ export default function Chat() {
           await pb.collection('chats').subscribe( // Real time 채팅 내역 업데이트
             resultList[i]['id'], async function (e) {
             console.log("chats collection is updated")
-            await getChatInfo()
+            await getChatRecord()
           });
 
           console.log("subChatInfo: pb subscribe 완료")
@@ -64,26 +65,27 @@ export default function Chat() {
     const seller = chatRecord.expand['seller'];
     const user_me = (user.id===buyer.id) ? buyer.name : seller.name; // '내' 이름
     const user_other = (user.id===buyer.id) ? seller.name : buyer.name; // 대화 상대 이름
-
+    
     //console.log(chatInfo.expand['messages']);
     return (
       <div>
         <h3 className="text-2xl font-bold text-center">{user_other}님과의 채팅</h3>
         <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
         <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-100 rounded-2xl">
-        {messages?.map((data, key) => (
+          {messages?.map((data, key) => (
           <div className="m-2 p-2 border-2 border-gray-500" key={key}>
             <div className="text-blue-800 font-bold">{data?.expand['owner']?.name}
               <span className="ml-3 text-gray-500 font-light">{data?.created}</span></div>
-            {data.image.length > 0 ? 
-              <Image
-              src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-              width={300}
-              height={300}
-              alt={data.id}/>:null}
-            <div>{data?.text}</div>
-          </div>
-        ))}
+              {data.image.length > 0 ? 
+                <Image
+                src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
+                width={300}
+                height={300}
+                alt={data.id}/>:null}
+              <div>{data?.text}</div>
+            </div>
+          ))}
+        <div ref={bottomRef} />
         </div>
       </div>);
     
@@ -129,14 +131,17 @@ export default function Chat() {
     );
 
     // 앞으로 구현할 것
-    // 1. 입력한 내용 pb에 전송 및 저장
-    // 2. ChatHistory 컴포넌트에서 시간순(created)으로 메시지 보여주기
+    // 1. ChatHistory 컴포넌트에서 시간순(created)으로 메시지 보여주기
   }
 
   useEffect(() => {
     if(!router.isReady) return;
-    subChatInfo();
+    subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
   }, [router.isReady]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView() // 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤
+  }, [chatRecord])
 
 
   if(chatRecord==null){ // 접속할 수 없는 or 존재하지 않는 chatId일 경우
