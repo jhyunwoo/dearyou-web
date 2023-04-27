@@ -5,13 +5,17 @@ import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import Image from "next/image";
 import pb from "@/lib/pocketbase";
+import { PhotoIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 export default function Chat() {
   const { user, signOut } = usePbAuth();
   const router = useRouter();
   const [chatRecord, setChatRecord] = useState(null); // pb에서 받아온 chat 데이터 저장하는 state
+  const [isLoading, setIsLoading] = useState(false);
   const chatInput = useRef(null);
   const bottomRef = useRef(null); // 채팅 메시지 Grid의 자동 스크롤 구현에 쓰는 Ref
+
+  const imgRef = useRef();
 
   async function getChatRecord(){ //채팅 관련 정보 pb에서 가져오는 function
     const chatId = router.query['chatId'];
@@ -70,14 +74,15 @@ export default function Chat() {
     //console.log(chatInfo.expand['messages']);
     return (
       <div>
-        <h3 className="text-2xl font-bold text-center">{user_other}님과의 채팅</h3>
+        <h3 className="text-2xl font-bold text-center pt-5">{user_other}님과의 채팅</h3>
         <p className="text-center">대화 시 언어품격을 지켜 주세요...^^ 
           <Link href='/chats/' className="text-blue-800 font-medium"> (채팅 목록)</Link></p>
-        <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-100 rounded-2xl">
+        <div className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-5">
           {messages?.map((data, key) => (
-          <div className="m-2 p-2 border-2 border-gray-500" key={key}>
-            <div className="text-blue-800 font-bold">{data?.expand['owner']?.name}
-              <span className="ml-3 text-gray-500 font-light">{data?.created}</span></div>
+          <div className={data?.expand['owner']?.id === user.id ? "ml-auto" : "mr-auto"} key={key}>
+            <div className="m-2 p-2 border-2 border-gray-300 rounded-2xl">
+              <div className="text-blue-800 font-bold">{data?.expand['owner']?.name}
+              <span className="ml-3 text-gray-300 font-light">{data?.created}</span></div>
               {data.image.length > 0 ? 
                 <Image
                 src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
@@ -85,56 +90,98 @@ export default function Chat() {
                 height={300}
                 alt={data.id}/>:null}
               <div>{data?.text}</div>
+              </div>
             </div>
           ))}
         <div ref={bottomRef} />
         </div>
-      </div>);
-    
-    // 이미지 표시하기 (나중에  구현)
-    /*<span className="ml-3 text-gray-500 font-light">{data?.created}</span>
-          {data.image.length > 0 ? 
-            <Image
-            src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-            width={300}
-            height={300}
-            alt={data.id}/>:null}*/
+      </div>)
   }
 
   async function handleChatInput(){
     console.log('handleChatInput: 메시지 입력됨')
-    //console.log(chatRecord)
-    //console.log(chatInput.current.value)
+    setIsLoading(true);
 
-    const msgData = {
-      "text": chatInput.current.value,
-      "owner": user.id
-    };
-    const msgRelation= await pb.collection('messages').create(msgData);
-    
-    let newRecord = chatRecord
-    newRecord.messages.push(msgRelation.id)
-    await pb.collection('chats').update(chatRecord.id, newRecord);
+    if(chatInput.current.value.length === 0){
+      alert("메시지를 입력하세요.");
+      bottomRef.current?.scrollIntoView();
+      return;
+    }
+
+    const msgData = new FormData();
+    msgData.append("text", chatInput.current.value);
+    msgData.append("owner", pb.authStore.model.id);
+    try {
+      const msgRelation = await pb
+        .collection('messages')
+        .create(msgData);
+      let newRecord = chatRecord;
+      newRecord.messages.push(msgRelation.id);
+      await pb
+        .collection('chats')
+        .update(chatRecord.id, newRecord);
+    } catch {
+      console.error("Message Upload Failed");
+    }
+    setIsLoading(false);
+  }
+
+  async function handleImageInput(){
+    console.log('handleImageInput: 메시지 입력됨')
+    setIsLoading(true);
+
+    const msgData = new FormData();
+    msgData.append("text", chatInput.current.value);
+    msgData.append("owner", pb.authStore.model.id);
+    msgData.append("image", imgRef.current.files[0]);
+    try {
+      const msgRelation = await pb
+        .collection('messages')
+        .create(msgData);
+      
+      let newRecord = chatRecord;
+      newRecord.messages.push(msgRelation.id);
+      await pb
+        .collection('chats')
+        .update(chatRecord.id, newRecord);
+        
+      console.log("debug3");
+    } catch {
+      console.error("Message Upload Failed");
+    }
+    setIsLoading(false);
   }
 
   function ChatInput(){ //채팅 입력 컴포넌트
     return (
-      <div className="text-center flex mx-10">
-        <input className="w-full border-2"
-          ref={chatInput}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleChatInput()
-          }}
-          type="text"
-          placeholder="메시지를 입력하세요. . ."
-          autoFocus
-        />
-        <button onClick={handleChatInput} className="border-2 w-10">전송</button>
+      <div>
+        <div className="text-center flex mx-10 pt-5">
+          <input className="w-full border-2 border-gray-300 rounded-xl mr-2 px-2"
+            ref={chatInput}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleChatInput()
+            }}
+            type="text"
+            placeholder="메시지를 입력하세요. . ."
+            autoFocus
+          />
+          <label
+              htmlFor="input-file"
+              onChange={handleImageInput}
+              ><PhotoIcon className="w-10 h-10"/>
+              <input
+                type="file"
+                id="input-file"
+                className="hidden"
+                ref={imgRef}
+              />
+          </label>
+          <PaperAirplaneIcon onClick={handleChatInput} className="w-10 h-10" />
+        </div>
+            
+  
       </div>
     );
-
-    // 앞으로 구현할 것
-    // 1. ChatHistory 컴포넌트에서 시간순(created)으로 메시지 보여주기
   }
 
   useEffect(() => {
@@ -157,11 +204,16 @@ export default function Chat() {
   else{
     return (
       <ProtectedPage>
-        <div>Chat Id: '{chatRecord['id']}'</div>
-        <div>Buyer: '{chatRecord['buyer']}' Seller: '{chatRecord['seller']}'</div>
-        <ChatHistory />
-        <ChatInput />
+        <div className="shadow-2xl w-[32rem] mx-auto h-screen">
+          <ChatHistory />
+          <ChatInput />
+        </div>
       </ProtectedPage>
     );
   }
+
+  /*
+          <div>Chat Id: '{chatRecord['id']}'</div>
+          <div>Buyer: '{chatRecord['buyer']}' Seller: '{chatRecord['seller']}'</div>
+  */
 }
