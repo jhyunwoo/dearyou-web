@@ -95,9 +95,7 @@ export default function CreateProduct() {
               <div className="w-full h-80 flex justify-center items-center flex-col bg-slate-100 rounded-2xl shadow-xl">
                 <div className="flex justify-center items-center flex-col">
                   <PhotoIcon className="w-12 h-12 text-slate-600" />
-                  <div className="text-sm p-3">
-                    사진을 추가하여 추억을 나눠보세요.
-                  </div>
+                  <div className="text-sm p-3">사진을 추가해주세요</div>
                 </div>
               </div>
             )}
