@@ -46,7 +46,7 @@ export default function CreateProduct() {
       const formData = new FormData();
       showImages.map(async (data) => {
         const file = imgRef.current.files[data.id];
-        formData.append("photo", file);
+        formData.append("photos", file);
       });
       formData.append("seller", pb.authStore.model.id);
       formData.append("name", data.name);
@@ -54,7 +54,7 @@ export default function CreateProduct() {
       formData.append("type", data.type);
       try {
         let result = await pb
-          .collection("photos")
+          .collection("products")
           .create(formData, { $autoCancel: true });
         console.log(result);
       } catch {
