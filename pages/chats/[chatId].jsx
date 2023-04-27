@@ -5,7 +5,7 @@ import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import Image from "next/image";
 import pb from "@/lib/pocketbase";
-import { PhotoIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, PhotoIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 export default function Chat() {
   const { user, signOut } = usePbAuth();
@@ -46,22 +46,44 @@ export default function Chat() {
     try{
       for(let i = 0; i < resultList.length; i++){ // chats 리스트에서 id가 일치하는 채팅데이터 찾기
         if(resultList[i]['id'] === chatId){
-          console.log("subChatInfo: 처음으로 Record 불러옴")
+          console.log("subChatInfo: 처음으로 Record 불러옴");
           //console.log(resultList[i])
           setChatRecord(resultList[i]);
           
           await pb.collection('chats').subscribe( // Real time 채팅 내역 업데이트
             resultList[i]['id'], async function (e) {
-            console.log("chats collection is updated")
-            await getChatRecord()
+            console.log("chats collection is updated");
+            await getChatRecord();
           });
 
-          console.log("subChatInfo: pb subscribe 완료")
+          console.log("subChatInfo: pb subscribe 완료");
+          bottomRef.current?.scrollIntoView({ 'behavior':'smooth' })
           return;
         }
       }
     }
     catch{ return; }
+  }
+
+  function getMsgTime(time){ // 메시지 보낸 시각을 ~분 전과 같은 형태로 처리
+    const dateThen = new Date(time);
+    const dateNow = new Date();
+    let seconds = ( dateNow.valueOf() - dateThen.valueOf() ) / 1000;
+    if(seconds <= 60){
+      return (Math.floor(seconds) + '초 전')
+    }
+    else if(seconds <= 3600){
+      return (Math.floor(seconds/60) + '분 전')
+    }
+    else if(seconds <= 86400){
+      return (Math.floor(seconds/3600) + '시간 전')
+    }
+    else if(seconds <= 31536000){
+      return (Math.floor(seconds/86400) + '일 전')
+    }
+    else{
+      return (Math.floor(seconds/31536000) + '년 전')
+    }
   }
 
   function ChatHistory(){ //채팅 창 컴포넌트
@@ -74,15 +96,17 @@ export default function Chat() {
     //console.log(chatInfo.expand['messages']);
     return (
       <div>
-        <h3 className="text-2xl font-bold text-center pt-5">{user_other}님과의 채팅</h3>
-        <p className="text-center">대화 시 언어품격을 지켜 주세요...^^ 
-          <Link href='/chats/' className="text-blue-800 font-medium"> (채팅 목록)</Link></p>
-        <div className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-5">
+        <div className="flex pt-5">
+          <Link href={'/chats/'}><ArrowLeftIcon className="ml-4 w-8 h-8"/></Link>
+          <h3 className="text-2xl font-bold text-center mx-auto">{user_other}님과의 채팅</h3>
+        </div>
+        <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
+        <div className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-3 border-y-2">
           {messages?.map((data, key) => (
           <div className={data?.expand['owner']?.id === user.id ? "ml-auto" : "mr-auto"} key={key}>
-            <div className="m-2 p-2 border-2 border-gray-300 rounded-2xl">
+            <div className="mx-3 my-1 p-3 border-2 border-gray-300 rounded-2xl">
               <div className="text-blue-800 font-bold">{data?.expand['owner']?.name}
-              <span className="ml-3 text-gray-300 font-light">{data?.created}</span></div>
+              <span className="ml-2 text-gray-300 font-light">{getMsgTime(data?.created)}</span></div>
               {data.image.length > 0 ? 
                 <Image
                 src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
@@ -98,7 +122,7 @@ export default function Chat() {
       </div>)
   }
 
-  async function handleChatInput(){
+  async function handleChatInput(){ // 메시지 보내기 버튼 눌렀을 때 처리
     console.log('handleChatInput: 메시지 입력됨')
     setIsLoading(true);
 
@@ -126,7 +150,7 @@ export default function Chat() {
     setIsLoading(false);
   }
 
-  async function handleImageInput(){
+  async function handleImageInput(){ //이미지 보내기 버튼 눌렀을 때 처리
     console.log('handleImageInput: 메시지 입력됨')
     setIsLoading(true);
 

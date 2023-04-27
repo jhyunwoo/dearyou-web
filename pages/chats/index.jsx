@@ -35,14 +35,13 @@ export default function Chats() {
 
   return (
     <ProtectedPage>
-      <div>Chats</div>
-      <div>
-        <h3 className="text-2xl font-bold text-center">채팅 목록</h3>
+      <div className="shadow-2xl w-[32rem] mx-auto h-screen">
+        <h3 className="text-2xl font-bold text-center pt-5">채팅 목록</h3>
         <p className="text-center">{user?.id}</p>
-        <div className="grid grid-cols-1 overflow-y-auto m-5 p-3 border-4 border-slate-100 rounded-2xl">
+        <div className="grid grid-cols-1 overflow-y-auto m-5 px-3">
           {chatsList?.map((data, key) => (
             <Link
-              className="m-2 p-1 text-xl flex border-2 border-gray-500"
+              className="m-1 p-1 text-xl flex border-2 border-gray-500 rounded-xl"
               href={"/chats/" + data?.id}
               key={key}
             >
