@@ -2,6 +2,7 @@ import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import { usePbAuth } from "../../contexts/AuthWrapper";
+import Link from "next/link";
 import Image from "next/image";
 import pb from "@/lib/pocketbase";
 
@@ -70,7 +71,8 @@ export default function Chat() {
     return (
       <div>
         <h3 className="text-2xl font-bold text-center">{user_other}님과의 채팅</h3>
-        <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
+        <p className="text-center">대화 시 언어품격을 지켜 주세요...^^ 
+          <Link href='/chats/' className="text-blue-800 font-medium"> (채팅 목록)</Link></p>
         <div className="grid grid-cols-1 h-[32rem] overflow-y-auto m-5 p-3 border-4 border-slate-100 rounded-2xl">
           {messages?.map((data, key) => (
           <div className="m-2 p-2 border-2 border-gray-500" key={key}>
@@ -125,6 +127,7 @@ export default function Chat() {
           }}
           type="text"
           placeholder="메시지를 입력하세요. . ."
+          autoFocus
         />
         <button onClick={handleChatInput} className="border-2 w-10">전송</button>
       </div>
