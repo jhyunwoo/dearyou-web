@@ -81,6 +81,7 @@ export default function ProductDetail({ productId }) {
         ) : (
           ""
         )}
+        <button>좋아요</button>
       </div>
     </div>
   );
