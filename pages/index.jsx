@@ -38,6 +38,9 @@ export default function Home() {
           <Link className="bold" href={"/profile"}>
             profile
           </Link>
+          <Link className="bold" href={"/products/create-product"}>
+            create product
+          </Link>
           <button className="bold" onClick={signOut}>
             sign out
           </button>

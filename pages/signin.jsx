@@ -1,11 +1,10 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
 
 export default function SignIn() {
-  const { setUserData, googleSignIn } = usePbAuth();
+  const { setUserData, googleSignIn, appleSignIn } = usePbAuth();
 
   const router = useRouter();
 
@@ -68,6 +67,7 @@ export default function SignIn() {
     <div>
       <div>SignIn Page</div>
       <button onClick={googleSignIn}>Sign in with Google</button>
+      <button onClick={appleSignIn}>Sign in with Apple</button>
     </div>
   );
 }

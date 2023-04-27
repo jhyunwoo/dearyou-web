@@ -71,16 +71,17 @@ export default function ProductDetail({ productId }) {
             <div>{productInfo.name}</div>
             <div>{productInfo.explain}</div>
             <div>
-              {productInfo.expand.seller.name} |
+              {productInfo.expand.seller.name}|
               {productInfo.expand.seller.studentId}
             </div>
             <div>종류: {productInfo.type}</div>
             <div>{getUploadedTime(productInfo.updated)}</div>
-            <div>{productInfo.soldDate ? "판매됨" : ""}</div>
+            <div>{productInfo.soldDate ? "판매됨" : "판매중"}</div>
           </div>
         ) : (
           ""
         )}
+        <button>좋아요</button>
       </div>
     </div>
   );
