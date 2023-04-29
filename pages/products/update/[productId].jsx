@@ -5,20 +5,20 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { usePbAuth } from "../../../contexts/AuthWrapper";
-
+import ProtectedPage from "@/components/ProtectedPage";
 
 export const getServerSideProps = async (context) => {
-    const { query } = context;
-    const { productId } = query;
-  
-    return {
-      props: {
-        productId,
-      },
-    };
+  const { query } = context;
+  const { productId } = query;
+
+  return {
+    props: {
+      productId,
+    },
+  };
 };
 
-export default function UpdateProduct( {productId} ) {
+export default function UpdateProduct({ productId }) {
   const {
     register,
     handleSubmit,
@@ -27,7 +27,8 @@ export default function UpdateProduct( {productId} ) {
   } = useForm();
 
   const { user, signOut } = usePbAuth();
-  const [productInfo, setProductInfo] = useState("");  const useWindowSize = () => {
+  const [productInfo, setProductInfo] = useState("");
+  const useWindowSize = () => {
     const isClient = typeof window === "object";
 
     const getSize = () => {
@@ -62,7 +63,6 @@ export default function UpdateProduct( {productId} ) {
     getProductInfo();
   }, []);
 
-
   async function onSubmit(data) {
     setIsLoading(true);
     let newInfo = productInfo;
@@ -71,56 +71,77 @@ export default function UpdateProduct( {productId} ) {
     newInfo.lastupdated = new Date().getTime();
     console.log(newInfo);
 
-    let result = await pb
-        .collection("Products")
-        .update(productId, newInfo);
+    let result = await pb.collection("Products").update(productId, newInfo);
     //console.log(result);
 
     setIsLoading(false);
-    router.replace('/');
+    router.replace("/");
   }
 
-  if(productInfo?.expand?.seller?.id === user?.id){
+  if (productInfo?.expand?.seller?.id === user?.id) {
     return (
-        <div>
-        <div>Update information on Product {productId}</div>
-        {productInfo ? (
-        <div>
-            <div className="bg-slate-50  p-4 flex flex-col">
-            <div className="flex overflow-x-auto space-x-8 scrollbar-hide">
-              {productInfo.photos.map((data, key) => (
-                <div
-                  className={`w-[${windows.width}px] h-[${windows.width}px] bg-slate-300 flex-shrink-0`}
-                >
-                  <Image
-                    key={key}
-                    src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
-                    width={300}
-                    height={300}
-                    priority={true}
-                    alt={"Product Image"}
-                    className=""
-                  />
+      <ProtectedPage>
+        <div className="w-full min-h-screen bg-slate-50">
+          <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
+          {productInfo ? (
+            <div>
+              <div className="flex flex-col">
+                <div className="flex overflow-x-auto space-x-8 scrollbar-hide snap-x">
+                  {productInfo.photos.map((data, key) => (
+                    <div
+                      className={`w-[${windows.width}px] h-[${windows.width}px] snap-center my-auto flex-shrink-0`}
+                    >
+                      <Image
+                        key={key}
+                        src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
+                        width={300}
+                        height={300}
+                        priority={true}
+                        alt={"Product Image"}
+                        className="w-screen"
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-            <div>제품명</div>
-            <input {...register("name", { required: true})} defaultValue={productInfo?.name} readOnly={true} className="bg-gray-300"/>
-            <div>설명</div>
-            <input {...register("explain", { required: true })} defaultValue={productInfo?.explain}/>
-            {errors.exampleRequired && <span>This field is required</span>}
-            <div>종류</div>
-            <input {...register("type", { required: true })} defaultValue={productInfo?.type}/>
+              </div>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="p-4 flex flex-col"
+              >
+                <div className="text-lg font-semibold">제품명</div>
+                <input
+                  {...register("name", { required: true })}
+                  defaultValue={productInfo?.name}
+                  readOnly={true}
+                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                />
+                <div className="text-lg font-semibold">설명</div>
+                <textarea
+                  {...register("explain", { required: true })}
+                  defaultValue={productInfo?.explain}
+                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                />
+                {errors.exampleRequired && <span>This field is required</span>}
+                <div className="text-lg font-semibold">종류</div>
+                <input
+                  {...register("type", { required: true })}
+                  defaultValue={productInfo?.type}
+                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                />
 
-            <button type="submit">제출</button>
-            </form>
-        </div>) : null}
+                <button
+                  className="bg-amber-400 font-bold mt-4 p-2 px-6 rounded-full text-white"
+                  type="submit"
+                >
+                  확인
+                </button>
+              </form>
+            </div>
+          ) : null}
         </div>
+      </ProtectedPage>
     );
-  }
-  else{
-    return (<div>Unauthorized</div>)
+  } else {
+    return <div>Unauthorized</div>;
   }
 }

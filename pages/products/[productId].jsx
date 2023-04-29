@@ -6,6 +6,8 @@ import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { useRef } from "react";
 import Link from "next/link";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { HeartIcon } from "@heroicons/react/24/solid";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -64,7 +66,6 @@ export default function ProductDetail({ productId }) {
     }
   }
   const windows = useWindowSize();
-  console.log(windows.width);
   useEffect(() => {
     async function getProductInfo() {
       const record = await pb.collection("products").getOne(productId, {
@@ -99,10 +100,10 @@ export default function ProductDetail({ productId }) {
       <div className="w-full min-h-screen bg-slate-50">
         {productInfo ? (
           <div>
-            <div className="flex overflow-x-auto space-x-8 scrollbar-hide">
+            <div className="flex overflow-x-auto space-x-8 scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
                 <div
-                  className={`w-[${windows.width}px] h-[${windows.width}px] bg-slate-300 flex-shrink-0`}
+                  className={`w-[${windows.width}px] h-[${windows.width}px] snap-center my-auto flex-shrink-0`}
                 >
                   <Image
                     key={key}
@@ -116,24 +117,42 @@ export default function ProductDetail({ productId }) {
                 </div>
               ))}
             </div>
-            <div>{productInfo.name}</div>
-            <div>{productInfo.explain}</div>
-            <div>
-              {productInfo.expand.seller.name}|
-              {productInfo.expand.seller.studentId}
-            </div>
-            <div>종류: {productInfo.type}</div>
-            <div>{getUploadedTime(productInfo.updated)}</div>
-            <div>{productInfo.soldDate ? "판매됨" : "판매중"}</div>
-            <div className="text-red-600">
-              {currentUser?.id === productInfo?.expand?.seller?.id ?
-              (<Link href={`/products/update/${productId}`}>정보 수정</Link>) : null}
+            <div className="p-4 flex flex-col">
+              <div className=" pb-2 border-b-2 flex justify-between items-center">
+                <div className="text-xl font-bold">{productInfo.name}</div>
+                <div className="flex items-center">
+                  <div className="flex mx-1">
+                    <div className="mr-2">{productInfo.expand.seller.name}</div>
+                    <div>{productInfo.expand.seller.studentId}</div>
+                  </div>
+
+                  {currentUser?.id === productInfo?.expand?.seller?.id ? (
+                    <Link href={`/products/update/${productId}`}>
+                      <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
+              <div className="mt-2 flex flex-col">
+                <div className="ml-auto">
+                  {getUploadedTime(productInfo.updated)}
+                </div>
+                <div className="ml-auto">
+                  {productInfo.soldDate ? "판매됨" : "판매중"}
+                </div>
+                <div className="font-medium text-lg my-2">
+                  {productInfo.explain}
+                </div>
+                <div>종류: {productInfo.type}</div>
+              </div>
+              <button onClick={addToWishlist}>
+                <HeartIcon className="w-8 h-8 text-red-100" />
+              </button>
             </div>
           </div>
         ) : (
           ""
         )}
-        <button onClick={addToWishlist}>위시리스트에 넣기</button>
       </div>
     </ProtectedPage>
   );
