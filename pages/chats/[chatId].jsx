@@ -8,7 +8,7 @@ import pb from "@/lib/pocketbase";
 import {
   ArrowLeftIcon,
   PhotoIcon,
-  PaperAirplaneIcon,
+  ArrowSmallUpIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Chat() {
@@ -121,18 +121,15 @@ export default function Chat() {
 
     //console.log(chatInfo.expand['messages']);
     return (
-      <div>
-        <div className="flex pt-5">
-          <Link href={"/chats/"}>
-            <ArrowLeftIcon className="ml-4 w-8 h-8" />
+      <div className=" h-screen flex flex-col">
+        <div className="flex p-4 items-center ">
+          <Link href={"/chats"}>
+            <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
           </Link>
-          <h3 className="text-2xl font-bold text-center mx-auto">
-            {user_other}님과의 채팅
-          </h3>
+          <h3 className="text-xl font-semibold ml-4">{user_other}</h3>
         </div>
-        <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
         <div
-          className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-3 border-y-2"
+          className="grid grid-cols-1 h-full overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
         >
           {messages?.map((data, key) => (
@@ -150,28 +147,33 @@ export default function Chat() {
                 }
                 key={key}
               >
-                <div className="mx-3 my-1 p-2 border-2 border-gray-300 rounded-2xl">
-                  <div className="text-blue-800 font-bold">
+                <div className="ml-4 flex items-center mt-4">
+                  <div className="text-slate-700 font-semibold">
                     {data?.expand["owner"]?.name}
-                    <span className="ml-2 text-gray-300 font-light">
-                      {getMsgTime(data?.created)}
-                    </span>
                   </div>
-                  {data.image.length > 0 ? (
-                    <Image
-                      src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-                      width={300}
-                      height={300}
-                      alt={data.id}
-                    />
-                  ) : null}
-                  <div>{data?.text}</div>
+                  <div className=" text-gray-400 text-sm mx-1 font-light">
+                    {getMsgTime(data?.created)}
+                  </div>
                 </div>
+                {data.image.length > 0 ? (
+                  <Image
+                    src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
+                    width={300}
+                    height={300}
+                    alt={data.id}
+                    className="ml-4 rounded-lg shadow-lg"
+                  />
+                ) : (
+                  <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl">
+                    <div>{data?.text}</div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
           <div ref={bottomRef} />
         </div>
+        <div className="w-full h-16"></div>
       </div>
     );
   }
@@ -226,10 +228,23 @@ export default function Chat() {
   function ChatInput() {
     //채팅 입력 컴포넌트
     return (
-      <div>
-        <div className="text-center flex mx-10 pt-5">
+      <div className="fixed bottom-0 right-0 left-0 p-2 backdrop-blur-sm  w-full">
+        <div className="text-center flex w-full">
+          <label
+            htmlFor="input-file"
+            onChange={handleImageInput}
+            className="my-auto m-1 bg-amber-500 hover:bg-amber-600 rounded-lg p-1"
+          >
+            <PhotoIcon className="w-7 h-7 text-white" />
+            <input
+              type="file"
+              id="input-file"
+              className="hidden"
+              ref={imgRef}
+            />
+          </label>
           <input
-            className="w-full border-2 border-gray-300 rounded-xl mr-2 px-2"
+            className="w-full rounded-full p-2 px-3 outline-none"
             ref={chatInput}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleChatInput();
@@ -238,16 +253,12 @@ export default function Chat() {
             placeholder="메시지를 입력하세요. . ."
             autoFocus
           />
-          <label htmlFor="input-file" onChange={handleImageInput}>
-            <PhotoIcon className="w-10 h-10" />
-            <input
-              type="file"
-              id="input-file"
-              className="hidden"
-              ref={imgRef}
+          <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-full my-auto mx-1 flex justify-center items-center p-1">
+            <ArrowSmallUpIcon
+              onClick={handleChatInput}
+              className="w-7 h-7 text-white"
             />
-          </label>
-          <PaperAirplaneIcon onClick={handleChatInput} className="w-10 h-10" />
+          </div>
         </div>
       </div>
     );
@@ -275,7 +286,7 @@ export default function Chat() {
   } else {
     return (
       <ProtectedPage>
-        <div className="shadow-2xl w-full mx-auto h-screen">
+        <div className="w-full h-screen bg-slate-50">
           <ChatHistory />
           <ChatInput />
         </div>
