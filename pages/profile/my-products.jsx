@@ -1,37 +1,27 @@
+import ProtectedPage from "@/components/ProtectedPage";
+import pb from "@/lib/pocketbase";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import pb from "@/lib/pocketbase";
-import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { PlusIcon } from "@heroicons/react/24/outline";
 
-export default function Home() {
+export default function MyProducts() {
   const [products, setProducts] = useState([]);
-
-  /** 처음부터 50개의 물품 리스트를 가져오는 함수 */
-  async function getProductsLists() {
-    const resultList = await pb
-      .collection("products")
-      .getList(1, 50, { expand: "seller" });
-    setProducts(resultList?.items);
-  }
-
   useEffect(() => {
-    getProductsLists();
+    async function getProducts() {
+      const records = await pb.collection("products").getFullList({
+        filter: `seller.id="${pb.authStore.model.id}"`,
+      });
+      setProducts(records);
+    }
+    getProducts();
   }, []);
-
   return (
     <ProtectedPage>
       <BottomBar />
-      <Link
-        href={"/products/create-product"}
-        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-600 transition duration-200"
-      >
-        <PlusIcon className="w-8 h-8 text-white" />
-      </Link>
-      <div className="w-full min-h-screen bg-slate-50 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 p-4">
+      <div className="w-full min-h-screen bg-slate-50 p-4">
+        <div className="text-xl font-bold">내 상품</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div className="flex flex-row w-full border-b py-3 border-slate-300">
@@ -56,7 +46,6 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <div className="w-full h-16"></div>
       </div>
     </ProtectedPage>
   );

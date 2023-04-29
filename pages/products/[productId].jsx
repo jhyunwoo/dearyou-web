@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
+import { usePbAuth } from "@/contexts/AuthWrapper";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -51,6 +52,24 @@ export default function ProductDetail({ productId }) {
     getProductInfo();
   }, []);
 
+
+  //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
+  const currentUser = usePbAuth().user;
+  async function addToWishlist() {
+    try {
+      const originWishes = await pb.collection("users").getOne(currentUser.id, {
+        expand: "wishes",
+      })
+      const updatedUser = await pb.collection('users').update(currentUser.id, {
+        "wishes": [...originWishes.wishes, productId],
+      });
+      console.log(updatedUser);
+      alert('Product has been added to your wishlist!');
+    } catch (error) {
+      console.error('Error adding product to wishlist:', error);
+      alert('Error adding product to your wishlist. Please try again later.');
+    }
+  }
   return (
     <div>
       <div>
@@ -81,7 +100,9 @@ export default function ProductDetail({ productId }) {
         ) : (
           ""
         )}
-        <button>좋아요</button>
+        <button onClick={addToWishlist}>
+          위시리스트에 넣기
+        </button>
       </div>
     </div>
   );
