@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import pb from "@/lib/pocketbase";
+import BottomBar from "@/components/BottomBar";
 
 export default function Chats() {
   const { user, signOut } = usePbAuth();
@@ -35,7 +36,8 @@ export default function Chats() {
 
   return (
     <ProtectedPage>
-      <div className="shadow-2xl w-[32rem] mx-auto h-screen">
+      <BottomBar />
+      <div className="shadow-2xl w-full mx-auto h-screen">
         <h3 className="text-2xl font-bold text-center pt-5">채팅 목록</h3>
         <p className="text-center">{user?.id}</p>
         <div className="grid grid-cols-1 overflow-y-auto m-5 px-3">

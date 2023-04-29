@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
+import BottomBar from "@/components/BottomBar";
 
 export default function Home() {
   const { user, signOut } = usePbAuth();
@@ -23,46 +24,32 @@ export default function Home() {
 
   return (
     <ProtectedPage>
-      <div>
-        <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
-          드려유 Home Page
-        </div>
-
-        <div className="flex p-4 justify-around bg-slate-100 mb-7">
-          <Link className="bold" href={"/chats"}>
-            chats
-          </Link>
-          <Link className="bold" href={"/search"}>
-            search
-          </Link>
-          <Link className="bold" href={"/profile"}>
-            profile
-          </Link>
-          <Link className="bold" href={"/products/create-product"}>
-            create product
-          </Link>
-          <button className="bold" onClick={signOut}>
-            sign out
-          </button>
-        </div>
-        <div className="grid grid-cols-1">
+      <BottomBar />
+      <div className="w-full min-h-screen bg-slate-50">
+        <div className="grid grid-cols-1 sm:grid-cols-2 p-4">
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
-              <div className="product">
-                <div className="bold">{data?.name}</div>
-                <div>{data?.explain}</div>
-                <div>등록인: {data?.expand?.seller?.name}</div>
+              <div className="flex flex-row w-full border-b py-3 border-slate-300">
                 <Image
                   src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
-                  width={500}
-                  height={500}
+                  width={300}
+                  height={300}
                   alt={data.name}
                   priority={true}
+                  className="basis-1/4 w-36 h-36 rounded-lg mr-4"
                 />
+                <div>
+                  <div className="bold">{data?.name}</div>
+                  <div>
+                    {data?.expand?.seller?.name}{" "}
+                    {data?.expand?.seller?.studentId}
+                  </div>
+                </div>
               </div>
             </Link>
           ))}
         </div>
+        <div className="w-full h-16"></div>
       </div>
     </ProtectedPage>
   );

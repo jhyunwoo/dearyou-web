@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
+import BottomBar from "@/components/BottomBar";
 
 export default function Search() {
   const { user, signOut } = usePbAuth();
@@ -66,6 +67,7 @@ export default function Search() {
       // props로 전달받은 검색 결과 목록이 비었을 때
       return (
         <h3 className="text-2xl font-bold text-center">
+          <BottomBar />
           검색 결과가 없습니다.
         </h3>
       );
@@ -73,6 +75,7 @@ export default function Search() {
       // 검색 결과 표시하는 Ordered List
       return (
         <div>
+          <BottomBar />
           <h3 className="text-2xl font-bold text-center">검색 결과</h3>
           <div className="grid grid-cols-1">
             {searched.map((data, key) => (
@@ -93,7 +96,7 @@ export default function Search() {
       );
     }
   }
-  
+
   useEffect(() => {
     getProductsLists();
   }, []);
