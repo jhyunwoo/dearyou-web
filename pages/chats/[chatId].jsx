@@ -16,17 +16,17 @@ export default function Chat() {
   const router = useRouter();
   const [chatRecord, setChatRecord] = useState(null); // pb에서 받아온 chat 데이터 저장하는 state
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const chatInput = useRef(null); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
   const bottomRef = useRef(null); // 채팅 메시지 Grid의 자동 스크롤 구현에 쓰는 Ref
   const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
 
-
-  async function getChatRecord(){ //채팅 관련 정보 pb에서 가져오는 function
+  async function getChatRecord() {
+    //채팅 관련 정보 pb에서 가져오는 function
     setIsLoading(true);
 
-    const chatId = router.query['chatId'];
+    const chatId = router.query["chatId"];
 
     const resultList = await pb
       .collection("chats")
@@ -45,19 +45,16 @@ export default function Chat() {
         }
       }
     } catch {
-      return;
-    }
-
-    catch{
-      setIsLoading(false); 
+      setIsLoading(false);
       return;
     }
   }
 
-  async function subChatRecord(){ //채팅 관련 정보 subscribe하는 function
+  async function subChatRecord() {
+    //채팅 관련 정보 subscribe하는 function
     setIsLoading(true);
-    
-    const chatId = router.query['chatId'];
+
+    const chatId = router.query["chatId"];
 
     const resultList = await pb
       .collection("chats")
@@ -88,14 +85,9 @@ export default function Chat() {
         }
       }
     } catch {
-      return;
-    }
-
-    catch{ 
       setIsLoading(false);
       return;
     }
-
   }
 
   function getMsgTime(time) {
@@ -103,25 +95,19 @@ export default function Chat() {
     const dateThen = new Date(time);
     const dateNow = new Date();
 
-    let seconds = ( dateNow.valueOf() - dateThen.valueOf() ) / 1000;
-    if(seconds <= 5){
-      return ('방금 전');
-    }
-    else if(seconds <= 60){
-      return (Math.floor(seconds) + '초 전');
-    }
-    else if(seconds <= 3600){
-      return (Math.floor(seconds/60) + '분 전');
-    }
-    else if(seconds <= 86400){
-      return (Math.floor(seconds/3600) + '시간 전');
-    }
-    else if(seconds <= 31536000){
-      return (Math.floor(seconds/86400) + '일 전');
-    }
-    else{
-      return (Math.floor(seconds/31536000) + '년 전');
-
+    let seconds = (dateNow.valueOf() - dateThen.valueOf()) / 1000;
+    if (seconds <= 5) {
+      return "방금 전";
+    } else if (seconds <= 60) {
+      return Math.floor(seconds) + "초 전";
+    } else if (seconds <= 3600) {
+      return Math.floor(seconds / 60) + "분 전";
+    } else if (seconds <= 86400) {
+      return Math.floor(seconds / 3600) + "시간 전";
+    } else if (seconds <= 31536000) {
+      return Math.floor(seconds / 86400) + "일 전";
+    } else {
+      return Math.floor(seconds / 31536000) + "년 전";
     }
   }
 
@@ -145,25 +131,44 @@ export default function Chat() {
           </h3>
         </div>
         <p className="text-center">대화 시 언어품격을 지켜 주세요...^^</p>
-        <div className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-3 border-y-2" ref={historyRef}>
+        <div
+          className="grid grid-cols-1 h-[34rem] overflow-y-auto mt-3 border-y-2"
+          ref={historyRef}
+        >
           {messages?.map((data, key) => (
-
-          <div className={data?.expand['owner']?.id === user.id ? "flex ml-6" : "flex mr-6"} key={key}>
-          <div className={data?.expand['owner']?.id === user.id ? "ml-auto" : "mr-auto"} key={key}>
-            <div className="mx-3 my-1 p-2 border-2 border-gray-300 rounded-2xl">
-              <div className="text-blue-800 font-bold">{data?.expand['owner']?.name}
-              <span className="ml-2 text-gray-300 font-light">{getMsgTime(data?.created)}</span></div>
-              {data.image.length > 0 ? 
-                <Image
-                src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-                width={300}
-                height={300}
-                alt={data.id}/>:null}
-              <div>{data?.text}</div>
-
+            <div
+              className={
+                data?.expand["owner"]?.id === user.id
+                  ? "flex ml-6"
+                  : "flex mr-6"
+              }
+              key={key}
+            >
+              <div
+                className={
+                  data?.expand["owner"]?.id === user.id ? "ml-auto" : "mr-auto"
+                }
+                key={key}
+              >
+                <div className="mx-3 my-1 p-2 border-2 border-gray-300 rounded-2xl">
+                  <div className="text-blue-800 font-bold">
+                    {data?.expand["owner"]?.name}
+                    <span className="ml-2 text-gray-300 font-light">
+                      {getMsgTime(data?.created)}
+                    </span>
+                  </div>
+                  {data.image.length > 0 ? (
+                    <Image
+                      src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
+                      width={300}
+                      height={300}
+                      alt={data.id}
+                    />
+                  ) : null}
+                  <div>{data?.text}</div>
+                </div>
               </div>
             </div>
-          </div>
           ))}
           <div ref={bottomRef} />
         </div>
@@ -253,17 +258,12 @@ export default function Chat() {
     subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
   }, [router.isReady]);
 
-
   useLayoutEffect(() => {
-    try{
+    try {
       const history = historyRef.current;
       history.scrollTop = history.scrollHeight; // 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤
-    }
-    catch{ }
-
-  }, [chatRecord, isLoading])
-
-
+    } catch {}
+  }, [chatRecord, isLoading]);
 
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
