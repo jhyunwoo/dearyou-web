@@ -7,6 +7,8 @@ import { usePbAuth } from "../contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+
 export default function Search() {
   const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
@@ -47,17 +49,19 @@ export default function Search() {
   // SearchBar -> 'searchQuery' state에 검색어 저장
   function SearchBar() {
     return (
-      <form onSubmit={handleSearch} className="mx-auto text-center mb-7">
-        <input
-          className="border-2 "
-          ref={searchInput}
-          type="text"
-          placeholder="검색어를 입력하세요..."
-        />
-        <button type="submit" className="border-2">
-          검색
-        </button>
-      </form>
+      <div className="w-full h-16  flex justify-center items-center ">
+        <form onSubmit={handleSearch} className="w-full flex m-4">
+          <input
+            ref={searchInput}
+            type="text"
+            placeholder="검색어를 입력하세요..."
+            className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-amber-700 focus:ring-offset-2	transition duration-200"
+          />
+          <button type="submit" className="m-1 ">
+            <MagnifyingGlassIcon className="w-8 h-8 hover:scale-105 transition duration-200" />
+          </button>
+        </form>
+      </div>
     );
   }
 
@@ -66,7 +70,7 @@ export default function Search() {
     if (props.data.length === 0) {
       // props로 전달받은 검색 결과 목록이 비었을 때
       return (
-        <h3 className="text-2xl font-bold text-center">
+        <h3 className="text-md text-slate-600 font-bold text-center mt-12">
           <BottomBar />
           검색 결과가 없습니다.
         </h3>
@@ -76,22 +80,30 @@ export default function Search() {
       return (
         <div>
           <BottomBar />
-          <h3 className="text-2xl font-bold text-center">검색 결과</h3>
-          <div className="grid grid-cols-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 p-4">
             {searched.map((data, key) => (
-              <div className="product" key={key}>
-                <div className="h2">{data?.name}</div>
-                <div>{data?.explain}</div>
-                <div>등록인: {data?.expand?.seller?.name}</div>
-                <Image
-                  src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
-                  width={500}
-                  height={500}
-                  alt={data.name}
-                />
-              </div>
+              <Link href={`/products/${data.id}`} key={key}>
+                <div className="flex flex-row w-full border-b py-3 border-slate-300">
+                  <Image
+                    src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
+                    width={300}
+                    height={300}
+                    alt={data.name}
+                    priority={true}
+                    className="basis-1/4 w-24 h-24 rounded-lg mr-4"
+                  />
+                  <div>
+                    <div className="bold">{data?.name}</div>
+                    <div>
+                      {data?.expand?.seller?.name}{" "}
+                      {data?.expand?.seller?.studentId}
+                    </div>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
+          <div className="w-full h-16"></div>
         </div>
       );
     }
@@ -103,9 +115,6 @@ export default function Search() {
 
   return (
     <ProtectedPage>
-      <div className="w-full h-20 flex justify-center items-center text-3xl font-extrabold">
-        Search Page
-      </div>
       <SearchBar />
       <ItemList data={searched} />
     </ProtectedPage>
