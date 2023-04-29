@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import pb from "@/lib/pocketbase";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -12,6 +12,7 @@ export default function AddInfo() {
   const {
     register,
     handleSubmit,
+    watch,
     getValues,
     formState: { errors },
   } = useForm();
@@ -26,7 +27,8 @@ export default function AddInfo() {
       try {
         await pb.collection("users").update(pb.authStore.model.id, userUpdate);
         // 데이터 업데이트 완료 후 사용자를 메인 페이지로 이동
-        router.replace("/");
+        await router.replace("/profile");
+        router.reload();
       } catch {
         console.error("error");
       }
@@ -37,14 +39,20 @@ export default function AddInfo() {
 
   /** 사용자가 입력한 학번이 등록된 학번인지 확인 */
   async function checkStudentId() {
-    const records = await pb.collection("users").getFullList({
-      filter: `studentId = ${getValues("studentId")}`,
-    });
-    if (records.length > 0) {
-      alert("이미 등록된 학번입니다.");
+    if (watch("studentId")) {
+      const records = await pb.collection("users").getFullList({
+        filter: `studentId = ${getValues("studentId")}`,
+      });
+      if (records.length > 0) {
+        alert("이미 등록된 학번입니다.");
+      } else if (Number(watch("studentId")) > 210101) {
+        alert("등록 가능한 학번입니다.");
+        setValidStudentId(true);
+      } else {
+        alert("올바른 학번을 입력하세요.");
+      }
     } else {
-      alert("등록 가능한 학번입니다.");
-      setValidStudentId(true);
+      alert("학번을 입력하세요.");
     }
   }
 

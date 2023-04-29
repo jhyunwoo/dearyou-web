@@ -5,33 +5,24 @@ import Link from "next/link";
 import Image from "next/image";
 import BottomBar from "@/components/BottomBar";
 
-export default function WishPage() {
-  const [productList, setProductList] = useState([]);
+export default function MyProducts() {
+  const [products, setProducts] = useState([]);
   useEffect(() => {
-    async function getWishProducts() {
-      const userInfo = await pb
-        .collection("users")
-        .getOne(pb.authStore.model.id);
-      let wishList = userInfo.wishes;
-      let products = [];
-      for (let i = 0; i < wishList.length; i++) {
-        const productInfo = await pb
-          .collection("products")
-          .getOne(wishList[i], { expand: "seller" });
-        products.push(productInfo);
-      }
-      setProductList(products);
+    async function getProducts() {
+      const records = await pb.collection("products").getFullList({
+        filter: `seller.id="${pb.authStore.model.id}"`,
+      });
+      setProducts(records);
     }
-    getWishProducts();
+    getProducts();
   }, []);
-
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="p-4 bg-slate-50 w-full min-h-screen">
-        <div className="text-xl font-bold">관심목록</div>
-        <div className="grid grid-cols-1 gap-4">
-          {productList.map((data, key) => (
+      <div className="w-full min-h-screen bg-slate-50 p-4">
+        <div className="text-xl font-bold">내 상품</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div className="flex flex-row w-full border-b py-3 border-slate-300">
                 <Image

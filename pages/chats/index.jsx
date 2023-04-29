@@ -40,27 +40,27 @@ export default function Chats() {
             >
               <div className="flex ">
                 {data?.expand["buyer"]?.id === user.id ? (
-                  data.expand["buyer"].avatar ? (
+                  data.expand["seller"].avatar ? (
                     <Image
                       width={100}
                       height={100}
                       alt={"user avatar"}
-                      className="w-16 h-16 rounded-full"
-                      src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["buyer"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
+                      className="w-16 h-16 rounded-full my-auto"
+                      src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["seller"].id}/${data.expand["seller"].avatar}?thumb=100x100`}
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-slate-200"></div>
+                    <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>
                   )
-                ) : data.expand["seller"].avatar ? (
+                ) : data.expand["buyer"].avatar ? (
                   <Image
                     width={100}
                     height={100}
                     alt={"user avatar"}
-                    className="w-16 h-16 rounded-full"
-                    src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["seller"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
+                    className="w-16 h-16 rounded-full my-auto"
+                    src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["buyer"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-slate-200"></div>
+                  <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>
                 )}
 
                 <div className="flex flex-col ml-4 justify-center">
