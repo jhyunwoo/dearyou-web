@@ -161,7 +161,7 @@ export default function Chat() {
                     width={300}
                     height={300}
                     alt={data.id}
-                    className="ml-4 rounded-lg shadow-lg"
+                    className="mx-4 rounded-lg shadow-lg"
                   />
                 ) : (
                   <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl">
