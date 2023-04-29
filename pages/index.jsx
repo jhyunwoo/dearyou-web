@@ -5,8 +5,10 @@ import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { usePbAuth } from "../contexts/AuthWrapper";
 
 export default function Home() {
+  const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
 
   /** 처음부터 50개의 물품 리스트를 가져오는 함수 */
@@ -48,6 +50,7 @@ export default function Home() {
                   <div className="font-medium text-base flex flex-col">
                     <div className="font-semibold">
                       {data?.expand?.seller?.name}
+                      <span className="text-blue-600">{(data?.expand?.seller?.id === user?.id) ? " (나)" : ""}</span>
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
                   </div>
