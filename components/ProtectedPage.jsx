@@ -5,23 +5,34 @@ import { usePbAuth } from "../contexts/AuthWrapper";
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
   const { user } = usePbAuth();
-  if (!user) { /** 로그인이 돼있지 않을 때 */
+  if (!user) {
+    /** 로그인이 돼있지 않을 때 */
     return (
-      <div className="w-full h-screen bg-slate-100">
-        <div className="text-2xl font-bold">로그인 후 이용 가능한 페이지입니다.</div>
-        <Link href={"/signin"}>Sign In Page</Link>
+      <div className="w-full h-screen bg-slate-50 p-4 flex justify-center items-center">
+        <Link
+          className="bg-amber-400 hover:bg-amber-500 duration-200 transition text-white font-semibold text-xl p-2 px-6 rounded-full"
+          href={"/signin"}
+        >
+          로그인 페이지
+        </Link>
       </div>
     );
-  } else if(user.studentId === 0 || user.studentId == null) { /** 학번 정보가 없을 때 */
+  } else if (user.studentId === 0 || user.studentId == null) {
+    /** 학번 정보가 없을 때 */
     return (
       <div className="w-full h-screen bg-slate-100">
-      <div className="text-2xl font-bold">학번과 이름을 등록한 후 이용 가능한 페이지입니다.</div>
-        <div><Link href={"/profile/add-info"}>학번/이름 설정 페이지</Link></div>
-        <div><Link href={"/signin"}>Sign In Page</Link></div>
+        <div className="text-2xl font-bold">
+          학번과 이름을 등록한 후 이용 가능한 페이지입니다.
+        </div>
+        <div>
+          <Link href={"/profile/add-info"}>학번/이름 설정 페이지</Link>
+        </div>
+        <div>
+          <Link href={"/signin"}>Sign In Page</Link>
+        </div>
       </div>
-    )
-  }
-  else{
+    );
+  } else {
     return <>{props.children}</>;
   }
 }
