@@ -1,53 +1,61 @@
 import ProtectedPage from "@/components/ProtectedPage";
-import PocketBase from 'pocketbase';
-import { useEffect, useState } from "react";
-import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import BottomBar from "@/components/BottomBar";
 
-
-export default function WishlistPage() {
-  const currentUser = usePbAuth().user;
-  if (!currentUser) return;
-  const [products, setProducts] = useState([]);
-
-  async function getProductsLists() {
-    const resultList = await pb
-      .collection("users")
-      .getList(1, 50, { expand: "wishes", filter: `id="${currentUser.id}"` });
-    const wishesList = resultList.items.flatMap((item) => item.expand.wishes);
-
-    console.log(wishesList);
-    setProducts(wishesList);
-  }
-
+export default function WishPage() {
+  const [productList, setProductList] = useState([]);
   useEffect(() => {
-    getProductsLists();
+    async function getWishProducts() {
+      const userInfo = await pb
+        .collection("users")
+        .getOne(pb.authStore.model.id);
+      let wishList = userInfo.wishes;
+      let products = [];
+      for (let i = 0; i < wishList.length; i++) {
+        const productInfo = await pb
+          .collection("products")
+          .getOne(wishList[i], { expand: "seller" });
+        products.push(productInfo);
+      }
+      setProductList(products);
+    }
+    getWishProducts();
   }, []);
+
   return (
     <ProtectedPage>
-      <div className="w-full h-40 flex justify-center items-center text-4xl font-extrabold">
-        {currentUser?.name}님의 위시리스트
+      <BottomBar />
+      <div className="p-4 bg-slate-50 w-full min-h-screen">
+        <div className="text-xl font-bold">관심목록</div>
+        <div className="grid grid-cols-1 gap-4">
+          {productList.map((data, key) => (
+            <Link href={`/products/${data.id}`} key={key}>
+              <div className="flex flex-row w-full border-b py-3 border-slate-300">
+                <Image
+                  src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
+                  width={300}
+                  height={300}
+                  alt={data.name}
+                  priority={true}
+                  className="basis-1/4 w-24 h-24 rounded-lg mr-4"
+                />
+                <div>
+                  <div className="font-bold text-lg">{data?.name}</div>
+                  <div className="font-medium text-base flex flex-col">
+                    <div className="font-semibold">
+                      {data?.expand?.seller?.name}
+                    </div>
+                    <div>{data?.expand?.seller?.studentId}</div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-1">
-        {products.map((data, key) => (
-          <Link href={`/products/${data.id}`} key={key}>
-            <div className="product">
-              <div className="bold">{data?.name}</div>
-              <div>{data?.explain}</div>
-              <div>등록인: {data?.expand?.seller?.name}</div>
-              <Image
-                src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}`}
-                width={500}
-                height={500}
-                alt={data.name}
-                priority={true}
-              />
-            </div>
-          </Link>
-        ))}
-      </div>
-    </ProtectedPage >
+    </ProtectedPage>
   );
 }
