@@ -11,6 +11,7 @@ const AuthWrapper = ({ children }) => {
   const [googleAuthProvider, setGoogleAuthProvider] = useState(null);
   const [githubAuthProvider, setGithubAuthProvider] = useState(null);
   const [kakaoAuthProvider, setKakaoAuthProvider] = useState(null);
+  const [appleAuthProvider, setAppleAuthProvider] = useState(null);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -27,6 +28,7 @@ const AuthWrapper = ({ children }) => {
           if (provider.name === "google") setGoogleAuthProvider(provider);
           if (provider.name === "github") setGithubAuthProvider(provider);
           if (provider.name === "kakao") setKakaoAuthProvider(provider);
+          if (provider.name === "apple") setAppleAuthProvider(provider);
         }
     };
 
@@ -45,6 +47,14 @@ const AuthWrapper = ({ children }) => {
     localStorage.setItem("provider", JSON.stringify(googleAuthProvider));
     const redirectUrl = `${location.origin}/signin`;
     const url = googleAuthProvider?.authUrl + redirectUrl;
+
+    router.push(url);
+  };
+  const appleSignIn = () => {
+    signOut();
+    localStorage.setItem("provider", JSON.stringify(appleAuthProvider));
+    const redirectUrl = `${location.origin}/signin`;
+    const url = appleAuthProvider?.authUrl + redirectUrl;
 
     router.push(url);
   };
@@ -81,6 +91,7 @@ const AuthWrapper = ({ children }) => {
         setUserData,
         signOut,
         kakaoSignIn,
+        appleSignIn,
       }}
     >
       {children}
