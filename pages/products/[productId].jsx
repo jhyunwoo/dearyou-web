@@ -5,6 +5,7 @@ import { usePbAuth } from "@/contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { useRef } from "react";
+import Link from "next/link";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -124,6 +125,10 @@ export default function ProductDetail({ productId }) {
             <div>종류: {productInfo.type}</div>
             <div>{getUploadedTime(productInfo.updated)}</div>
             <div>{productInfo.soldDate ? "판매됨" : "판매중"}</div>
+            <div className="text-red-600">
+              {currentUser?.id === productInfo?.expand?.seller?.id ?
+              (<Link href={`/products/update/${productId}`}>정보 수정</Link>) : null}
+            </div>
           </div>
         ) : (
           ""
