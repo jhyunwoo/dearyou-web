@@ -5,8 +5,10 @@ import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { usePbAuth } from "../contexts/AuthWrapper";
 
 export default function Home() {
+  const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
 
   /** 처음부터 50개의 물품 리스트를 가져오는 함수 */

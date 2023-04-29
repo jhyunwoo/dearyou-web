@@ -80,7 +80,7 @@ export default function SignIn() {
           />
           <div className="font-semibold text-base m-auto">구글로 로그인</div>
         </button>
-        <button
+        {/* <button
           onClick={appleSignIn}
           className="bg-black mt-4 text-white shadow-lg p-2 px-4 rounded-lg flex"
         >
@@ -92,7 +92,7 @@ export default function SignIn() {
             alt={"logo"}
           />
           <div className="font-semibold text-base m-auto">애플로 로그인</div>
-        </button>
+        </button> */}
       </div>
     </div>
   );

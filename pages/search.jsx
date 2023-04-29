@@ -55,6 +55,7 @@ export default function Search() {
             ref={searchInput}
             type="text"
             placeholder="검색어를 입력하세요..."
+            autoFocus
             className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-amber-700 focus:ring-offset-2	transition duration-200"
           />
           <button type="submit" className="m-1 ">
@@ -93,10 +94,13 @@ export default function Search() {
                     className="basis-1/4 w-24 h-24 rounded-lg mr-4"
                   />
                   <div>
-                    <div className="bold">{data?.name}</div>
-                    <div>
-                      {data?.expand?.seller?.name}{" "}
-                      {data?.expand?.seller?.studentId}
+                    <div className="font-bold text-lg">{data?.name}</div>
+                    <div className="font-medium text-base flex flex-col">
+                      <div className="font-semibold">
+                        {data?.expand?.seller?.name}
+                        <span className="text-blue-600">{(data?.expand?.seller?.id === user?.id) ? " (나)" : ""}</span>
+                      </div>
+                      <div>{data?.expand?.seller?.studentId}</div>
                     </div>
                   </div>
                 </div>
