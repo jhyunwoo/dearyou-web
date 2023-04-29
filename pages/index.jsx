@@ -50,7 +50,6 @@ export default function Home() {
                   <div className="font-medium text-base flex flex-col">
                     <div className="font-semibold">
                       {data?.expand?.seller?.name}
-                      <span className="text-blue-600">{(data?.expand?.seller?.id === user?.id) ? " (나)" : ""}</span>
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
                   </div>
