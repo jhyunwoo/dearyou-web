@@ -1,27 +1,40 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { usePbAuth } from "../contexts/AuthWrapper";
 
 export default function Home() {
-  const { user, signOut } = usePbAuth();
   const [products, setProducts] = useState([]);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const page = useRef(1);
+  const [ref, inView] = useInView();
 
-  /** 처음부터 50개의 물품 리스트를 가져오는 함수 */
-  async function getProductsLists() {
-    const resultList = await pb
-      .collection("products")
-      .getList(1, 50, { expand: "seller" });
-    setProducts(resultList?.items);
-  }
+  const fetch = useCallback(async () => {
+    try {
+      const data = await pb
+        .collection("products")
+        .getList(page.current, 10, { expand: "seller" });
+      setProducts((prevPosts) => [...prevPosts, ...data.items]);
+      setHasNextPage(data.items.length === 10);
+      if (data.items.length) {
+        page.current += 1;
+      }
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
-    getProductsLists();
-  }, []);
+    console.log(inView, hasNextPage);
+    if (inView && hasNextPage) {
+      fetch();
+    }
+  }, [fetch, hasNextPage, inView]);
 
   return (
     <ProtectedPage>
@@ -57,6 +70,7 @@ export default function Home() {
               </div>
             </Link>
           ))}
+          <div ref={ref} />
         </div>
         <div className="w-full h-16"></div>
       </div>

@@ -21,6 +21,14 @@ export default function Chats() {
     setChatsList(resultList);
   }
 
+  function generateShortText(text) {
+    if (text.length > 15) {
+      return text.substr(0, 15) + "...";
+    } else {
+      return text;
+    }
+  }
+
   useEffect(() => {
     if (!router.isReady) return;
     getChats();
@@ -71,7 +79,9 @@ export default function Chats() {
                   </div>
                   <div className="text-sm font-medium">
                     {data?.expand.messages.slice(-1)[0].text
-                      ? data?.expand.messages.slice(-1)[0].text
+                      ? generateShortText(
+                          data?.expand.messages.slice(-1)[0].text,
+                        )
                       : "사진"}
                   </div>
                 </div>
