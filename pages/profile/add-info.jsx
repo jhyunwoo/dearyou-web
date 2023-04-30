@@ -58,50 +58,48 @@ export default function AddInfo() {
   }
 
   return (
-    <ProtectedPage>
-      <div className="w-full min-h-screen bg-slate-50 p-4">
-        <div className="text-xl font-bold">사용자 정보 변경</div>
-        <div className="my-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="text-lg font-semibold">이름</div>
+    <div className="w-full min-h-screen bg-slate-50 p-4">
+      <div className="text-xl font-bold">사용자 정보 변경</div>
+      <div className="my-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+          <div className="text-lg font-semibold">이름</div>
+          <input
+            className="my-2 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
+            {...register("userName", {
+              required: true,
+              minLength: { value: 2, message: "올바른 이름을 입력해주세요" },
+              maxLength: { value: 4, message: "올바른 이름을 입력해주세요" },
+            })}
+          />
+          {errors.userName && <span>{errors.userName.message}</span>}
+          <div className="text-lg font-semibold">학번 (6자리)</div>
+          <div className="flex justify-between">
             <input
-              className="my-2 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
-              {...register("userName", {
+              className="my-2 w-2/3 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
+              {...register("studentId", {
                 required: true,
-                minLength: { value: 2, message: "올바른 이름을 입력해주세요" },
-                maxLength: { value: 4, message: "올바른 이름을 입력해주세요" },
+                min: { value: 210101, message: "올바른 학번을 입력해주세요" },
+                max: { value: 999999, message: "올바른 학번을 입력해주세요" },
               })}
             />
-            {errors.userName && <span>{errors.userName.message}</span>}
-            <div className="text-lg font-semibold">학번 (6자리)</div>
-            <div className="flex justify-between">
-              <input
-                className="my-2 w-2/3 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
-                {...register("studentId", {
-                  required: true,
-                  min: { value: 210101, message: "올바른 학번을 입력해주세요" },
-                  max: { value: 999999, message: "올바른 학번을 입력해주세요" },
-                })}
-              />
-              <button
-                className="bg-amber-500 w-1/4 text-white p-2 m-2  rounded-full hover:bg-amber-600 transition duration-200"
-                type="button"
-                onClick={checkStudentId}
-              >
-                중복 확인
-              </button>
-            </div>
-            {errors.studentId && <span>{errors.studentId.message}</span>}
-
             <button
-              className="bg-amber-400 mt-12 text-lg font-bold text-white p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
-              type="submit"
+              className="bg-amber-500 w-1/4 text-white p-2 m-2  rounded-full hover:bg-amber-600 transition duration-200"
+              type="button"
+              onClick={checkStudentId}
             >
               확인
             </button>
-          </form>
-        </div>
+          </div>
+          {errors.studentId && <span>{errors.studentId.message}</span>}
+
+          <button
+            className="bg-amber-400 mt-12 text-lg font-bold text-white p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
+            type="submit"
+          >
+            확인
+          </button>
+        </form>
       </div>
-    </ProtectedPage>
+    </div>
   );
 }
