@@ -17,7 +17,7 @@ export default function Home() {
     try {
       const data = await pb
         .collection("products")
-        .getList(page.current, 10, { expand: "seller" });
+        .getList(page.current, 10, { expand: "seller", sort: "-created" });
       setProducts((prevPosts) => [...prevPosts, ...data.items]);
       setHasNextPage(data.items.length === 10);
       if (data.items.length) {
@@ -69,6 +69,7 @@ export default function Home() {
                       {data?.expand?.seller?.name}
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
+                    {data?.soldDate ? "판매됨" : ""}
                   </div>
                 </div>
               </div>
