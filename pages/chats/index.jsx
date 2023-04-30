@@ -40,6 +40,13 @@ export default function Chats() {
       <div className="w-full min-h-screen p-4 bg-slate-50">
         <div className="font-semibold mb-3 text-lg">채팅</div>
         <div className="grid grid-cols-1 gap-2">
+          {chatsList.length === 0 ? (
+            <div className="mx-auto mt-12">
+              드려유에서 물건을 거래해 보세요.
+            </div>
+          ) : (
+            ""
+          )}
           {chatsList?.map((data, key) => (
             <Link
               className="bg-white p-2 rounded-xl shadow-md"

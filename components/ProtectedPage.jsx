@@ -20,15 +20,19 @@ export default function ProtectedPage(props) {
   } else if (user.studentId === 0 || user.studentId == null) {
     /** 학번 정보가 없을 때 */
     return (
-      <div className="w-full h-screen bg-slate-100">
-        <div className="text-2xl font-bold">
-          학번과 이름을 등록한 후 이용 가능한 페이지입니다.
-        </div>
-        <div>
-          <Link href={"/profile/add-info"}>학번/이름 설정 페이지</Link>
-        </div>
-        <div>
-          <Link href={"/signin"}>Sign In Page</Link>
+      <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
+        <div className="bg-white shadow-lg p-4 flex flex-col">
+          <div className="text-lg font-bold mx-auto mt-4">
+            학번과 이름 등록이 필요합니다 .
+          </div>
+          <div className="mx-auto my-4">
+            <Link
+              href={"/profile/add-info"}
+              className="bg-amber-400 hover:bg-amber-500 transition duration-200 p-2 px-6 rounded-full text-white font-semibold"
+            >
+              이동
+            </Link>
+          </div>
         </div>
       </div>
     );
