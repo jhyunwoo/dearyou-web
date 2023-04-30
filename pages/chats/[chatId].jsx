@@ -129,7 +129,7 @@ export default function Chat() {
           <h3 className="text-xl font-semibold ml-4">{user_other}</h3>
         </div>
         <div
-          className="grid grid-cols-1 h-full overflow-y-auto border-y-2 scrollbar-hide"
+          className="flex flex-col h-full overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
         >
           {messages?.map((data, key) => (
@@ -161,10 +161,10 @@ export default function Chat() {
                     width={300}
                     height={300}
                     alt={data.id}
-                    className="mx-4 rounded-lg shadow-lg"
+                    className=" rounded-lg shadow-lg"
                   />
                 ) : (
-                  <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl">
+                  <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl break-words max-w-[230px]">
                     <div>{data?.text}</div>
                   </div>
                 )}
@@ -173,7 +173,7 @@ export default function Chat() {
           ))}
           <div ref={bottomRef} />
         </div>
-        <div className="w-full h-20"></div>
+        <div className="w-full h-16"></div>
       </div>
     );
   }
@@ -243,8 +243,8 @@ export default function Chat() {
               ref={imgRef}
             />
           </label>
-          <textarea
-            className="w-full h-12 rounded-md p-2 px-3 outline-none"
+          <input
+            className="w-full rounded-full p-2 px-3 outline-none"
             ref={chatInput}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleChatInput();
