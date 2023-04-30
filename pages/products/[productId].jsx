@@ -22,27 +22,7 @@ export const getServerSideProps = async (context) => {
 
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
-  const useWindowSize = () => {
-    const isClient = typeof window === "object";
 
-    const getSize = () => {
-      return { width: isClient ? window.innerWidth : undefined };
-    };
-
-    const [windowSize, setWindowSize] = useState(getSize);
-
-    useEffect(() => {
-      if (!isClient) {
-        return false;
-      }
-      const handleResize = () => {
-        setWindowSize(getSize());
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-    return windowSize;
-  };
   function getUploadedTime(time) {
     let uploadedTime = Date.parse(time);
     let currentTime = new Date().getTime();
@@ -65,7 +45,7 @@ export default function ProductDetail({ productId }) {
       return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
     }
   }
-  const windows = useWindowSize();
+
   useEffect(() => {
     async function getProductInfo() {
       const record = await pb.collection("products").getOne(productId, {
@@ -100,11 +80,9 @@ export default function ProductDetail({ productId }) {
       <div className="w-full min-h-screen bg-slate-50">
         {productInfo ? (
           <div>
-            <div className="flex overflow-x-auto space-x-8 scrollbar-hide snap-x">
+            <div className="flex overflow-x-auto scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
-                <div
-                  className={`w-[${windows.width}px] h-[${windows.width}px] snap-center my-auto flex-shrink-0`}
-                >
+                <div className={`w-screen h-72  snap-center  flex-shrink-0`}>
                   <Image
                     key={key}
                     src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
@@ -112,7 +90,7 @@ export default function ProductDetail({ productId }) {
                     height={300}
                     priority={true}
                     alt={"Product Image"}
-                    className=""
+                    className="object-cover w-screen h-72"
                   />
                 </div>
               ))}
