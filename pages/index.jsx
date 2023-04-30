@@ -45,6 +45,10 @@ export default function Home() {
       >
         <PlusIcon className="w-8 h-8 text-white" />
       </Link>
+      <div className="w-full backdrop-blur-3xl p-4 flex justify-start fixed top-0 right-0 left-0">
+        <div className="font-bold text-xl">드려유</div>
+      </div>
+      <div className="w-full h-12"></div>
       <div className="w-full min-h-screen bg-slate-50 ">
         <div className="grid grid-cols-1 sm:grid-cols-2 p-4">
           {products.map((data, key) => (

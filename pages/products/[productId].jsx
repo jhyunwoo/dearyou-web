@@ -4,10 +4,10 @@ import Image from "next/image";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { useRef } from "react";
 import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -22,6 +22,9 @@ export const getServerSideProps = async (context) => {
 
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
+  const [userWish, setUserWish] = useState([]);
+  const [addWish, setAddWish] = useState(false);
+  const router = useRouter();
 
   function getUploadedTime(time) {
     let uploadedTime = Date.parse(time);
@@ -53,8 +56,16 @@ export default function ProductDetail({ productId }) {
       });
       setProductInfo(record);
     }
+    async function getUserWish() {
+      const userInfo = await pb
+        .collection("users")
+        .getOne(pb.authStore.model.id);
+      console.log(userInfo.wishes);
+      setUserWish(userInfo.wishes);
+    }
 
     getProductInfo();
+    getUserWish();
   }, []);
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
@@ -67,13 +78,39 @@ export default function ProductDetail({ productId }) {
       const updatedUser = await pb.collection("users").update(currentUser.id, {
         wishes: [...originWishes.wishes, productId],
       });
-      console.log(updatedUser);
-      alert("Product has been added to your wishlist!");
+      setAddWish(true);
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
-      alert("Error adding product to your wishlist. Please try again later.");
     }
   }
+  async function goToChat() {
+    const checkChat = await pb.collection("chats").getFullList({
+      filter: `buyer.id="${pb.authStore.model.id}"&&product.id="${productId}"`,
+    });
+    if (checkChat.length > 0) {
+      router.push(`/chats/${checkChat[0].id}`);
+    } else {
+      const data = {
+        seller: productInfo.expand.seller.id,
+        buyer: pb.authStore.model.id,
+        product: productInfo.id,
+      };
+
+      const createNewChat = await pb.collection("chats").create(data);
+      const defaultMessage = {
+        text: `"${productInfo.name}"에 대해 문의하고 싶어요!`,
+        owner: pb.authStore.model.id,
+      };
+      const createDefaultMessage = await pb
+        .collection("messages")
+        .create(defaultMessage);
+      const updateChat = await pb
+        .collection("chats")
+        .update(createNewChat.id, { messages: [createDefaultMessage.id] });
+      router.push(`/chats/${createNewChat.id}`);
+    }
+  }
+
   return (
     <ProtectedPage>
       <BottomBar />
@@ -124,9 +161,25 @@ export default function ProductDetail({ productId }) {
                 <div>종류: {productInfo.type}</div>
               </div>
               <button onClick={addToWishlist}>
-                <HeartIcon className="w-8 h-8 text-red-100" />
+                {userWish?.includes(productId) || addWish ? (
+                  <HeartIcon className="w-8 h-8 text-red-500" />
+                ) : (
+                  <HeartIcon className="w-8 h-8 text-red-100" />
+                )}
               </button>
             </div>
+            {currentUser?.id === productInfo?.expand?.seller?.id ? (
+              ""
+            ) : (
+              <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                <button
+                  onClick={goToChat}
+                  className="bg-amber-400 p-2 px-6 rounded-full hover:bg-amber-500 transition duration-200"
+                >
+                  채팅
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           ""

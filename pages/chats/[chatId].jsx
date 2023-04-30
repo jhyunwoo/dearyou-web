@@ -129,7 +129,7 @@ export default function Chat() {
           <h3 className="text-xl font-semibold ml-4">{user_other}</h3>
         </div>
         <div
-          className="grid grid-cols-1 h-full overflow-y-auto border-y-2 scrollbar-hide"
+          className="flex flex-col h-full overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
         >
           {messages?.map((data, key) => (

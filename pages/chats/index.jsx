@@ -39,7 +39,7 @@ export default function Chats() {
       <BottomBar />
       <div className="w-full min-h-screen p-4 bg-slate-50">
         <div className="font-semibold mb-3 text-lg">채팅</div>
-        <div className="grid grid-cols-1 ">
+        <div className="grid grid-cols-1 gap-2">
           {chatsList?.map((data, key) => (
             <Link
               className="bg-white p-2 rounded-xl shadow-md"
@@ -78,7 +78,7 @@ export default function Chats() {
                       : data?.expand["buyer"]?.name}
                   </div>
                   <div className="text-sm font-medium">
-                    {data?.expand.messages.slice(-1)[0].text
+                    {data?.expand?.messages?.slice(-1)[0].text
                       ? generateShortText(
                           data?.expand.messages.slice(-1)[0].text,
                         )

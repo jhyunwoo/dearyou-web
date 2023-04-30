@@ -1,49 +1,29 @@
 import Link from "next/link";
 import ProtectedPage from "@/components/ProtectedPage";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState, useRef } from "react";
-import { usePbAuth } from "../contexts/AuthWrapper";
+import { useState, useRef } from "react";
 import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function Search() {
-  const { user, signOut } = usePbAuth();
-  const [products, setProducts] = useState([]);
   const [searched, setSearched] = useState([]);
   const searchInput = useRef("");
 
-  // PocketBase에서 products(상품 정보) 컬렉션 가져옴
-  async function getProductsLists() {
-    const resultList = await pb
-      .collection("products")
-      .getList(1, 50, { expand: "seller" });
-    console.log(resultList.items);
-    setProducts(resultList?.items);
-  }
-
   async function handleSearch(event) {
     event.preventDefault();
-    let searchWord = searchInput.current.value.toLowerCase(); // 검색어
+    let searchWord = searchInput.current.value; // 검색어
     if (searchWord.length === 0) return;
 
-    // 'searchWord'(검색어)가 포함된 상품만 data 리스트에 저장
-    let data = [];
-    for (let i = 0; i < products.length; i++) {
-      if (
-        (products[i]?.name).toLowerCase().indexOf(searchWord) >= 0 ||
-        (products[i]?.explain).toLowerCase().indexOf(searchWord) >= 0 ||
-        (products[i]?.expand?.seller?.name).toLowerCase().indexOf(searchWord) >=
-          0
-      ) {
-        data.push(products[i]);
-      }
-    }
+    const searchResult = await pb.collection("products").getFullList({
+      filter: `name~"${searchWord}"||explain~"${searchWord}"||seller.name~"${searchWord}"`,
+      expand: "seller",
+    });
+    console.log(searchResult);
 
     // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(data);
+    setSearched(searchResult);
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장
@@ -98,7 +78,6 @@ export default function Search() {
                     <div className="font-medium text-base flex flex-col">
                       <div className="font-semibold">
                         {data?.expand?.seller?.name}
-                        <span className="text-blue-600">{(data?.expand?.seller?.id === user?.id) ? " (나)" : ""}</span>
                       </div>
                       <div>{data?.expand?.seller?.studentId}</div>
                     </div>
@@ -112,10 +91,6 @@ export default function Search() {
       );
     }
   }
-
-  useEffect(() => {
-    getProductsLists();
-  }, []);
 
   return (
     <ProtectedPage>
