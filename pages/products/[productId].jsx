@@ -98,7 +98,7 @@ export default function ProductDetail({ productId }) {
 
       const createNewChat = await pb.collection("chats").create(data);
       const defaultMessage = {
-        text: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+        text: `안녕하세요. "${productInfo.name}"(https://dearyou.vercel.app/products/${productInfo.id})에 대해 문의하고 싶어요!`,
         owner: pb.authStore.model.id,
       };
       const createDefaultMessage = await pb
@@ -108,6 +108,21 @@ export default function ProductDetail({ productId }) {
         .collection("chats")
         .update(createNewChat.id, { messages: [createDefaultMessage.id] });
       router.push(`/chats/${createNewChat.id}`);
+    }
+  }
+
+  /** 나눔(판매) 마감 버튼 클릭 시 실행 */
+  async function closeProduct() {
+    try {
+      let newProductInfo = productInfo;
+      newProductInfo.soldDate = new Date();
+      await pb
+        .collection("products")
+        .update(productId, newProductInfo);
+      setProductInfo(newProductInfo);
+      router.push(`/products/${productId}`);
+    } catch (error) {
+      console.error("Error closing the product:", error);
     }
   }
 
@@ -150,10 +165,10 @@ export default function ProductDetail({ productId }) {
               </div>
               <div className="mt-2 flex flex-col">
                 <div className="ml-auto">
-                  {getUploadedTime(productInfo.updated)}
+                  {getUploadedTime(productInfo.created)}
                 </div>
                 <div className="ml-auto">
-                  {productInfo.soldDate ? "판매됨" : "판매중"}
+                  {productInfo.soldDate ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료` : "나눔 중"}
                 </div>
                 <div className="font-medium text-lg my-2">
                   {productInfo.explain}
@@ -169,19 +184,30 @@ export default function ProductDetail({ productId }) {
               </button>
             </div>
             {currentUser?.id === productInfo?.expand?.seller?.id ? (
-              ""
+              <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+              <button
+                onClick={closeProduct}
+                className={`p-2 px-6 rounded-full ${productInfo?.soldDate ? 
+                  "bg-gray-400" : "bg-blue-400 hover:bg-blue-500 transition duration-200"}`}
+                disabled={productInfo.soldDate ? true : false}
+              >
+                나눔 완료
+              </button>
+            </div>
             ) : (
               <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                
                 <button
                   onClick={goToChat}
-                  className="bg-amber-400 p-2 px-6 rounded-full hover:bg-amber-500 transition duration-200"
+                  className={`p-2 px-6 rounded-full ${productInfo?.soldDate ? 
+                    "bg-gray-400" : "bg-amber-400 hover:bg-amber-500 transition duration-200"}`}
+                  disabled={productInfo.soldDate ? true : false}
                 >
-                  채팅
+                  판매자와 채팅
                 </button>
               </div>
             )}
-
-          <div className="pt-16"> </div>
+          <div className="w-full h-16"></div>
           </div>
         ) : (
           ""

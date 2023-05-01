@@ -96,6 +96,7 @@ export default function Chats() {
             </Link>
           ))}
         </div>
+        <div className="w-full h-16"></div>
       </div>
     </ProtectedPage>
   );
