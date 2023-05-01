@@ -240,6 +240,7 @@ export default function Chat() {
               type="file"
               id="input-file"
               className="hidden"
+              accept="image/jpg, image/png, image/jpeg, image/gif, image/webp, image/heic, image/heic-sequence, image/heif-sequence image/heif"
               ref={imgRef}
             />
           </label>

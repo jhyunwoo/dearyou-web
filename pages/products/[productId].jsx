@@ -180,6 +180,8 @@ export default function ProductDetail({ productId }) {
                 </button>
               </div>
             )}
+
+          <div className="pt-16"> </div>
           </div>
         ) : (
           ""

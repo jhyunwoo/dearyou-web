@@ -127,17 +127,20 @@ export default function CreateProduct() {
               <input
                 {...register("name", { required: true })}
                 className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+                maxLength={50}
               />
-              <div className="text-lg font-semibold">설명</div>
+              <div className="text-lg font-semibold">설명 <span className="text-gray-400 text-sm">(최대 300자)</span></div>
               <textarea
                 {...register("explain", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+                className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-300 my-2"
+                maxLength={300}
               />
               {errors.exampleRequired && <span>This field is required</span>}
               <div className="text-lg font-semibold">종류</div>
               <input
                 {...register("type", { required: true })}
                 className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+                maxLength={50}
               />
 
               <button
