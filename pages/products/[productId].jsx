@@ -98,7 +98,7 @@ export default function ProductDetail({ productId }) {
 
       const createNewChat = await pb.collection("chats").create(data);
       const defaultMessage = {
-        text: `"${productInfo.name}"에 대해 문의하고 싶어요!`,
+        text: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
         owner: pb.authStore.model.id,
       };
       const createDefaultMessage = await pb

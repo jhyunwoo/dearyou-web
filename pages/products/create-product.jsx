@@ -108,6 +108,7 @@ export default function CreateProduct() {
                   type="file"
                   id="input-file"
                   className="hidden"
+                  accept="image/jpg, image/png, image/jpeg, image/webp, image/heic, image/heic-sequence, image/heif-sequence image/heif"
                   multiple
                   ref={imgRef}
                 />
