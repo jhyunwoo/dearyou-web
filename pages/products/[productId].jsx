@@ -83,27 +83,36 @@ export default function ProductDetail({ productId }) {
       console.error("Error adding product to wishlist:", error);
     }
   }
+
+  /** 판매자와 채팅 버튼 누를 때 호출 */
   async function goToChat() {
     const checkChat = await pb.collection("chats").getFullList({
-      filter: `buyer.id="${pb.authStore.model.id}"&&product.id="${productId}"`,
+      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
+              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
     });
+
+    const defaultMessage = {
+      text: `안녕하세요. "${productInfo.name}"(https://dearyou.vercel.app/products/${productInfo.id})에 대해 문의하고 싶어요!`,
+      owner: pb.authStore.model.id,
+    };
+    const createDefaultMessage = await pb
+      .collection("messages")
+      .create(defaultMessage);
+
     if (checkChat.length > 0) {
+      let newChat = checkChat[0];
+      newChat.messages.push(createDefaultMessage.id);
+      const updateChat = await pb
+        .collection("chats")
+        .update(checkChat[0].id, newChat);
       router.push(`/chats/${checkChat[0].id}`);
-    } else {
-      const data = {
+    }
+    else {
+      const chatData = {
         seller: productInfo.expand.seller.id,
         buyer: pb.authStore.model.id,
-        product: productInfo.id,
       };
-
-      const createNewChat = await pb.collection("chats").create(data);
-      const defaultMessage = {
-        text: `안녕하세요. "${productInfo.name}"(https://dearyou.vercel.app/products/${productInfo.id})에 대해 문의하고 싶어요!`,
-        owner: pb.authStore.model.id,
-      };
-      const createDefaultMessage = await pb
-        .collection("messages")
-        .create(defaultMessage);
+      const createNewChat = await pb.collection("chats").create(chatData);
       const updateChat = await pb
         .collection("chats")
         .update(createNewChat.id, { messages: [createDefaultMessage.id] });
