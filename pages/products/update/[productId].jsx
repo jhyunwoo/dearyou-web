@@ -114,12 +114,14 @@ export default function UpdateProduct({ productId }) {
                   defaultValue={productInfo?.name}
                   readOnly={true}
                   className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                  maxLength={50}
                 />
-                <div className="text-lg font-semibold">설명</div>
+                <div className="text-lg font-semibold">설명 <span className="text-gray-400 text-sm">(최대 300자)</span></div>
                 <textarea
                   {...register("explain", { required: true })}
                   defaultValue={productInfo?.explain}
                   className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                  maxLength={300}
                 />
                 {errors.exampleRequired && <span>This field is required</span>}
                 <div className="text-lg font-semibold">종류</div>
@@ -127,6 +129,7 @@ export default function UpdateProduct({ productId }) {
                   {...register("type", { required: true })}
                   defaultValue={productInfo?.type}
                   className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
+                  maxLength={50}
                 />
 
                 <button

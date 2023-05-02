@@ -53,7 +53,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 p-4">
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
-              <div className="flex flex-row w-full border-b py-3 border-slate-300">
+              <div className={`flex flex-row w-full border-b py-3 border-slate-300 ${data?.soldDate ? "bg-slate-200" : ""}`}>
                 <Image
                   src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
                   width={300}
@@ -69,7 +69,7 @@ export default function Home() {
                       {data?.expand?.seller?.name}
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
-                    {data?.soldDate ? "판매됨" : ""}
+                    {data?.soldDate ? "나눔 완료" : ""}
                   </div>
                 </div>
               </div>
