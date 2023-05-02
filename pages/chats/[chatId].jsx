@@ -30,7 +30,7 @@ export default function Chat() {
 
     const resultList = await pb
       .collection("chats")
-      .getFullList({ expand: "seller,buyer,messages,messages.owner" });
+      .getFullList({ expand: "seller,buyer,messages,messages.owner,messages.productlink" });
 
     try {
       for (let i = 0; i < resultList.length; i++) {
@@ -50,6 +50,29 @@ export default function Chat() {
     }
   }
 
+
+  /** 상품 페이지로 이동하는 버튼 컴포넌트 */
+  function ProductButton(props) {
+    console.log(props);
+
+    return (
+      <div>
+        <Link href={`/products/${props.link}`}>
+          <div className="p-2 rounded-2xl shadow-lg bg-amber-500 hover:bg-amber-600">
+            <Image
+              src={`https://dearu-pocket.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
+              width={200}
+              height={200}
+              alt="product image"
+              className=" rounded-lg p-2"
+            />
+            <div className="my-auto m-1 ">상품 정보로 이동</div>
+          </div>
+        </Link>
+      </div>
+    );
+  }
+
   async function subChatRecord() {
     //채팅 관련 정보 subscribe하는 function
     setIsLoading(true);
@@ -58,7 +81,7 @@ export default function Chat() {
 
     const resultList = await pb
       .collection("chats")
-      .getFullList({ expand: "seller,buyer,messages,messages.owner" });
+      .getFullList({ expand: "seller,buyer,messages,messages.owner,messages.productlink" });
 
     try {
       for (let i = 0; i < resultList.length; i++) {
@@ -168,6 +191,9 @@ export default function Chat() {
                     <div>{data?.text}</div>
                   </div>
                 )}
+                {data?.pdlink ? (
+                  <ProductButton link={data?.pdlink} thumb={data?.pdthumblink}/>
+                ) : null}
               </div>
             </div>
           ))}

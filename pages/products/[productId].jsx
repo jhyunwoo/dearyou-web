@@ -86,20 +86,23 @@ export default function ProductDetail({ productId }) {
 
   /** 판매자와 채팅 버튼 누를 때 호출 */
   async function goToChat() {
-    const checkChat = await pb.collection("chats").getFullList({
+    const checkChat = await pb.collection("chats").getFullList({ /** 해당 판매자, 구매자의 채팅 기록이 있는지 확인 */
       filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
               (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
     });
 
     const defaultMessage = {
-      text: `안녕하세요. "${productInfo.name}"(https://dearyou.vercel.app/products/${productInfo.id})에 대해 문의하고 싶어요!`,
+      text: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+      pdlink: productId,
+      pdthumblink: productInfo.photos[0],
       owner: pb.authStore.model.id,
     };
+    console.log(defaultMessage)
     const createDefaultMessage = await pb
       .collection("messages")
       .create(defaultMessage);
 
-    if (checkChat.length > 0) {
+    if (checkChat.length > 0) { /** 처음 대화하는 상대가 아닐 경우 */
       let newChat = checkChat[0];
       newChat.messages.push(createDefaultMessage.id);
       const updateChat = await pb
@@ -107,7 +110,7 @@ export default function ProductDetail({ productId }) {
         .update(checkChat[0].id, newChat);
       router.push(`/chats/${checkChat[0].id}`);
     }
-    else {
+    else { /** 처음 대화하는 상대일 경우 */
       const chatData = {
         seller: productInfo.expand.seller.id,
         buyer: pb.authStore.model.id,
@@ -134,7 +137,7 @@ export default function ProductDetail({ productId }) {
       console.error("Error closing the product:", error);
     }
   }
-
+  console.log(productInfo.photos);
   return (
     <ProtectedPage>
       <BottomBar />
