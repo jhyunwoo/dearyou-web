@@ -44,7 +44,10 @@ export default function AddInfo() {
       const records = await pb.collection("users").getFullList({
         filter: `studentId = ${getValues("studentId")}`,
       });
-      if (records.length > 0) {
+      console.log(records[0]?.studentId)
+      console.log(pb?.authStore?.model?.studentId)
+
+      if (records.length > 0 && records[0]?.studentId !== pb?.authStore?.model?.studentId) {
         alert("이미 등록된 학번입니다.");
       } else if (Number(watch("studentId")) > 210101) {
         alert("등록 가능한 학번입니다.");
@@ -70,6 +73,7 @@ export default function AddInfo() {
               minLength: { value: 2, message: "올바른 이름을 입력해주세요" },
               maxLength: { value: 4, message: "올바른 이름을 입력해주세요" },
             })}
+            defaultValue={pb?.authStore?.model?.name}
           />
           {errors.userName && <span>{errors.userName.message}</span>}
           <div className="text-lg font-semibold">학번 (6자리)</div>
@@ -78,9 +82,10 @@ export default function AddInfo() {
               className="my-2 w-2/3 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
               {...register("studentId", {
                 required: true,
-                min: { value: 210101, message: "올바른 학번을 입력해주세요" },
+                min: { value: 200101, message: "올바른 학번을 입력해주세요" },
                 max: { value: 999999, message: "올바른 학번을 입력해주세요" },
               })}
+              defaultValue={pb?.authStore?.model?.studentId}
             />
             <button
               className="bg-amber-500 w-1/4 text-white p-2 m-2  rounded-full hover:bg-amber-600 transition duration-200"
