@@ -97,7 +97,6 @@ export default function ProductDetail({ productId }) {
       pdthumblink: productInfo.photos[0],
       owner: pb.authStore.model.id,
     };
-    console.log(defaultMessage)
     const createDefaultMessage = await pb
       .collection("messages")
       .create(defaultMessage);
@@ -111,14 +110,22 @@ export default function ProductDetail({ productId }) {
       router.push(`/chats/${checkChat[0].id}`);
     }
     else { /** 처음 대화하는 상대일 경우 */
+      // Chats_read (Chat별로 읽은 메시지 관리하는 Collection) 생성
+      const chatReadData = {
+        unreaduser: productInfo.expand.seller.id,
+        unreadcount: 1
+      };
+      const createNewChatRead = await pb.collection("chats_read").create(chatReadData);
+
+      // Chats 데이터 생성
       const chatData = {
         seller: productInfo.expand.seller.id,
         buyer: pb.authStore.model.id,
+        messages: createDefaultMessage.id,
+        read: createNewChatRead.id
       };
       const createNewChat = await pb.collection("chats").create(chatData);
-      const updateChat = await pb
-        .collection("chats")
-        .update(createNewChat.id, { messages: [createDefaultMessage.id] });
+
       router.push(`/chats/${createNewChat.id}`);
     }
   }
