@@ -64,8 +64,22 @@ export default function Chat() {
     //console.log(record);
 
     setChatRecord(record);
-
     console.log("getChatRecord: 업데이트된 Record 불러옴");
+    setIsLoading(false);
+    return record;
+  }
+
+  async function getReadRecord(id) {
+    //console.log(id);
+    setIsLoading(true);
+
+    let record = await pb
+      .collection('chats_read')
+      .getOne(id);
+    //console.log(record);
+      
+    setReadRecord(record);
+    console.log("getReadRecord: 업데이트된 Record 불러옴");
     setIsLoading(false);
     return record;
   }
@@ -78,6 +92,9 @@ export default function Chat() {
       chatId, getChatRecord
     );
     const record = await getChatRecord();
+    await pb.collection("chats_read").subscribe(
+      record.read, () => {getReadRecord(record.read)}
+    );
     //console.log(record);
     
     // UserMe, UserOther 저장
@@ -216,6 +233,7 @@ export default function Chat() {
     } catch {
       console.error("Message Upload Failed");
     }
+    clearDraft();
     return;
   }
 
@@ -253,6 +271,12 @@ export default function Chat() {
     setIsLoading(false);
   }
 
+  function saveDraft(){
+    localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  }
+  function clearDraft(){
+    localStorage.setItem(`${user.id}-${chatRecord.id}`, '');
+  }
   function ChatInput() {
     //채팅 입력 컴포넌트
     return (
@@ -276,10 +300,14 @@ export default function Chat() {
             className="w-full rounded-full p-2 px-3 outline-none"
             ref={chatInput}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleChatInput();
+              if (e.key === "Enter") {
+                handleChatInput();
+              }
             }}
+            onChange={saveDraft}
             type="text"
             placeholder="메시지를 입력하세요. . ."
+            defaultValue={localStorage.getItem(`${user.id}-${chatRecord.id}`)}
             autoFocus
           />
           <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-full my-auto mx-1 flex justify-center items-center p-1">
