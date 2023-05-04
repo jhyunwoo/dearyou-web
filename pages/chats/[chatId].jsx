@@ -337,14 +337,12 @@ export default function Chat() {
   }, [userOther])
 
   /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
-  useEffect(() => {
-    if(isLoading===false){
+  useLayoutEffect(() => {
       try{
         const history = historyRef.current;
         history.scrollTop = history.scrollHeight;
       } catch { }
-    }
-  }, [chatRecord, readRecord]);
+  }, [chatRecord, readRecord, isLoading]);
 
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
