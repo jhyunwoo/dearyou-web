@@ -14,110 +14,146 @@ import {
 export default function Chat() {
   const { user, signOut } = usePbAuth();
   const router = useRouter();
-  const [chatRecord, setChatRecord] = useState(null); // pb에서 받아온 chat 데이터 저장하는 state
+  const chatId = router.query["chatId"];
+  
+  // pb에서 실시간 업데이트하는 chat 관련 데이터 저장하는 state
+  const [chatRecord, setChatRecord] = useState(null);
+  const [readRecord, setReadRecord] = useState(null);
+
+  // pb에서 받아온 chat 관련 데이터 저장하는 state
+  const [userMe, setUserMe] = useState(); // 나 ID, 이름 저장
+  const [userOther, setUserOther] = useState(); // 상대방 ID, 이름 저장
+  
+  // 로딩 중 상태 여부 저장하는 state
   const [isLoading, setIsLoading] = useState(false);
 
-  const chatInput = useRef(null); // 채팅 텍스트 input을 ref
+  const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
-  const bottomRef = useRef(null); // 채팅 메시지 Grid의 자동 스크롤 구현에 쓰는 Ref
   const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
 
+
+  async function handleRead() {
+    setIsLoading(true);
+
+    let record = chatRecord.expand.read;
+    if(record.unreaduser === userMe?.id && record.unreadcount > 0){
+      record.unreadcount = 0;
+      record.lastread = new Date();
+      await pb
+        .collection('chats_read')
+        .update(chatRecord.expand.read.id, record);
+    }
+    setReadRecord(record);
+    //console.log('ReadRecord set to',record);
+    
+    setIsLoading(false);
+  }
+  useEffect(() => {
+    if(!chatRecord) return;
+    handleRead();
+  }, [chatRecord]);
+
+  /* 'Chats' 콜렉션에서 Record 가져오는 function (subscribe로 호출) */
   async function getChatRecord() {
-    //채팅 관련 정보 pb에서 가져오는 function
     setIsLoading(true);
 
-    const chatId = router.query["chatId"];
+    if (!chatId) return;
+    let record = await pb
+      .collection('chats')
+      .getOne(chatId, {expand: "seller,buyer,messages,messages.owner,read"});
+    //console.log(record);
 
-    const resultList = await pb
-      .collection("chats")
-      .getFullList({ expand: "seller,buyer,messages,messages.owner" });
-
-    try {
-      for (let i = 0; i < resultList.length; i++) {
-        // chats 리스트에서 id가 일치하는 채팅데이터 찾기
-        if (resultList[i]["id"] === chatId) {
-          console.log("getChatInfo: 업데이트된 Record 불러옴");
-          //console.log(resultList[i]);
-          setChatRecord(resultList[i]);
-
-          setIsLoading(false);
-          return;
-        }
-      }
-    } catch {
-      setIsLoading(false);
-      return;
-    }
+    setChatRecord(record);
+    console.log("getChatRecord: 업데이트된 Record 불러옴");
+    setIsLoading(false);
+    return record;
   }
 
+  async function getReadRecord(id) {
+    //console.log(id);
+    setIsLoading(true);
+
+    let record = await pb
+      .collection('chats_read')
+      .getOne(id);
+    //console.log(record);
+      
+    setReadRecord(record);
+    console.log("getReadRecord: 업데이트된 Record 불러옴");
+    setIsLoading(false);
+    return record;
+  }
+
+
+  /* 채팅 관련 정보 subscribe하는 function (useEffect로 처음에 호출) */
   async function subChatRecord() {
-    //채팅 관련 정보 subscribe하는 function
     setIsLoading(true);
+    await pb.collection("chats").subscribe(
+      chatId, getChatRecord
+    );
+    const record = await getChatRecord();
+    await pb.collection("chats_read").subscribe(
+      record.read, () => {getReadRecord(record.read)}
+    );
+    //console.log(record);
+    
+    // UserMe, UserOther 저장
+    const buyer = record.expand.buyer;
+    const seller = record.expand.seller;
+    setUserMe(buyer.id === user.id ? buyer : seller);
+    setUserOther(buyer.id === user.id ? seller : buyer);
 
-    const chatId = router.query["chatId"];
-
-    const resultList = await pb
-      .collection("chats")
-      .getFullList({ expand: "seller,buyer,messages,messages.owner" });
-
-    try {
-      for (let i = 0; i < resultList.length; i++) {
-        // chats 리스트에서 id가 일치하는 채팅데이터 찾기
-        if (resultList[i]["id"] === chatId) {
-          console.log("subChatInfo: 처음으로 Record 불러옴");
-          //console.log(resultList[i])
-          setChatRecord(resultList[i]);
-
-          await pb.collection("chats").subscribe(
-            // Real time 채팅 내역 업데이트
-            resultList[i]["id"],
-            async function (e) {
-              console.log("chats collection is updated");
-              await getChatRecord();
-            },
-          );
-
-          console.log("subChatInfo: pb subscribe 완료");
-
-          setIsLoading(false);
-
-          return;
-        }
-      }
-    } catch {
-      setIsLoading(false);
-      return;
-    }
+    console.log("subChatInfo: pb subscribe 완료");
+    setIsLoading(false);
+    return;
   }
 
-  function getMsgTime(time) {
-    // 메시지 보낸 시각을 ~분 전과 같은 형태로 처리
-    const dateThen = new Date(time);
-    const dateNow = new Date();
-
-    let seconds = (dateNow.valueOf() - dateThen.valueOf()) / 1000;
-    if (seconds <= 5) {
-      return "방금 전";
-    } else if (seconds <= 60) {
-      return Math.floor(seconds) + "초 전";
-    } else if (seconds <= 3600) {
-      return Math.floor(seconds / 60) + "분 전";
-    } else if (seconds <= 86400) {
-      return Math.floor(seconds / 3600) + "시간 전";
-    } else if (seconds <= 31536000) {
-      return Math.floor(seconds / 86400) + "일 전";
+  function getUploadedTime(time) {
+    let uploadedTime = Date.parse(time);
+    let currentTime = new Date().getTime();
+    let gap = currentTime - uploadedTime;
+    if (gap < 1000 * 60) {
+      return `${Math.floor(gap / 1000)}초 전`;
+    } else if (gap < 1000 * 60 * 10) {
+      return `${Math.floor(gap / (1000 * 60))}분 전`;
+    } else if (gap < 1000 * 60 * 60) {
+      return `${Math.floor(gap / (1000 * 60 * 10))}0분 전`;
+    } else if (gap < 1000 * 60 * 60 * 24) {
+      return `${Math.floor(gap / (1000 * 60 * 60))}시간 전`;
+    } else if (gap < 1000 * 60 * 60 * 24 * 7) {
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24))}일 전`;
+    } else if (gap < 1000 * 60 * 60 * 24 * 30) {
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 7))}주 전`;
+    } else if (gap < 1000 * 60 * 60 * 24 * 365) {
+      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 30))}달 전`;
     } else {
-      return Math.floor(seconds / 31536000) + "년 전";
+      return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
     }
+  }
+  
+  /** 상품 페이지로 이동하는 버튼 컴포넌트 */
+  function ProductLink(props) {
+    return (
+      <div>
+        <Link href={`/products/${props.link}`}>
+          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200">
+            <Image
+              src={`https://dearu-pocket.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
+              width={255}
+              height={255}
+              alt="product image"
+              className="p-2"
+            />
+            <div className="pb-2 font-bold">상품 정보로 이동</div>
+          </div>
+        </Link>
+      </div>
+    );
   }
 
   function ChatHistory() {
     //채팅 창 컴포넌트
     const messages = chatRecord.expand["messages"];
-    const buyer = chatRecord.expand["buyer"];
-    const seller = chatRecord.expand["seller"];
-    const user_me = user.id === buyer.id ? buyer.name : seller.name; // '내' 이름
-    const user_other = user.id === buyer.id ? seller.name : buyer.name; // 대화 상대 이름
 
     //console.log(chatInfo.expand['messages']);
     return (
@@ -126,7 +162,7 @@ export default function Chat() {
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
           </Link>
-          <h3 className="text-xl font-semibold ml-4">{user_other}</h3>
+          <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
         </div>
         <div
           className="flex flex-col h-full overflow-y-auto border-y-2 scrollbar-hide"
@@ -152,9 +188,13 @@ export default function Chat() {
                     {data?.expand["owner"]?.name}
                   </div>
                   <div className=" text-gray-400 text-sm mx-1 font-light">
-                    {getMsgTime(data?.created)}
+                    {getUploadedTime(data?.created)}
                   </div>
                 </div>
+                
+                {data?.pdlink ? (
+                  <ProductLink link={data?.pdlink} thumb={data?.pdthumblink}/>
+                ) : null}
                 {data.image.length > 0 ? (
                   <Image
                     src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
@@ -171,11 +211,30 @@ export default function Chat() {
               </div>
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
         <div className="w-full h-16"></div>
       </div>
     );
+  }
+
+  async function uploadNewChat(msgData){
+    try {
+      const msgRelation = await pb.collection("messages").create(msgData);
+
+      let newChatRecord = chatRecord;
+      let newReadRecord = readRecord;
+
+      newReadRecord.unreaduser = userOther.id;
+      newReadRecord.unreadcount += 1;
+      newChatRecord.messages.push(msgRelation.id);
+
+      await pb.collection("chats_read").update(readRecord.id, newReadRecord);
+      await pb.collection("chats").update(chatRecord.id, newChatRecord);
+    } catch {
+      console.error("Message Upload Failed");
+    }
+    clearDraft();
+    return;
   }
 
   async function handleChatInput() {
@@ -191,14 +250,9 @@ export default function Chat() {
     const msgData = new FormData();
     msgData.append("text", chatInput.current.value);
     msgData.append("owner", pb.authStore.model.id);
-    try {
-      const msgRelation = await pb.collection("messages").create(msgData);
-      let newRecord = chatRecord;
-      newRecord.messages.push(msgRelation.id);
-      await pb.collection("chats").update(chatRecord.id, newRecord);
-    } catch {
-      console.error("Message Upload Failed");
-    }
+
+    uploadNewChat(msgData);
+
     setIsLoading(false);
   }
 
@@ -211,20 +265,18 @@ export default function Chat() {
     msgData.append("text", chatInput.current.value);
     msgData.append("owner", pb.authStore.model.id);
     msgData.append("image", imgRef.current.files[0]);
-    try {
-      const msgRelation = await pb.collection("messages").create(msgData);
-
-      let newRecord = chatRecord;
-      newRecord.messages.push(msgRelation.id);
-      await pb.collection("chats").update(chatRecord.id, newRecord);
-
-      console.log("debug3");
-    } catch {
-      console.error("Message Upload Failed");
-    }
+    
+    uploadNewChat(msgData);
+    
     setIsLoading(false);
   }
 
+  function saveDraft(){
+    localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  }
+  function clearDraft(){
+    localStorage.setItem(`${user.id}-${chatRecord.id}`, '');
+  }
   function ChatInput() {
     //채팅 입력 컴포넌트
     return (
@@ -248,10 +300,14 @@ export default function Chat() {
             className="w-full rounded-full p-2 px-3 outline-none"
             ref={chatInput}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleChatInput();
+              if (e.key === "Enter") {
+                handleChatInput();
+              }
             }}
+            onChange={saveDraft}
             type="text"
             placeholder="메시지를 입력하세요. . ."
+            defaultValue={localStorage.getItem(`${user.id}-${chatRecord.id}`)}
             autoFocus
           />
           <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-full my-auto mx-1 flex justify-center items-center p-1">
@@ -260,22 +316,33 @@ export default function Chat() {
               className="w-7 h-7 text-white"
             />
           </div>
+          <div>
+            {readRecord?.unreadcount}
+          </div>
         </div>
       </div>
     );
   }
 
+  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
   useEffect(() => {
     if (!router.isReady) return;
     subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
   }, [router.isReady]);
 
+  /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
+  useEffect(() => {
+    if (!userOther) return;
+    getChatRecord();
+  }, [userOther])
+
+  /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
   useLayoutEffect(() => {
-    try {
-      const history = historyRef.current;
-      history.scrollTop = history.scrollHeight; // 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤
-    } catch {}
-  }, [chatRecord, isLoading]);
+      try{
+        const history = historyRef.current;
+        history.scrollTop = history.scrollHeight;
+      } catch { }
+  }, [chatRecord, readRecord, isLoading]);
 
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
