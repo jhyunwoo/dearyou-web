@@ -86,11 +86,37 @@ export default function ProductDetail({ productId }) {
 
   /** 판매자와 채팅 버튼 누를 때 호출 */
   async function goToChat() {
-    const checkChat = await pb.collection("chats").getFullList({ /** 해당 판매자, 구매자의 채팅 기록이 있는지 확인 */
+    const checkChat = await pb.collection("chats").getFullList({ // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
       filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
               (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
+      expand: 'read'
     });
 
+    let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
+    if(checkChat.length > 0){ // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
+      console.log(checkChat[0]);
+      const newChatRead = await pb.collection("chats_read").update(checkChat[0].read, {
+        unreaduser: productInfo.expand.seller.id,
+        unreadcount: (checkChat[0].expand.read.unreadcount + 1)
+      });
+      newChat = checkChat[0];
+    }
+    else{ // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
+      let newChatRead = await pb.collection("chats_read").create({
+        unreaduser: productInfo.expand.seller.id,
+        unreadcount: 1
+      }); 
+      newChat = await pb.collection("chats").create({
+        seller: productInfo.expand.seller.id,
+        buyer: pb.authStore.model.id,
+        read: newChatRead.id
+      });
+      newChatRead.chat = newChat.id;
+      console.log(newChatRead);
+      await pb.collection("chats_read").update(newChatRead.id, newChatRead);
+    }
+
+    // 메시지 데이터 create
     const defaultMessage = {
       text: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
       pdlink: productId,
@@ -101,15 +127,37 @@ export default function ProductDetail({ productId }) {
       .collection("messages")
       .create(defaultMessage);
 
-    if (checkChat.length > 0) { /** 처음 대화하는 상대가 아닐 경우 */
+    // 채팅 데이터 update
+    newChat.messages.push(createDefaultMessage.id);
+    const updateChat = await pb
+      .collection("chats")
+      .update(newChat.id, newChat);
+
+    router.push(`/chats/${newChat.id}`);
+
+    /**
+    
+    
+    
+    if (checkChat.length > 0) { 
       let newChat = checkChat[0];
+      
+      // Chats_read 데이터 업데이트
+      let newChatRead = newChat.expand.read;
+      newChatRead.unreadcount += 1;
+      newChatRead.unreaduser = productInfo.expand.seller.id;
+      const updateChatRead = await pb
+        .collection("chats_read")
+        .update(newChatRead.id, newChatRead);
+      router.push(`/chats/${checkChat[0].id}`);
+
+      // Chats 데이터 업데이트
       newChat.messages.push(createDefaultMessage.id);
       const updateChat = await pb
         .collection("chats")
         .update(checkChat[0].id, newChat);
-      router.push(`/chats/${checkChat[0].id}`);
     }
-    else { /** 처음 대화하는 상대일 경우 */
+    else { 
       // Chats_read (Chat별로 읽은 메시지 관리하는 Collection) 생성
       const chatReadData = {
         unreaduser: productInfo.expand.seller.id,
@@ -126,8 +174,8 @@ export default function ProductDetail({ productId }) {
       };
       const createNewChat = await pb.collection("chats").create(chatData);
 
-      router.push(`/chats/${createNewChat.id}`);
     }
+    */
   }
 
   /** 나눔(판매) 마감 버튼 클릭 시 실행 */

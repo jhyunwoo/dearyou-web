@@ -288,6 +288,9 @@ export default function Chat() {
               className="w-7 h-7 text-white"
             />
           </div>
+          <div>
+            {readRecord?.unreadcount}
+          </div>
         </div>
       </div>
     );
@@ -295,22 +298,25 @@ export default function Chat() {
 
   /** 처음 페이지 로딩할 때 subChatRecord 호출 */
   useEffect(() => {
-    if (!router.isReady || !user) return;
+    if (!router.isReady) return;
     subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
-  }, [router.isReady, user]);
+  }, [router.isReady]);
 
   /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
   useEffect(() => {
-    if (!userMe || !userOther) return;
+    if (!userOther) return;
     getChatRecord();
-  }, [userMe, userOther])
+  }, [userOther])
 
-  useLayoutEffect(() => {
-    try {
-      const history = historyRef.current;
-      history.scrollTop = history.scrollHeight; // 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤
-    } catch {}
-  }, [chatRecord, isLoading]);
+  /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
+  useEffect(() => {
+    if(isLoading===false){
+      try{
+        const history = historyRef.current;
+        history.scrollTop = history.scrollHeight;
+      } catch { }
+    }
+  }, [chatRecord, readRecord]);
 
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
