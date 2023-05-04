@@ -12,13 +12,23 @@ export default function Chats() {
   const router = useRouter();
   const [chatsList, setChatsList] = useState([]);
 
-  async function getChats() {
+  /** 최근에 메시지 온 순으로 채팅 정렬해 chatsList 스테이트에 저장 */
+  async function getSortedChats() {
     const resultList = await pb.collection("chats").getFullList({
-      expand: "seller,buyer,messages",
+      expand: "seller,buyer,messages,read",
       filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
     });
-    console.log(resultList);
-    setChatsList(resultList);
+    
+    const sortedList = resultList.sort(
+      function(a,b){
+        const v = (new Date(a.expand?.messages?.slice(-1)[0].created))
+          - (new Date(b.expand?.messages?.slice(-1)[0].created));
+        if(v < 0) return 1;
+        else if(v > 0) return -1;
+        else return 0;
+      });
+
+    setChatsList(sortedList);
   }
 
   function generateShortText(text) {
@@ -29,9 +39,19 @@ export default function Chats() {
     }
   }
 
+  function Unreads(props){
+    const read = props.data.expand.read;
+    return ( (read.unreaduser === user.id && read.unreadcount > 0) ? (
+      <span className="ml-2 px-1 rounded-2xl bg-red-400 text-white">
+        {read.unreadcount}
+      </span>
+      ) : null );
+  }
+
   useEffect(() => {
     if (!router.isReady) return;
-    getChats();
+    getSortedChats();
+    pb.collection('chats').subscribe(getSortedChats);
   }, [router.isReady]);
 
   return (
@@ -83,6 +103,7 @@ export default function Chats() {
                     {data?.expand["buyer"]?.id === user.id
                       ? data?.expand["seller"]?.name
                       : data?.expand["buyer"]?.name}
+                    <Unreads data={data}/>
                   </div>
                   <div className="text-sm font-medium">
                     {data?.expand?.messages?.slice(-1)[0].text
