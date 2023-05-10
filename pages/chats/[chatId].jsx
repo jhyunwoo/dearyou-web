@@ -151,7 +151,7 @@ export default function Chat() {
 
     //console.log(chatInfo.expand['messages']);
     return (
-      <div className=" h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <div className="flex p-4 items-center ">
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
@@ -206,7 +206,7 @@ export default function Chat() {
             </div>
           ))}
         </div>
-        <div className="w-full h-16"></div>
+        <div className="w-full h-20"></div>
       </div>
     );
   }
@@ -349,7 +349,7 @@ export default function Chat() {
   } else {
     return (
       <ProtectedPage>
-        <div className="w-full h-screen bg-slate-50">
+        <div className="w-full min-h-screen bg-slate-50">
           <ChatHistory />
           <ChatInput />
         </div>
