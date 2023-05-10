@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import Loading from "@/components/Loading";
+import { RecoilRoot } from "recoil";
 
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);

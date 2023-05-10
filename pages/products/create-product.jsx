@@ -1,23 +1,24 @@
 import { useForm } from "react-hook-form";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import ProtectedPage from "@/components/ProtectedPage";
+import Loading from "@/components/Loading";
 
 export default function CreateProduct() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
   const imgRef = useRef();
   const [showImages, setShowImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // 이미지 상대경로 저장
   const handleAddImages = (event) => {
@@ -38,12 +39,11 @@ export default function CreateProduct() {
   };
 
   async function onSubmit(data) {
+    setIsLoading(true);
     if (showImages.length < 1) {
       alert("이미지를 업로드해주세요");
       return;
     } else {
-      setIsLoading(true);
-
       const formData = new FormData();
       showImages.map(async (data) => {
         const file = imgRef.current.files[data.id];
@@ -61,13 +61,17 @@ export default function CreateProduct() {
       } catch {
         console.error("Image Upload Failed");
       }
-      setIsLoading(false);
+
       router.replace("/");
     }
+    setIsLoading(false);
   }
+
+  useEffect(() => console.log("loading status: ", isLoading), [isLoading]);
 
   return (
     <ProtectedPage>
+      {isLoading ? <Loading /> : ""}
       <div className="w-full min-h-screen bg-slate-50 p-4">
         <div className="text-xl font-bold">상품 등록</div>
         <div>
@@ -129,7 +133,9 @@ export default function CreateProduct() {
                 className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
                 maxLength={50}
               />
-              <div className="text-lg font-semibold">설명 <span className="text-gray-400 text-sm">(최대 300자)</span></div>
+              <div className="text-lg font-semibold">
+                설명 <span className="text-gray-400 text-sm">(최대 300자)</span>
+              </div>
               <textarea
                 {...register("explain", { required: true })}
                 className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-300 my-2"

@@ -11,7 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.17",
     "eslint-config-next": "13.2.4",
-    "next": "13.2.4",
+    "next": "13.4.1",
     "nprogress": "^0.2.0",
     "pocketbase": "^0.12.1",
     "react": "18.2.0",
