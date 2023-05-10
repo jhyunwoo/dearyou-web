@@ -17,9 +17,9 @@ export default function Home() {
     try {
       const data = await pb
         .collection("products")
-        .getList(page.current, 10, { expand: "seller", sort: "-created" });
+        .getList(page.current, 20, { expand: "seller", sort: "-created" });
       setProducts((prevPosts) => [...prevPosts, ...data.items]);
-      setHasNextPage(data.items.length === 10);
+      setHasNextPage(data.items.length === 20);
       if (data.items.length) {
         page.current += 1;
       }
@@ -45,17 +45,17 @@ export default function Home() {
       >
         <PlusIcon className="w-8 h-8 text-white" />
       </Link>
-      <div className="w-full bg-white p-4 flex justify-start fixed top-0 right-0 left-0">
+      <div className="w-full bg-slate-50 p-4 flex justify-start fixed top-0 right-0 left-0">
         <div className="font-bold text-xl">드려유</div>
       </div>
       <div className="w-full h-12"></div>
       <div className="w-full min-h-screen bg-slate-50 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 p-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 p-4 gap-2">
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div
-                className={`flex flex-row w-full border-b py-3 border-slate-300 ${
-                  data?.soldDate ? "bg-slate-200" : ""
+                className={`flex rounded-lg p-2  w-full ${
+                  data?.soldDate ? "bg-slate-100" : "bg-white"
                 }`}
               >
                 <Image
@@ -64,16 +64,16 @@ export default function Home() {
                   height={300}
                   alt={data.name}
                   priority={true}
-                  className="basis-1/4 w-24 h-24 rounded-lg mr-4"
+                  className=" w-28 h-28  mr-4 rounded-lg"
                 />
-                <div>
+                <div className="flex justify-between flex-col">
                   <div className="font-bold text-lg">{data?.name}</div>
                   <div className="font-medium text-base flex flex-col">
                     <div className="font-semibold">
                       {data?.expand?.seller?.name}
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
-                    {data?.soldDate ? "나눔 완료" : ""}
+                    <div>{data?.soldDate ? "나눔 완료" : ""}</div>
                   </div>
                 </div>
               </div>

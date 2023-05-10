@@ -15,7 +15,7 @@ export default function Chat() {
   const { user, signOut } = usePbAuth();
   const router = useRouter();
   const chatId = router.query["chatId"];
-  
+
   // pb에서 실시간 업데이트하는 chat 관련 데이터 저장하는 state
   const [chatRecord, setChatRecord] = useState(null);
   const [readRecord, setReadRecord] = useState(null);
@@ -23,7 +23,7 @@ export default function Chat() {
   // pb에서 받아온 chat 관련 데이터 저장하는 state
   const [userMe, setUserMe] = useState(); // 나 ID, 이름 저장
   const [userOther, setUserOther] = useState(); // 상대방 ID, 이름 저장
-  
+
   // 로딩 중 상태 여부 저장하는 state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,25 +31,24 @@ export default function Chat() {
   const imgRef = useRef(); // 이미지 input을 ref
   const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
 
-
   async function handleRead() {
     setIsLoading(true);
 
     let record = chatRecord.expand.read;
-    if(record.unreaduser === userMe?.id && record.unreadcount > 0){
+    if (record.unreaduser === userMe?.id && record.unreadcount > 0) {
       record.unreadcount = 0;
       record.lastread = new Date();
       await pb
-        .collection('chats_read')
+        .collection("chats_read")
         .update(chatRecord.expand.read.id, record);
     }
     setReadRecord(record);
     //console.log('ReadRecord set to',record);
-    
+
     setIsLoading(false);
   }
   useEffect(() => {
-    if(!chatRecord) return;
+    if (!chatRecord) return;
     handleRead();
   }, [chatRecord]);
 
@@ -59,8 +58,8 @@ export default function Chat() {
 
     if (!chatId) return;
     let record = await pb
-      .collection('chats')
-      .getOne(chatId, {expand: "seller,buyer,messages,messages.owner,read"});
+      .collection("chats")
+      .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
     //console.log(record);
 
     setChatRecord(record);
@@ -73,30 +72,25 @@ export default function Chat() {
     //console.log(id);
     setIsLoading(true);
 
-    let record = await pb
-      .collection('chats_read')
-      .getOne(id);
+    let record = await pb.collection("chats_read").getOne(id);
     //console.log(record);
-      
+
     setReadRecord(record);
     console.log("getReadRecord: 업데이트된 Record 불러옴");
     setIsLoading(false);
     return record;
   }
 
-
   /* 채팅 관련 정보 subscribe하는 function (useEffect로 처음에 호출) */
   async function subChatRecord() {
     setIsLoading(true);
-    await pb.collection("chats").subscribe(
-      chatId, getChatRecord
-    );
+    await pb.collection("chats").subscribe(chatId, getChatRecord);
     const record = await getChatRecord();
-    await pb.collection("chats_read").subscribe(
-      record.read, () => {getReadRecord(record.read)}
-    );
+    await pb.collection("chats_read").subscribe(record.read, () => {
+      getReadRecord(record.read);
+    });
     //console.log(record);
-    
+
     // UserMe, UserOther 저장
     const buyer = record.expand.buyer;
     const seller = record.expand.seller;
@@ -130,19 +124,19 @@ export default function Chat() {
       return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
     }
   }
-  
+
   /** 상품 페이지로 이동하는 버튼 컴포넌트 */
   function ProductLink(props) {
     return (
-      <div>
+      <div className="mx-3">
         <Link href={`/products/${props.link}`}>
-          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200">
+          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
             <Image
               src={`https://dearu-pocket.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
               width={255}
               height={255}
               alt="product image"
-              className="p-2"
+              className="p-2 rounded-xl"
             />
             <div className="pb-2 font-bold">상품 정보로 이동</div>
           </div>
@@ -191,9 +185,9 @@ export default function Chat() {
                     {getUploadedTime(data?.created)}
                   </div>
                 </div>
-                
+
                 {data?.pdlink ? (
-                  <ProductLink link={data?.pdlink} thumb={data?.pdthumblink}/>
+                  <ProductLink link={data?.pdlink} thumb={data?.pdthumblink} />
                 ) : null}
                 {data.image.length > 0 ? (
                   <Image
@@ -217,7 +211,7 @@ export default function Chat() {
     );
   }
 
-  async function uploadNewChat(msgData){
+  async function uploadNewChat(msgData) {
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
@@ -265,17 +259,20 @@ export default function Chat() {
     msgData.append("text", chatInput.current.value);
     msgData.append("owner", pb.authStore.model.id);
     msgData.append("image", imgRef.current.files[0]);
-    
+
     uploadNewChat(msgData);
-    
+
     setIsLoading(false);
   }
 
-  function saveDraft(){
-    localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  function saveDraft() {
+    localStorage.setItem(
+      `${user.id}-${chatRecord.id}`,
+      chatInput.current.value,
+    );
   }
-  function clearDraft(){
-    localStorage.setItem(`${user.id}-${chatRecord.id}`, '');
+  function clearDraft() {
+    localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
   }
   function ChatInput() {
     //채팅 입력 컴포넌트
@@ -316,9 +313,7 @@ export default function Chat() {
               className="w-7 h-7 text-white"
             />
           </div>
-          <div>
-            {readRecord?.unreadcount}
-          </div>
+          <div>{readRecord?.unreadcount}</div>
         </div>
       </div>
     );
@@ -334,14 +329,14 @@ export default function Chat() {
   useEffect(() => {
     if (!userOther) return;
     getChatRecord();
-  }, [userOther])
+  }, [userOther]);
 
   /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
   useLayoutEffect(() => {
-      try{
-        const history = historyRef.current;
-        history.scrollTop = history.scrollHeight;
-      } catch { }
+    try {
+      const history = historyRef.current;
+      history.scrollTop = history.scrollHeight;
+    } catch {}
   }, [chatRecord, readRecord, isLoading]);
 
   if (chatRecord == null) {

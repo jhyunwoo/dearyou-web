@@ -13,7 +13,7 @@ export default function Profile() {
     <ProtectedPage>
       <BottomBar />
       <div className="w-full min-h-screen bg-slate p-4">
-        <div className="bg-white w-full shadow-xl p-4 flex flex-col">
+        <div className="bg-white w-full  p-4 flex flex-col">
           {pb?.authStore?.model?.avatar ? (
             <Image
               width={100}
@@ -45,7 +45,7 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="my-4 bg-white shadow-xl p-4 rounded-xl">
+        <div className="my-4 bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl">
           <button
             className="w-full text-left"
             onClick={() => router.push("/profile/wish")}
@@ -53,7 +53,7 @@ export default function Profile() {
             관심목록
           </button>
         </div>
-        <div className="my-4 bg-white shadow-xl p-4 rounded-xl">
+        <div className="my-4 bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl">
           <button
             className="w-full text-left"
             onClick={() => router.push("/profile/my-products")}
