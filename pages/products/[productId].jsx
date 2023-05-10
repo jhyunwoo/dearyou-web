@@ -86,30 +86,34 @@ export default function ProductDetail({ productId }) {
 
   /** 판매자와 채팅 버튼 누를 때 호출 */
   async function goToChat() {
-    const checkChat = await pb.collection("chats").getFullList({ // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
+    const checkChat = await pb.collection("chats").getFullList({
+      // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
       filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
               (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
-      expand: 'read'
+      expand: "read",
     });
 
     let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
-    if(checkChat.length > 0){ // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
+    if (checkChat.length > 0) {
+      // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
       console.log(checkChat[0]);
-      const newChatRead = await pb.collection("chats_read").update(checkChat[0].read, {
-        unreaduser: productInfo.expand.seller.id,
-        unreadcount: (checkChat[0].expand.read.unreadcount + 1)
-      });
+      const newChatRead = await pb
+        .collection("chats_read")
+        .update(checkChat[0].read, {
+          unreaduser: productInfo.expand.seller.id,
+          unreadcount: checkChat[0].expand.read.unreadcount + 1,
+        });
       newChat = checkChat[0];
-    }
-    else{ // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
+    } else {
+      // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
       let newChatRead = await pb.collection("chats_read").create({
         unreaduser: productInfo.expand.seller.id,
-        unreadcount: 1
-      }); 
+        unreadcount: 1,
+      });
       newChat = await pb.collection("chats").create({
         seller: productInfo.expand.seller.id,
         buyer: pb.authStore.model.id,
-        read: newChatRead.id
+        read: newChatRead.id,
       });
       newChatRead.chat = newChat.id;
       console.log(newChatRead);
@@ -129,9 +133,7 @@ export default function ProductDetail({ productId }) {
 
     // 채팅 데이터 update
     newChat.messages.push(createDefaultMessage.id);
-    const updateChat = await pb
-      .collection("chats")
-      .update(newChat.id, newChat);
+    const updateChat = await pb.collection("chats").update(newChat.id, newChat);
 
     router.push(`/chats/${newChat.id}`);
 
@@ -183,9 +185,7 @@ export default function ProductDetail({ productId }) {
     try {
       let newProductInfo = productInfo;
       newProductInfo.soldDate = new Date();
-      await pb
-        .collection("products")
-        .update(productId, newProductInfo);
+      await pb.collection("products").update(productId, newProductInfo);
       setProductInfo(newProductInfo);
       router.push(`/products/${productId}`);
     } catch (error) {
@@ -218,9 +218,13 @@ export default function ProductDetail({ productId }) {
               <div className=" pb-2 border-b-2 flex justify-between items-center">
                 <div className="text-xl font-bold">{productInfo.name}</div>
                 <div className="flex items-center">
-                  <div className="flex mx-1">
-                    <div className="mr-2">{productInfo.expand.seller.name}</div>
-                    <div>{productInfo.expand.seller.studentId}</div>
+                  <div className="flex flex-col mr-2">
+                    <div className="text-sm">
+                      {productInfo.expand.seller.name}
+                    </div>
+                    <div className="text-sm">
+                      {productInfo.expand.seller.studentId}
+                    </div>
                   </div>
 
                   {currentUser?.id === productInfo?.expand?.seller?.id ? (
@@ -235,7 +239,9 @@ export default function ProductDetail({ productId }) {
                   {getUploadedTime(productInfo.created)}
                 </div>
                 <div className="ml-auto">
-                  {productInfo.soldDate ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료` : "나눔 중"}
+                  {productInfo.soldDate
+                    ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
+                    : "나눔 중"}
                 </div>
                 <div className="font-medium text-lg my-2">
                   {productInfo.explain}
@@ -252,29 +258,34 @@ export default function ProductDetail({ productId }) {
             </div>
             {currentUser?.id === productInfo?.expand?.seller?.id ? (
               <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-              <button
-                onClick={closeProduct}
-                className={`p-2 px-6 rounded-full ${productInfo?.soldDate ? 
-                  "bg-gray-400" : "bg-blue-400 hover:bg-blue-500 transition duration-200"}`}
-                disabled={productInfo.soldDate ? true : false}
-              >
-                나눔 완료
-              </button>
-            </div>
+                <button
+                  onClick={closeProduct}
+                  className={`p-2 px-6 rounded-full ${
+                    productInfo?.soldDate
+                      ? "bg-gray-400"
+                      : "bg-blue-400 hover:bg-blue-500 transition duration-200"
+                  }`}
+                  disabled={productInfo.soldDate ? true : false}
+                >
+                  나눔 완료
+                </button>
+              </div>
             ) : (
               <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                
                 <button
                   onClick={goToChat}
-                  className={`p-2 px-6 rounded-full ${productInfo?.soldDate ? 
-                    "bg-gray-400" : "bg-amber-400 hover:bg-amber-500 transition duration-200"}`}
+                  className={`p-2 px-6 rounded-full ${
+                    productInfo?.soldDate
+                      ? "bg-gray-400"
+                      : "bg-amber-400 hover:bg-amber-500 transition duration-200"
+                  }`}
                   disabled={productInfo.soldDate ? true : false}
                 >
                   판매자와 채팅
                 </button>
               </div>
             )}
-          <div className="w-full h-16"></div>
+            <div className="w-full h-16"></div>
           </div>
         ) : (
           ""
