@@ -18,15 +18,15 @@ export default function Chats() {
       expand: "seller,buyer,messages,read",
       filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
     });
-    
-    const sortedList = resultList.sort(
-      function(a,b){
-        const v = (new Date(a.expand?.messages?.slice(-1)[0].created))
-          - (new Date(b.expand?.messages?.slice(-1)[0].created));
-        if(v < 0) return 1;
-        else if(v > 0) return -1;
-        else return 0;
-      });
+
+    const sortedList = resultList.sort(function (a, b) {
+      const v =
+        new Date(a.expand?.messages?.slice(-1)[0].created) -
+        new Date(b.expand?.messages?.slice(-1)[0].created);
+      if (v < 0) return 1;
+      else if (v > 0) return -1;
+      else return 0;
+    });
 
     setChatsList(sortedList);
   }
@@ -39,19 +39,19 @@ export default function Chats() {
     }
   }
 
-  function Unreads(props){
+  function Unreads(props) {
     const read = props.data.expand.read;
-    return ( (read.unreaduser === user.id && read.unreadcount > 0) ? (
+    return read.unreaduser === user.id && read.unreadcount > 0 ? (
       <span className="ml-2 px-1 rounded-2xl bg-red-400 text-white">
         {read.unreadcount}
       </span>
-      ) : null );
+    ) : null;
   }
 
   useEffect(() => {
     if (!router.isReady) return;
     getSortedChats();
-    pb.collection('chats').subscribe(getSortedChats);
+    pb.collection("chats").subscribe(getSortedChats);
   }, [router.isReady]);
 
   return (
@@ -69,7 +69,7 @@ export default function Chats() {
           )}
           {chatsList?.map((data, key) => (
             <Link
-              className="bg-white p-2 rounded-xl shadow-md"
+              className="bg-white p-2 rounded-xl hover:bg-slate-100 transition duration-200"
               href={"/chats/" + data?.id}
               key={key}
             >
@@ -103,7 +103,7 @@ export default function Chats() {
                     {data?.expand["buyer"]?.id === user.id
                       ? data?.expand["seller"]?.name
                       : data?.expand["buyer"]?.name}
-                    <Unreads data={data}/>
+                    <Unreads data={data} />
                   </div>
                   <div className="text-sm font-medium">
                     {data?.expand?.messages?.slice(-1)[0].text
