@@ -32,7 +32,7 @@ export default function WishPage() {
         <div className="text-xl font-bold">관심목록</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 gap-2">
           {productList?.length === 0 ? (
-            <div className="flex flex-col justify-center items-center mt-24">
+            <div className="flex flex-col sm:col-span-2 lg:col-span-3 xl:col-span-4 justify-center items-center mt-24">
               <div>아직 등록한 관심 상품이 없습니다.</div>
               <Link
                 href={"/"}

@@ -57,35 +57,30 @@ export default function CreateProduct() {
         let result = await pb
           .collection("products")
           .create(formData, { $autoCancel: true });
-        console.log(result);
-      } catch {
-        console.error("Image Upload Failed");
-      }
+      } catch {}
 
       router.replace("/");
     }
     setIsLoading(false);
   }
 
-  useEffect(() => console.log("loading status: ", isLoading), [isLoading]);
-
   return (
     <ProtectedPage>
       {isLoading ? <Loading /> : ""}
-      <div className="w-full min-h-screen bg-slate-50 p-4">
+      <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
         <div className="text-xl font-bold">상품 등록</div>
-        <div>
-          <div className="bg-slate-50  p-4 flex flex-col">
-            <div className=" ">
+        <div className="sm:flex sm:justify-center sm:items-start">
+          <div className="bg-slate-50 sm:w-1/2  p-4 flex flex-col">
+            <div className="">
               {showImages.length > 0 ? (
-                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full ">
+                <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 w-full ">
                   {showImages.map((image, id) => (
                     <div key={id} className="mx-auto flex flex-col items-end ">
                       <Image
                         src={image.file}
                         alt={`${image.file}-${id}`}
-                        width={1000}
-                        height={1000}
+                        width={300}
+                        height={300}
                         className="rounded-sm"
                       />
                       <button
@@ -117,15 +112,9 @@ export default function CreateProduct() {
                   ref={imgRef}
                 />
               </label>
-              {/* <button
-            onClick={uploadImage}
-            className="bg-sky-400 hover:ring-2 ring-sky-300 hover:ring-offset-2 hover:bg-white hover:text-black transition duration-200 mx-2 text-white px-4 py-2 rounded-xl font-semibold"
-          >
-            사진 업로드
-          </button> */}
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow-lg">
+          <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
               <div className="text-lg font-semibold">제품명</div>
               <input

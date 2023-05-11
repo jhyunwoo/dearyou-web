@@ -69,11 +69,8 @@ export default function UpdateProduct({ productId }) {
     newInfo.explain = data.explain;
     newInfo.type = data.type;
     newInfo.lastupdated = new Date().getTime();
-    console.log(newInfo);
 
     let result = await pb.collection("Products").update(productId, newInfo);
-    //console.log(result);
-
     setIsLoading(false);
     router.replace("/");
   }
@@ -116,7 +113,10 @@ export default function UpdateProduct({ productId }) {
                   className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
                   maxLength={50}
                 />
-                <div className="text-lg font-semibold">설명 <span className="text-gray-400 text-sm">(최대 300자)</span></div>
+                <div className="text-lg font-semibold">
+                  설명{" "}
+                  <span className="text-gray-400 text-sm">(최대 300자)</span>
+                </div>
                 <textarea
                   {...register("explain", { required: true })}
                   defaultValue={productInfo?.explain}

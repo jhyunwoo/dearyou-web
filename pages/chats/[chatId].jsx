@@ -43,8 +43,6 @@ export default function Chat() {
         .update(chatRecord.expand.read.id, record);
     }
     setReadRecord(record);
-    //console.log('ReadRecord set to',record);
-
     setIsLoading(false);
   }
   useEffect(() => {
@@ -60,23 +58,18 @@ export default function Chat() {
     let record = await pb
       .collection("chats")
       .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
-    //console.log(record);
 
     setChatRecord(record);
-    console.log("getChatRecord: 업데이트된 Record 불러옴");
     setIsLoading(false);
     return record;
   }
 
   async function getReadRecord(id) {
-    //console.log(id);
     setIsLoading(true);
 
     let record = await pb.collection("chats_read").getOne(id);
-    //console.log(record);
 
     setReadRecord(record);
-    console.log("getReadRecord: 업데이트된 Record 불러옴");
     setIsLoading(false);
     return record;
   }
@@ -89,15 +82,12 @@ export default function Chat() {
     await pb.collection("chats_read").subscribe(record.read, () => {
       getReadRecord(record.read);
     });
-    //console.log(record);
 
     // UserMe, UserOther 저장
     const buyer = record.expand.buyer;
     const seller = record.expand.seller;
     setUserMe(buyer.id === user.id ? buyer : seller);
     setUserOther(buyer.id === user.id ? seller : buyer);
-
-    console.log("subChatInfo: pb subscribe 완료");
     setIsLoading(false);
     return;
   }
@@ -149,7 +139,6 @@ export default function Chat() {
     //채팅 창 컴포넌트
     const messages = chatRecord?.expand["messages"];
 
-    //console.log(chatInfo.expand['messages']);
     return (
       <div className="h-screen flex flex-col">
         <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
@@ -233,7 +222,6 @@ export default function Chat() {
 
   async function handleChatInput() {
     // 메시지 보내기 버튼 눌렀을 때 처리
-    console.log("handleChatInput: 메시지 입력됨");
     setIsLoading(true);
 
     if (chatInput.current.value.length === 0) {
@@ -252,7 +240,6 @@ export default function Chat() {
 
   async function handleImageInput() {
     //이미지 보내기 버튼 눌렀을 때 처리
-    console.log("handleImageInput: 메시지 입력됨");
     setIsLoading(true);
 
     const msgData = new FormData();

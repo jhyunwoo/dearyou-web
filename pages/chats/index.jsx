@@ -59,9 +59,9 @@ export default function Chats() {
       <BottomBar />
       <div className="w-full min-h-screen p-4 bg-slate-50">
         <div className="font-semibold mb-3 text-lg">채팅</div>
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {chatsList.length === 0 ? (
-            <div className="mx-auto mt-12">
+            <div className="mx-auto mt-12 sm:col-span-2 lg:col-span-3 xl:col-span-4">
               드려유에서 물건을 거래해 보세요.
             </div>
           ) : (

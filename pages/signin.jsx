@@ -37,12 +37,9 @@ export default function SignIn() {
       )
       .then(async (response) => {
         const user = await pb.collection("users").getOne(response.record.id);
-        //console.log(user);
 
         // skip profile updation if user already exists or user data from OAuth providers haven't changed
-        if (
-          user.name
-        ) {
+        if (user.name) {
           storeUserAndRedirect(user);
         } else
           pb.collection("users")

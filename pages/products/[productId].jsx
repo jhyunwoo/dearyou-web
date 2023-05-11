@@ -60,7 +60,6 @@ export default function ProductDetail({ productId }) {
       const userInfo = await pb
         .collection("users")
         .getOne(pb.authStore.model.id);
-      console.log(userInfo.wishes);
       setUserWish(userInfo.wishes);
     }
 
@@ -96,7 +95,6 @@ export default function ProductDetail({ productId }) {
     let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
     if (checkChat.length > 0) {
       // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-      console.log(checkChat[0]);
       const newChatRead = await pb
         .collection("chats_read")
         .update(checkChat[0].read, {
@@ -116,7 +114,6 @@ export default function ProductDetail({ productId }) {
         read: newChatRead.id,
       });
       newChatRead.chat = newChat.id;
-      console.log(newChatRead);
       await pb.collection("chats_read").update(newChatRead.id, newChatRead);
     }
 
@@ -192,7 +189,6 @@ export default function ProductDetail({ productId }) {
       console.error("Error closing the product:", error);
     }
   }
-  console.log(productInfo.photos);
   return (
     <ProtectedPage>
       <BottomBar />
