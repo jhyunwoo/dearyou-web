@@ -196,96 +196,100 @@ export default function ProductDetail({ productId }) {
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen bg-slate-50">
+      <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center">
         {productInfo ? (
-          <div className="">
-            <div className=" flex overflow-x-auto scrollbar-hide snap-x">
+          <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="sm:h-96 sm:w-96 flex overflow-x-auto  scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
-                <div className={`w-screen h-72  snap-center  flex-shrink-0`}>
+                <div
+                  className={`w-screen h-96 sm:h-96 sm:w-96 snap-center  flex-shrink-0`}
+                >
                   <Image
                     key={key}
                     src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
                     width={300}
-                    height={300}
                     priority={true}
+                    height={300}
                     alt={"Product Image"}
-                    className="object-cover w-screen h-72"
+                    className="object-cover w-screen h-96  sm:w-96"
                   />
                 </div>
               ))}
             </div>
-            <div className="p-4 flex flex-col">
-              <div className=" pb-2 border-b-2 flex justify-between items-center">
-                <div className="text-xl font-bold">{productInfo.name}</div>
-                <div className="flex items-center">
-                  <div className="flex flex-col mr-2">
-                    <div className="text-sm">
-                      {productInfo.expand.seller.name}
+            <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
+              <div className="p-4 flex flex-col ">
+                <div className=" pb-2 border-b-2 flex justify-between items-center">
+                  <div className="text-xl font-bold">{productInfo.name}</div>
+                  <div className="flex items-center">
+                    <div className="flex flex-col mr-2">
+                      <div className="text-sm">
+                        {productInfo.expand.seller.name}
+                      </div>
+                      <div className="text-sm">
+                        {productInfo.expand.seller.studentId}
+                      </div>
                     </div>
-                    <div className="text-sm">
-                      {productInfo.expand.seller.studentId}
-                    </div>
-                  </div>
 
-                  {currentUser?.id === productInfo?.expand?.seller?.id ? (
-                    <Link href={`/products/update/${productId}`}>
-                      <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
-                    </Link>
-                  ) : null}
+                    {currentUser?.id === productInfo?.expand?.seller?.id ? (
+                      <Link href={`/products/update/${productId}`}>
+                        <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
+                      </Link>
+                    ) : null}
+                  </div>
                 </div>
+                <div className="mt-2 flex flex-col">
+                  <div className="ml-auto">
+                    {getUploadedTime(productInfo.created)}
+                  </div>
+                  <div className="ml-auto">
+                    {productInfo.soldDate
+                      ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
+                      : "나눔 중"}
+                  </div>
+                  <div className="font-medium text-lg my-2">
+                    {productInfo.explain}
+                  </div>
+                  <div>종류: {productInfo.type}</div>
+                </div>
+                <button onClick={addToWishlist}>
+                  {userWish?.includes(productId) || addWish ? (
+                    <HeartIcon className="w-8 h-8 text-red-500" />
+                  ) : (
+                    <HeartIcon className="w-8 h-8 text-red-100" />
+                  )}
+                </button>
               </div>
-              <div className="mt-2 flex flex-col">
-                <div className="ml-auto">
-                  {getUploadedTime(productInfo.created)}
+              {currentUser?.id === productInfo?.expand?.seller?.id ? (
+                <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                  <button
+                    onClick={closeProduct}
+                    className={`p-2 px-6 rounded-full ${
+                      productInfo?.soldDate
+                        ? "bg-gray-400"
+                        : "bg-blue-400 hover:bg-blue-500 transition duration-200"
+                    }`}
+                    disabled={productInfo.soldDate ? true : false}
+                  >
+                    나눔 완료
+                  </button>
                 </div>
-                <div className="ml-auto">
-                  {productInfo.soldDate
-                    ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
-                    : "나눔 중"}
+              ) : (
+                <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                  <button
+                    onClick={goToChat}
+                    className={`p-2 px-6 rounded-full ${
+                      productInfo?.soldDate
+                        ? "bg-gray-400"
+                        : "bg-amber-400 hover:bg-amber-500 transition duration-200"
+                    }`}
+                    disabled={productInfo.soldDate ? true : false}
+                  >
+                    판매자와 채팅
+                  </button>
                 </div>
-                <div className="font-medium text-lg my-2">
-                  {productInfo.explain}
-                </div>
-                <div>종류: {productInfo.type}</div>
-              </div>
-              <button onClick={addToWishlist}>
-                {userWish?.includes(productId) || addWish ? (
-                  <HeartIcon className="w-8 h-8 text-red-500" />
-                ) : (
-                  <HeartIcon className="w-8 h-8 text-red-100" />
-                )}
-              </button>
+              )}
+              <div className="w-full h-16"></div>
             </div>
-            {currentUser?.id === productInfo?.expand?.seller?.id ? (
-              <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                <button
-                  onClick={closeProduct}
-                  className={`p-2 px-6 rounded-full ${
-                    productInfo?.soldDate
-                      ? "bg-gray-400"
-                      : "bg-blue-400 hover:bg-blue-500 transition duration-200"
-                  }`}
-                  disabled={productInfo.soldDate ? true : false}
-                >
-                  나눔 완료
-                </button>
-              </div>
-            ) : (
-              <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                <button
-                  onClick={goToChat}
-                  className={`p-2 px-6 rounded-full ${
-                    productInfo?.soldDate
-                      ? "bg-gray-400"
-                      : "bg-amber-400 hover:bg-amber-500 transition duration-200"
-                  }`}
-                  disabled={productInfo.soldDate ? true : false}
-                >
-                  판매자와 채팅
-                </button>
-              </div>
-            )}
-            <div className="w-full h-16"></div>
           </div>
         ) : (
           ""
