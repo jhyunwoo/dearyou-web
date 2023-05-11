@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Router from "next/router";
 import Loading from "@/components/Loading";
 import * as gtag from "../lib/gtags";
+import Script from "next/script";
 
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
