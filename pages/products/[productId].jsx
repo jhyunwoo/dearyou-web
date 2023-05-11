@@ -192,7 +192,7 @@ export default function ProductDetail({ productId }) {
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center">
+      <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:mb-24">
         {productInfo ? (
           <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
             <div className="sm:h-96 sm:w-96 flex overflow-x-auto  scrollbar-hide snap-x">
