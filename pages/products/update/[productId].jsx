@@ -66,6 +66,7 @@ export default function UpdateProduct({ productId }) {
   async function onSubmit(data) {
     setIsLoading(true);
     let newInfo = productInfo;
+    newInfo.name = data.name;
     newInfo.explain = data.explain;
     newInfo.type = data.type;
     newInfo.lastupdated = new Date().getTime();
@@ -78,15 +79,15 @@ export default function UpdateProduct({ productId }) {
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
       <ProtectedPage>
-        <div className="w-full min-h-screen bg-slate-50">
+        <div className="w-screen min-h-screen bg-slate-50">
           <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
           {productInfo ? (
-            <div>
-              <div className="flex flex-col">
+            <div className="sm:flex sm:flex-row">
+              <div className="flex flex-col sm:w-1/2">
                 <div className="flex overflow-x-auto space-x-8 scrollbar-hide snap-x">
                   {productInfo.photos.map((data, key) => (
                     <div
-                      className={`w-[${windows.width}px] h-[${windows.width}px] snap-center my-auto flex-shrink-0`}
+                      className={`w-[${windows.width}px] h-[${windows.width}px] sm:w-96 snap-center my-auto flex-shrink-0`}
                     >
                       <Image
                         key={key}
@@ -103,13 +104,12 @@ export default function UpdateProduct({ productId }) {
               </div>
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="p-4 flex flex-col"
+                className="p-4 flex flex-col sm:w-1/2"
               >
                 <div className="text-lg font-semibold">제품명</div>
                 <input
                   {...register("name", { required: true })}
                   defaultValue={productInfo?.name}
-                  readOnly={true}
                   className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
                   maxLength={50}
                 />
