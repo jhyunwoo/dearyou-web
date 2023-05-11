@@ -8,11 +8,11 @@ import { useRouter } from "next/router";
 
 export default function Profile() {
   const { user, signOut } = usePbAuth();
-  const router = useRouter();
+
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen bg-slate p-4">
+      <div className="w-full min-h-screen bg-slate-50 p-4">
         <div className="bg-white w-full  p-4 flex flex-col">
           {pb?.authStore?.model?.avatar ? (
             <Image
@@ -45,21 +45,19 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="my-4 bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl">
-          <button
-            className="w-full text-left"
-            onClick={() => router.push("/profile/wish")}
+        <div className="flex flex-col space-y-2 my-2">
+          <Link
+            href={"/profile/wish"}
+            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
           >
             관심목록
-          </button>
-        </div>
-        <div className="my-4 bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl">
-          <button
-            className="w-full text-left"
-            onClick={() => router.push("/profile/my-products")}
+          </Link>
+          <Link
+            href={"/profile/my-products"}
+            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
           >
             내 상품
-          </button>
+          </Link>
         </div>
       </div>
     </ProtectedPage>

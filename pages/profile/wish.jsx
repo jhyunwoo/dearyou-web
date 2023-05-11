@@ -9,18 +9,22 @@ export default function WishPage() {
   const [productList, setProductList] = useState([]);
   useEffect(() => {
     async function getWishProducts() {
-      const userInfo = await pb
-        .collection("users")
-        .getOne(pb.authStore.model.id);
-      let wishList = userInfo.wishes;
-      let products = [];
-      for (let i = 0; i < wishList.length; i++) {
-        const productInfo = await pb
-          .collection("products")
-          .getOne(wishList[i], { expand: "seller" });
-        products.push(productInfo);
+      try {
+        const userInfo = await pb
+          .collection("users")
+          .getOne(pb.authStore.model.id);
+        let wishList = userInfo.wishes;
+        let products = [];
+        for (let i = 0; i < wishList.length; i++) {
+          const productInfo = await pb
+            .collection("products")
+            .getOne(wishList[i], { expand: "seller" });
+          products.push(productInfo);
+        }
+        setProductList(products);
+      } catch (error) {
+        console.error(error);
       }
-      setProductList(products);
     }
     getWishProducts();
   }, []);
