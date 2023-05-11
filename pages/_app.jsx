@@ -4,9 +4,13 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import Loading from "@/components/Loading";
+import * as gtag from "../lib/gtags";
+import Script from "next/script";
 
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
+
+  gtag.useGtag();
 
   useEffect(() => {
     const start = () => {
@@ -34,17 +38,30 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>드려유</title>
         <meta property="og:title" content="드려유" key="title" />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-RYJQLR1GD3"
-        ></script>
-        <script>
-          window.dataLayer = window.dataLayer || []; function gtag()
-          {dataLayer.push(arguments)}
-          gtag('js', new Date()); gtag('config', 'G-RYJQLR1GD3');
-        </script>
       </Head>
-
+      {process.env.NODE_ENV !== "development" && (
+        <>
+          {/* Global Site Tag (gtag.js) - Google Analytics */}
+          <Script
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
+          />
+          <Script
+            id="gtag-init"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gtag.GA_TRACKING_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+            }}
+          />
+        </>
+      )}
       {loading ? <Loading /> : ""}
       <Component {...pageProps} />
     </AuthWrapper>

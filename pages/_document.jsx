@@ -7,6 +7,17 @@ export default function Document() {
       <body className="scrollbar-hide">
         <Main />
         <NextScript />
+        {process.env.NODE_ENV !== "development" && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+              `,
+            }}
+          />
+        )}
       </body>
     </Html>
   );
