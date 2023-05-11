@@ -30,7 +30,7 @@ export default function WishPage() {
       <BottomBar />
       <div className="p-4 bg-slate-50 w-full min-h-screen">
         <div className="text-xl font-bold">관심목록</div>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 gap-2">
           {productList?.length === 0 ? (
             <div className="flex flex-col justify-center items-center mt-24">
               <div>아직 등록한 관심 상품이 없습니다.</div>
@@ -46,22 +46,27 @@ export default function WishPage() {
           )}
           {productList.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
-              <div className="flex flex-row w-full border-b py-3 border-slate-300">
+              <div
+                className={`flex rounded-lg p-2  w-full ${
+                  data?.soldDate ? "bg-slate-100" : "bg-white"
+                }`}
+              >
                 <Image
                   src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
                   width={300}
                   height={300}
                   alt={data.name}
                   priority={true}
-                  className="basis-1/4 w-24 h-24 rounded-lg mr-4"
+                  className=" w-28 h-28  mr-4 rounded-lg"
                 />
-                <div>
+                <div className="flex justify-between flex-col">
                   <div className="font-bold text-lg">{data?.name}</div>
                   <div className="font-medium text-base flex flex-col">
                     <div className="font-semibold">
                       {data?.expand?.seller?.name}
                     </div>
                     <div>{data?.expand?.seller?.studentId}</div>
+                    <div>{data?.soldDate ? "나눔 완료" : ""}</div>
                   </div>
                 </div>
               </div>
