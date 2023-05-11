@@ -34,6 +34,15 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>드려유</title>
         <meta property="og:title" content="드려유" key="title" />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-RYJQLR1GD3"
+        ></script>
+        <script>
+          window.dataLayer = window.dataLayer || []; function gtag()
+          {dataLayer.push(arguments)}
+          gtag('js', new Date()); gtag('config', 'G-RYJQLR1GD3');
+        </script>
       </Head>
 
       {loading ? <Loading /> : ""}
