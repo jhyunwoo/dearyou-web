@@ -62,9 +62,11 @@ export default function AddInfo() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-4">
-      <div className="text-xl font-bold">사용자 정보 변경</div>
-      <div className="my-4">
+    <div className="w-full min-h-screen bg-slate-50 p-4 flex flex-col sm:justify-center sm:items-center">
+      <div className="text-xl p-4 font-bold sm:fixed sm:top-0 sm:right-0 sm:left-0">
+        사용자 정보 변경
+      </div>
+      <div className="my-4 bg-white p-4 rounded-xl shadow-lg">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
           <div className="text-lg font-semibold">이름</div>
           <input

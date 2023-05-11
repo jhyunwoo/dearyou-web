@@ -4,7 +4,6 @@ import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 export default function Profile() {
   const { user, signOut } = usePbAuth();
@@ -45,7 +44,7 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col space-y-2 my-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 my-2">
           <Link
             href={"/profile/wish"}
             className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
