@@ -1,14 +1,22 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import Image from "next/image";
 export default function SignIn() {
+  const router = useRouter();
+  const { setUserData } = usePbAuth();
   async function googleSignIn() {
-    const authData = await pb
-      .collection("users")
-      .authWithOAuth2({ provider: "google" });
-    console.log(authData);
+    try {
+      const authData = await pb
+        .collection("users")
+        .authWithOAuth2({ provider: "google" });
+      if (authData.token) {
+        setUserData(authData.record);
+        router.replace("/");
+      }
+    } catch {
+      alert("로그인을 다시 시도해주세요.");
+    }
   }
 
   return (
