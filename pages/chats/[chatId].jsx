@@ -147,7 +147,7 @@ export default function Chat() {
 
   function ChatHistory() {
     //채팅 창 컴포넌트
-    const messages = chatRecord.expand["messages"];
+    const messages = chatRecord?.expand["messages"];
 
     //console.log(chatInfo.expand['messages']);
     return (
@@ -304,7 +304,7 @@ export default function Chat() {
             onChange={saveDraft}
             type="text"
             placeholder="메시지를 입력하세요. . ."
-            defaultValue={localStorage.getItem(`${user.id}-${chatRecord.id}`)}
+            defaultValue={localStorage.getItem(`${user?.id}-${chatRecord?.id}`)}
             autoFocus
           />
           <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-full my-auto mx-1 flex justify-center items-center p-1">
@@ -343,7 +343,9 @@ export default function Chat() {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
     return (
       <ProtectedPage>
-        <div>Invalid Path</div>
+        <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
+          <div className="text-base">잘못된 채팅입니다.</div>
+        </div>
       </ProtectedPage>
     );
   } else {
