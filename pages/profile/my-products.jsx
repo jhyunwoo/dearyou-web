@@ -22,6 +22,19 @@ export default function MyProducts() {
       <div className="w-full min-h-screen bg-slate-50 p-4">
         <div className="text-xl font-bold">내 상품</div>
         <div className="grid grid-cols-1 sm:grid-cols-2">
+          {products?.length === 0 ? (
+            <div className="mx-auto mt-24 flex flex-col items-center justify-center">
+              <div className="font-semibold">아직 등록한 상품이 없습니다.</div>
+              <Link
+                href={"/products/create-product"}
+                className="bg-orange-400 p-2 px-4 rounded-full text-white font-semibold mt-4 hover:bg-orange-500 transition duration-200"
+              >
+                상품 등록
+              </Link>
+            </div>
+          ) : (
+            ""
+          )}
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div className="flex flex-row w-full border-b py-3 border-slate-300">

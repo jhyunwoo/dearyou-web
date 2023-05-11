@@ -31,6 +31,19 @@ export default function WishPage() {
       <div className="p-4 bg-slate-50 w-full min-h-screen">
         <div className="text-xl font-bold">관심목록</div>
         <div className="grid grid-cols-1 gap-4">
+          {productList?.length === 0 ? (
+            <div className="flex flex-col justify-center items-center mt-24">
+              <div>아직 등록한 관심 상품이 없습니다.</div>
+              <Link
+                href={"/"}
+                className="bg-orange-400 p-2 px-4 rounded-full text-white font-semibold mt-4 hover:bg-orange-500 transition duration-200"
+              >
+                상품 보러가기
+              </Link>
+            </div>
+          ) : (
+            ""
+          )}
           {productList.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div className="flex flex-row w-full border-b py-3 border-slate-300">
