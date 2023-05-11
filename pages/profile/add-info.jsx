@@ -44,10 +44,11 @@ export default function AddInfo() {
       const records = await pb.collection("users").getFullList({
         filter: `studentId = ${getValues("studentId")}`,
       });
-      console.log(records[0]?.studentId)
-      console.log(pb?.authStore?.model?.studentId)
 
-      if (records.length > 0 && records[0]?.studentId !== pb?.authStore?.model?.studentId) {
+      if (
+        records.length > 0 &&
+        records[0]?.studentId !== pb?.authStore?.model?.studentId
+      ) {
         alert("이미 등록된 학번입니다.");
       } else if (Number(watch("studentId")) > 210101) {
         alert("등록 가능한 학번입니다.");

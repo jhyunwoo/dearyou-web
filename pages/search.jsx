@@ -20,7 +20,6 @@ export default function Search() {
       filter: `name~"${searchWord}"||explain~"${searchWord}"||seller.name~"${searchWord}"`,
       expand: "seller",
     });
-    console.log(searchResult);
 
     // 화면에 표시할 정보만을 담은 'searched' state 설정
     setSearched(searchResult);

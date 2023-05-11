@@ -23,7 +23,7 @@ export default function MyProducts() {
         <div className="text-xl font-bold">내 상품</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 gap-2">
           {products?.length === 0 ? (
-            <div className="mx-auto mt-24 flex flex-col items-center justify-center">
+            <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">
               <div className="font-semibold">아직 등록한 상품이 없습니다.</div>
               <Link
                 href={"/products/create-product"}

@@ -23,14 +23,10 @@ export default function Home() {
       if (data.items.length) {
         page.current += 1;
       }
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) {}
   }, []);
 
   useEffect(() => {
-    console.log(inView, hasNextPage);
     if (inView && hasNextPage) {
       fetch();
     }
