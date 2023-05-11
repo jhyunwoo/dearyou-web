@@ -198,8 +198,8 @@ export default function ProductDetail({ productId }) {
       <BottomBar />
       <div className="w-full min-h-screen bg-slate-50">
         {productInfo ? (
-          <div>
-            <div className="flex overflow-x-auto scrollbar-hide snap-x">
+          <div className="">
+            <div className=" flex overflow-x-auto scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
                 <div className={`w-screen h-72  snap-center  flex-shrink-0`}>
                   <Image

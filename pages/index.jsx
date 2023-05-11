@@ -17,9 +17,9 @@ export default function Home() {
     try {
       const data = await pb
         .collection("products")
-        .getList(page.current, 20, { expand: "seller", sort: "-created" });
+        .getList(page.current, 40, { expand: "seller", sort: "-created" });
       setProducts((prevPosts) => [...prevPosts, ...data.items]);
-      setHasNextPage(data.items.length === 20);
+      setHasNextPage(data.items.length === 40);
       if (data.items.length) {
         page.current += 1;
       }
@@ -50,7 +50,7 @@ export default function Home() {
       </div>
       <div className="w-full h-12"></div>
       <div className="w-full min-h-screen bg-slate-50 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 p-4 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4 gap-2">
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div
