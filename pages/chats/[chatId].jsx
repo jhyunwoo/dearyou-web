@@ -152,14 +152,14 @@ export default function Chat() {
     //console.log(chatInfo.expand['messages']);
     return (
       <div className="h-screen flex flex-col">
-        <div className="flex p-4 items-center ">
+        <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
           </Link>
           <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
         </div>
         <div
-          className="flex flex-col h-full overflow-y-auto border-y-2 scrollbar-hide"
+          className="flex flex-col h-full pt-12 overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
         >
           {messages?.map((data, key) => (
