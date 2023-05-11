@@ -151,7 +151,7 @@ export default function Chat() {
 
     //console.log(chatInfo.expand['messages']);
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="h-screen flex flex-col">
         <div className="flex p-4 items-center ">
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
@@ -277,7 +277,7 @@ export default function Chat() {
   function ChatInput() {
     //채팅 입력 컴포넌트
     return (
-      <div className="fixed bottom-0 right-0 left-0 p-2 backdrop-blur-sm  w-full">
+      <div className="fixed bottom-0 right-0 left-0 p-2 bg-white w-full">
         <div className="text-center flex w-full">
           <label
             htmlFor="input-file"
