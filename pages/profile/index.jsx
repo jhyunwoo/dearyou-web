@@ -11,7 +11,7 @@ export default function Profile() {
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen bg-slate-50 p-4">
+      <div className="w-full min-h-screen bg-slate-50 p-4 flex flex-col">
         <div className="bg-white w-full  p-4 flex flex-col">
           {pb?.authStore?.model?.avatar ? (
             <Image
@@ -28,6 +28,7 @@ export default function Profile() {
             <div className="text-xl font-bold">{user?.name}</div>
             <div>{user?.studentId}</div>
             <div>{user?.email}</div>
+
             <div className=" flex flex-col my-4 justify-center items-center">
               <button
                 className="bg-red-500 hover:bg-red-600 transition duration-200 text-white p-1 px-4 rounded-full mb-2"
@@ -58,6 +59,12 @@ export default function Profile() {
             내 상품
           </Link>
         </div>
+        <Link
+          href={"/privacy"}
+          className="text-sm mx-auto mt-12 text-slate-600"
+        >
+          개인정보처리방침
+        </Link>
       </div>
     </ProtectedPage>
   );
