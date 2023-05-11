@@ -39,11 +39,11 @@ export default function CreateProduct() {
   };
 
   async function onSubmit(data) {
-    setIsLoading(true);
     if (showImages.length < 1) {
       alert("이미지를 업로드해주세요");
       return;
     } else {
+      setIsLoading(true);
       const formData = new FormData();
       showImages.map(async (data) => {
         const file = imgRef.current.files[data.id];
