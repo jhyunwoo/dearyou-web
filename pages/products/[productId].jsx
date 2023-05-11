@@ -288,7 +288,7 @@ export default function ProductDetail({ productId }) {
                   </button>
                 </div>
               )}
-              <div className="w-full h-16"></div>
+              <div className="w-full h-16 sm:h-0"></div>
             </div>
           </div>
         ) : (
