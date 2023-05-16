@@ -19,7 +19,7 @@ export default function Profile() {
               height={100}
               alt={"user avatar"}
               className="rounded-full w-24 h-24"
-              src={`https://dearu-pocket.moveto.kr/api/files/users/${pb.authStore.model.id}/${pb.authStore.model.avatar}?thumb=100x100`}
+              src={`https://dearyouapi.moveto.kr/api/files/users/${pb.authStore.model.id}/${pb.authStore.model.avatar}?thumb=100x100`}
             />
           ) : (
             <div className="w-24 h-24 bg-slate-400 rounded-full"></div>

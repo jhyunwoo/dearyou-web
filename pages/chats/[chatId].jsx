@@ -10,9 +10,10 @@ import {
   PhotoIcon,
   ArrowSmallUpIcon,
 } from "@heroicons/react/24/outline";
+import getUploadedTime from "@/lib/getUploadedTime";
 
 export default function Chat() {
-  const { user, signOut } = usePbAuth();
+  const { user } = usePbAuth();
   const router = useRouter();
   const chatId = router.query["chatId"];
 
@@ -45,6 +46,7 @@ export default function Chat() {
     setReadRecord(record);
     setIsLoading(false);
   }
+
   useEffect(() => {
     if (!chatRecord) return;
     handleRead();
@@ -92,29 +94,6 @@ export default function Chat() {
     return;
   }
 
-  function getUploadedTime(time) {
-    let uploadedTime = Date.parse(time);
-    let currentTime = new Date().getTime();
-    let gap = currentTime - uploadedTime;
-    if (gap < 1000 * 60) {
-      return `${Math.floor(gap / 1000)}초 전`;
-    } else if (gap < 1000 * 60 * 10) {
-      return `${Math.floor(gap / (1000 * 60))}분 전`;
-    } else if (gap < 1000 * 60 * 60) {
-      return `${Math.floor(gap / (1000 * 60 * 10))}0분 전`;
-    } else if (gap < 1000 * 60 * 60 * 24) {
-      return `${Math.floor(gap / (1000 * 60 * 60))}시간 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 7) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24))}일 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 30) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 7))}주 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 365) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 30))}달 전`;
-    } else {
-      return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
-    }
-  }
-
   /** 상품 페이지로 이동하는 버튼 컴포넌트 */
   function ProductLink(props) {
     return (
@@ -122,7 +101,7 @@ export default function Chat() {
         <Link href={`/products/${props.link}`}>
           <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
             <Image
-              src={`https://dearu-pocket.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
+              src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
               width={255}
               height={255}
               alt="product image"
@@ -180,7 +159,7 @@ export default function Chat() {
                 ) : null}
                 {data.image.length > 0 ? (
                   <Image
-                    src={`https://dearu-pocket.moveto.kr/api/files/messages/${data.id}/${data.image}`}
+                    src={`https://dearyouapi.moveto.kr/api/files/messages/${data.id}/${data.image}`}
                     width={300}
                     height={300}
                     alt={data.id}

@@ -81,7 +81,7 @@ export default function Chats() {
                       height={100}
                       alt={"user avatar"}
                       className="w-16 h-16 rounded-full my-auto"
-                      src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["seller"].id}/${data.expand["seller"].avatar}?thumb=100x100`}
+                      src={`https://dearyouapi.moveto.kr/api/files/users/${data.expand["seller"].id}/${data.expand["seller"].avatar}?thumb=100x100`}
                     />
                   ) : (
                     <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>
@@ -92,7 +92,7 @@ export default function Chats() {
                     height={100}
                     alt={"user avatar"}
                     className="w-16 h-16 rounded-full my-auto"
-                    src={`https://dearu-pocket.moveto.kr/api/files/users/${data.expand["buyer"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
+                    src={`https://dearyouapi.moveto.kr/api/files/users/${data.expand["buyer"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
                   />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>

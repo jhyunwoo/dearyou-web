@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "dearu-pocket.moveto.kr",
+        hostname: "dearyouapi.moveto.kr",
         port: "",
         pathname: "/api/files/**",
       },

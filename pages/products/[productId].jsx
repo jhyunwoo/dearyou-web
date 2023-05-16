@@ -8,6 +8,7 @@ import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
+import getUploadedTime from "@/lib/getUploadedTime";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -25,29 +26,6 @@ export default function ProductDetail({ productId }) {
   const [userWish, setUserWish] = useState([]);
   const [addWish, setAddWish] = useState(false);
   const router = useRouter();
-
-  function getUploadedTime(time) {
-    let uploadedTime = Date.parse(time);
-    let currentTime = new Date().getTime();
-    let gap = currentTime - uploadedTime;
-    if (gap < 1000 * 60) {
-      return `${Math.floor(gap / 1000)}초 전`;
-    } else if (gap < 1000 * 60 * 10) {
-      return `${Math.floor(gap / (1000 * 60))}분 전`;
-    } else if (gap < 1000 * 60 * 60) {
-      return `${Math.floor(gap / (1000 * 60 * 10))}0분 전`;
-    } else if (gap < 1000 * 60 * 60 * 24) {
-      return `${Math.floor(gap / (1000 * 60 * 60))}시간 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 7) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24))}일 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 30) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 7))}주 전`;
-    } else if (gap < 1000 * 60 * 60 * 24 * 365) {
-      return `${Math.floor(gap / (1000 * 60 * 60 * 24 * 30))}달 전`;
-    } else {
-      return `${Math.floor(gap < 1000 * 60 * 60 * 24 * 365)}년 전`;
-    }
-  }
 
   useEffect(() => {
     async function getProductInfo() {
@@ -133,48 +111,6 @@ export default function ProductDetail({ productId }) {
     const updateChat = await pb.collection("chats").update(newChat.id, newChat);
 
     router.push(`/chats/${newChat.id}`);
-
-    /**
-    
-    
-    
-    if (checkChat.length > 0) { 
-      let newChat = checkChat[0];
-      
-      // Chats_read 데이터 업데이트
-      let newChatRead = newChat.expand.read;
-      newChatRead.unreadcount += 1;
-      newChatRead.unreaduser = productInfo.expand.seller.id;
-      const updateChatRead = await pb
-        .collection("chats_read")
-        .update(newChatRead.id, newChatRead);
-      router.push(`/chats/${checkChat[0].id}`);
-
-      // Chats 데이터 업데이트
-      newChat.messages.push(createDefaultMessage.id);
-      const updateChat = await pb
-        .collection("chats")
-        .update(checkChat[0].id, newChat);
-    }
-    else { 
-      // Chats_read (Chat별로 읽은 메시지 관리하는 Collection) 생성
-      const chatReadData = {
-        unreaduser: productInfo.expand.seller.id,
-        unreadcount: 1
-      };
-      const createNewChatRead = await pb.collection("chats_read").create(chatReadData);
-
-      // Chats 데이터 생성
-      const chatData = {
-        seller: productInfo.expand.seller.id,
-        buyer: pb.authStore.model.id,
-        messages: createDefaultMessage.id,
-        read: createNewChatRead.id
-      };
-      const createNewChat = await pb.collection("chats").create(chatData);
-
-    }
-    */
   }
 
   /** 나눔(판매) 마감 버튼 클릭 시 실행 */
@@ -199,10 +135,10 @@ export default function ProductDetail({ productId }) {
               {productInfo.photos.map((data, key) => (
                 <div
                   className={`w-screen h-96 sm:h-96 sm:w-96 snap-center  flex-shrink-0`}
+                  key={key}
                 >
                   <Image
-                    key={key}
-                    src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
+                    src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
                     width={300}
                     priority={true}
                     height={300}

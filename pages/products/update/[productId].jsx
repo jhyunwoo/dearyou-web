@@ -91,7 +91,7 @@ export default function UpdateProduct({ productId }) {
                     >
                       <Image
                         key={key}
-                        src={`https://dearu-pocket.moveto.kr/api/files/products/${productId}/${data}`}
+                        src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
                         width={300}
                         height={300}
                         priority={true}

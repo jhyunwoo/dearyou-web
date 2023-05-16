@@ -43,7 +43,7 @@ export default function MyProducts() {
                 }`}
               >
                 <Image
-                  src={`https://dearu-pocket.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
+                  src={`https://dearyouapi.moveto.kr/api/files/products/${data.id}/${data.photos[0]}?thumb=100x100`}
                   width={300}
                   height={300}
                   alt={data.name}
