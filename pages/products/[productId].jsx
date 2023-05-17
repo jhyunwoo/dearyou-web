@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import ProtectedPage from "@/components/ProtectedPage";
-import BottomBar from "@/components/BottomBar";
 import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import getUploadedTime from "@/lib/getUploadedTime";
+import { usePbAuth } from "@/contexts/AuthWrapper";
+import ProtectedPage from "@/components/ProtectedPage";
+import BottomBar from "@/components/BottomBar";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -131,25 +131,25 @@ export default function ProductDetail({ productId }) {
       <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
         {productInfo ? (
           <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
-            <div className="sm:h-96 sm:w-96 flex overflow-x-auto  scrollbar-hide snap-x">
+            <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
                 <div
-                  className={`w-screen h-96 sm:h-96 sm:w-96 snap-center  flex-shrink-0`}
+                  className={`w-screen h-80 sm:h-80 sm:w-96 snap-center  flex-shrink-0`}
                   key={key}
                 >
                   <Image
                     src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
                     width={300}
-                    priority={true}
                     height={300}
+                    priority={true}
                     alt={"Product Image"}
-                    className="object-cover w-screen h-96  sm:w-96"
+                    className="object-cover w-screen h-80 sm:w-80"
                   />
                 </div>
               ))}
             </div>
             <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
-              <div className="p-4 flex flex-col ">
+              <div className="p-4 sm:p-2 flex flex-col ">
                 <div className=" pb-2 border-b-2 flex justify-between items-center">
                   <div className="text-xl font-bold">{productInfo.name}</div>
                   <div className="flex items-center">
