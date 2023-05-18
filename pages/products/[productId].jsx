@@ -132,14 +132,15 @@ export default function ProductDetail({ productId }) {
       <BottomBar />
       <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
         {productInfo ? (
-          <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+          <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white">
+              {imageScroll}/{imageRef?.current?.children.length}</div>
             <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x" ref={imageRef} 
-              onScroll={() => {setImageScroll(Math.round(imageRef?.current.scrollLeft / imageRef?.current.offsetWidth) + 1);}}>
-              <div className="fixed right-2 top-2 p-2 rounded-2xl bg-slate-700 text-white">
-                {imageScroll}/{imageRef?.current?.children.length-1}</div>
+              onScroll={() => {setImageScroll(Math.round(imageRef?.current.scrollLeft / imageRef?.current.offsetWidth) + 1);
+              console.log(imageRef?.current.scrollLeft, imageRef?.current.offsetWidth)}}>
               {productInfo.photos.map((data, key) => (
                 <div
-                  className={`w-screen h-80 sm:h-80 sm:w-96 snap-center  flex-shrink-0`}
+                  className={`w-screen h-80 sm:h-80 sm:w-80 snap-center  flex-shrink-0`}
                   key={key}
                 >
                   <Image
@@ -153,7 +154,7 @@ export default function ProductDetail({ productId }) {
                 </div>
               ))}
             </div>
-            <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
+            <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
               <div className="p-4 sm:p-2 flex flex-col ">
                 <div className=" pb-2 border-b-2 flex justify-between items-center">
                   <div className="text-xl font-bold">{productInfo.name}</div>
