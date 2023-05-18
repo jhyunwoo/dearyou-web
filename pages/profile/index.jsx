@@ -1,4 +1,6 @@
 import BottomBar from "@/components/BottomBar";
+import HeadBar from "@/components/HeadBar";
+import Layout from "@/components/Layout";
 import ProtectedPage from "@/components/ProtectedPage";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
@@ -11,8 +13,9 @@ export default function Profile() {
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen bg-slate-50 p-4 flex flex-col">
-        <div className="bg-white w-full  p-4 flex flex-col">
+      <HeadBar title="프로필" />
+      <Layout>
+        <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           {pb?.authStore?.model?.avatar ? (
             <Image
               width={100}
@@ -58,6 +61,12 @@ export default function Profile() {
           >
             내 상품
           </Link>
+          <Link
+            href={"/profile/my-reviews"}
+            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+          >
+            거래 후기
+          </Link>
         </div>
         <Link
           href={"/privacy"}
@@ -65,7 +74,7 @@ export default function Profile() {
         >
           개인정보처리방침
         </Link>
-      </div>
+      </Layout>
     </ProtectedPage>
   );
 }

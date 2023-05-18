@@ -1,7 +1,6 @@
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
-import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useState } from "react";
 

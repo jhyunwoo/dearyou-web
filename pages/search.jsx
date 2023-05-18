@@ -6,6 +6,9 @@ import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Layout from "@/components/Layout";
+import HeadBar from "@/components/HeadBar";
+import ProductGrid from "@/components/ProductGrid";
 
 export default function Search() {
   const [searched, setSearched] = useState([]);
@@ -29,15 +32,18 @@ export default function Search() {
   function SearchBar() {
     return (
       <div className="w-full h-16  flex justify-center items-center ">
-        <form onSubmit={handleSearch} className="w-full flex m-4">
+        <form onSubmit={handleSearch} className="w-full flex">
           <input
             ref={searchInput}
             type="text"
             placeholder="검색어를 입력하세요..."
             autoFocus
-            className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-amber-700 focus:ring-offset-2	transition duration-200"
+            className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
           />
-          <button type="submit" className="m-1 ">
+          <button
+            type="submit"
+            className="text-orange-500 p-1 rounded-full m-1"
+          >
             <MagnifyingGlassIcon className="w-8 h-8 hover:scale-105 transition duration-200" />
           </button>
         </form>
@@ -51,7 +57,6 @@ export default function Search() {
       // props로 전달받은 검색 결과 목록이 비었을 때
       return (
         <h3 className="text-md text-slate-600 font-bold text-center mt-12">
-          <BottomBar />
           검색 결과가 없습니다.
         </h3>
       );
@@ -59,8 +64,7 @@ export default function Search() {
       // 검색 결과 표시하는 Ordered List
       return (
         <div>
-          <BottomBar />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4 gap-2">
+          <ProductGrid>
             {searched.map((data, key) => (
               <Link href={`/products/${data.id}`} key={key}>
                 <div
@@ -89,8 +93,7 @@ export default function Search() {
                 </div>
               </Link>
             ))}
-          </div>
-          <div className="w-full h-16"></div>
+          </ProductGrid>
         </div>
       );
     }
@@ -98,8 +101,12 @@ export default function Search() {
 
   return (
     <ProtectedPage>
-      <SearchBar />
-      <ItemList data={searched} />
+      <Layout>
+        <HeadBar title={"검색"} />
+        <SearchBar />
+        <ItemList data={searched} />
+        <BottomBar />
+      </Layout>
     </ProtectedPage>
   );
 }

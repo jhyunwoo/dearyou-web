@@ -6,9 +6,11 @@ import Link from "next/link";
 import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 import Image from "next/image";
+import HeadBar from "@/components/HeadBar";
+import Layout from "@/components/Layout";
 
 export default function Chats() {
-  const { user, signOut } = usePbAuth();
+  const { user } = usePbAuth();
   const router = useRouter();
   const [chatsList, setChatsList] = useState([]);
 
@@ -57,12 +59,12 @@ export default function Chats() {
   return (
     <ProtectedPage>
       <BottomBar />
-      <div className="w-full min-h-screen p-4 bg-slate-50">
-        <div className="font-semibold mb-3 text-lg">채팅</div>
+      <HeadBar title="채팅" />
+      <Layout>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {chatsList.length === 0 ? (
             <div className="mx-auto mt-12 sm:col-span-2 lg:col-span-3 xl:col-span-4">
-              드려유에서 물건을 거래해 보세요.
+              아직 채팅이 없습니다.
             </div>
           ) : (
             ""
@@ -117,8 +119,7 @@ export default function Chats() {
             </Link>
           ))}
         </div>
-        <div className="w-full h-16"></div>
-      </div>
+      </Layout>
     </ProtectedPage>
   );
 }

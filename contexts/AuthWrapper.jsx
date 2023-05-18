@@ -42,40 +42,40 @@ const AuthWrapper = ({ children }) => {
     setUser({ id, name, email, username, studentId, avatarUrl });
   };
 
-  const googleSignIn = () => {
-    signOut();
-    localStorage.setItem("provider", JSON.stringify(googleAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
-    const url = googleAuthProvider?.authUrl + redirectUrl;
+  // const googleSignIn = () => {
+  //   signOut();
+  //   localStorage.setItem("provider", JSON.stringify(googleAuthProvider));
+  //   const redirectUrl = `${location.origin}/signin`;
+  //   const url = googleAuthProvider?.authUrl + redirectUrl;
 
-    router.push(url);
-  };
-  const appleSignIn = () => {
-    signOut();
-    localStorage.setItem("provider", JSON.stringify(appleAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
-    const url = appleAuthProvider?.authUrl + redirectUrl;
+  //   router.push(url);
+  // };
+  // const appleSignIn = () => {
+  //   signOut();
+  //   localStorage.setItem("provider", JSON.stringify(appleAuthProvider));
+  //   const redirectUrl = `${location.origin}/signin`;
+  //   const url = appleAuthProvider?.authUrl + redirectUrl;
 
-    router.push(url);
-  };
+  //   router.push(url);
+  // };
 
-  const githubSignIn = () => {
-    signOut();
-    localStorage.setItem("provider", JSON.stringify(githubAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
-    const url = githubAuthProvider?.authUrl + redirectUrl;
+  // const githubSignIn = () => {
+  //   signOut();
+  //   localStorage.setItem("provider", JSON.stringify(githubAuthProvider));
+  //   const redirectUrl = `${location.origin}/signin`;
+  //   const url = githubAuthProvider?.authUrl + redirectUrl;
 
-    router.push(url);
-  };
+  //   router.push(url);
+  // };
 
-  const kakaoSignIn = () => {
-    signOut();
-    localStorage.setItem("provider", JSON.stringify(kakaoAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
-    const url = kakaoAuthProvider?.authUrl + redirectUrl;
+  // const kakaoSignIn = () => {
+  //   signOut();
+  //   localStorage.setItem("provider", JSON.stringify(kakaoAuthProvider));
+  //   const redirectUrl = `${location.origin}/signin`;
+  //   const url = kakaoAuthProvider?.authUrl + redirectUrl;
 
-    router.push(url);
-  };
+  //   router.push(url);
+  // };
 
   const signOut = () => {
     setUser(null);
@@ -86,12 +86,12 @@ const AuthWrapper = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        googleSignIn,
-        githubSignIn,
+        // googleSignIn,
+        // githubSignIn,
         setUserData,
         signOut,
-        kakaoSignIn,
-        appleSignIn,
+        // kakaoSignIn,
+        // appleSignIn,
       }}
     >
       {children}
