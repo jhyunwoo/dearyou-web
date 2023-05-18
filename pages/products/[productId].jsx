@@ -24,7 +24,6 @@ export const getServerSideProps = async (context) => {
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
   const [userWish, setUserWish] = useState([]);
-  const [addWish, setAddWish] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,13 +47,26 @@ export default function ProductDetail({ productId }) {
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
   const currentUser = usePbAuth().user;
 
-  async function addToWishlist() {
+  async function controlWish() {
     try {
-      setUserWish([...userWish, productId]);
-      const originWishes = userWish;
-      const updatedUser = await pb.collection("users").update(currentUser.id, {
-        wishes: [...originWishes, productId],
-      });
+      if (userWish.includes(productId)) {
+        const originWishes = userWish;
+        const updatedWishes = originWishes.filter((wish) => wish !== productId);
+        setUserWish(updatedWishes);
+        const updatedUser = await pb
+          .collection("users")
+          .update(pb.authStore.model?.id, {
+            wishes: updatedWishes,
+          });
+      } else {
+        setUserWish([...userWish, productId]);
+        const originWishes = userWish;
+        const updatedUser = await pb
+          .collection("users")
+          .update(currentUser.id, {
+            wishes: [...originWishes, productId],
+          });
+      }
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
     }
@@ -183,8 +195,8 @@ export default function ProductDetail({ productId }) {
                   </div>
                   <div>종류: {productInfo.type}</div>
                 </div>
-                <button onClick={addToWishlist}>
-                  {userWish?.includes(productId) || addWish ? (
+                <button onClick={controlWish}>
+                  {userWish?.includes(productId) ? (
                     <HeartIcon className="w-8 h-8 text-red-500" />
                   ) : (
                     <HeartIcon className="w-8 h-8 text-red-100" />
@@ -194,7 +206,11 @@ export default function ProductDetail({ productId }) {
               {currentUser?.id === productInfo?.expand?.seller?.id ? (
                 <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
                   <button
-                    onClick={closeProduct}
+                    onClick={() =>
+                      router.push(
+                        `/products/review/${productInfo.expand.seller.id}`,
+                      )
+                    }
                     className={`p-2 px-6 rounded-full ${
                       productInfo?.soldDate
                         ? "bg-gray-400"
