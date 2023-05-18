@@ -47,15 +47,14 @@ export default function ProductDetail({ productId }) {
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
   const currentUser = usePbAuth().user;
+
   async function addToWishlist() {
     try {
-      const originWishes = await pb.collection("users").getOne(currentUser.id, {
-        expand: "wishes",
-      });
+      setUserWish([...userWish, productId]);
+      const originWishes = userWish;
       const updatedUser = await pb.collection("users").update(currentUser.id, {
-        wishes: [...originWishes.wishes, productId],
+        wishes: [...originWishes, productId],
       });
-      setAddWish(true);
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
     }
@@ -125,6 +124,7 @@ export default function ProductDetail({ productId }) {
       console.error("Error closing the product:", error);
     }
   }
+
   return (
     <ProtectedPage>
       <BottomBar />
@@ -153,7 +153,7 @@ export default function ProductDetail({ productId }) {
                 <div className=" pb-2 border-b-2 flex justify-between items-center">
                   <div className="text-xl font-bold">{productInfo.name}</div>
                   <div className="flex items-center">
-                    <div className="flex flex-col mr-2">
+                    <div className="flex flex-col mr-2 items-end font-medium">
                       <div className="text-sm">
                         {productInfo.expand.seller.name}
                       </div>
