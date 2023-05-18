@@ -213,9 +213,7 @@ export default function ProductDetail({ productId }) {
                   <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
                     <button
                       onClick={() =>
-                        router.push(
-                          `/products/review/${productInfo.expand.seller.id}`,
-                        )
+                        router.push(`/products/review/${productInfo.id}`)
                       }
                       className={`p-2 px-6 rounded-full ${
                         productInfo?.soldDate
