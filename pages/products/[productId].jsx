@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +25,8 @@ export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
   const [userWish, setUserWish] = useState([]);
   const [addWish, setAddWish] = useState(false);
+  const [imageScroll, setImageScroll] = useState(1);
+  const imageRef = useRef();
   const router = useRouter();
 
   useEffect(() => {
@@ -131,7 +133,10 @@ export default function ProductDetail({ productId }) {
       <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
         {productInfo ? (
           <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
-            <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x">
+            <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x" ref={imageRef} 
+              onScroll={() => {setImageScroll(Math.round(imageRef?.current.scrollLeft / imageRef?.current.offsetWidth) + 1);}}>
+              <div className="fixed right-2 top-2 p-2 rounded-2xl bg-slate-700 text-white">
+                {imageScroll}/{imageRef?.current?.children.length-1}</div>
               {productInfo.photos.map((data, key) => (
                 <div
                   className={`w-screen h-80 sm:h-80 sm:w-96 snap-center  flex-shrink-0`}
