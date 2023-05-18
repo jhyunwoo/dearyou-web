@@ -6,6 +6,9 @@ import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import HeadBar from "@/components/HeadBar";
+import Layout from "@/components/Layout";
+import ProductGrid from "@/components/ProductGrid";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -37,16 +40,13 @@ export default function Home() {
       <BottomBar />
       <Link
         href={"/products/create-product"}
-        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-600 transition duration-200"
+        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-400 transition duration-200 shadow-lg shadow-amber-500 hover:shadow-amber-400"
       >
         <PlusIcon className="w-8 h-8 text-white" />
       </Link>
-      <div className="w-full bg-slate-50 p-4 flex justify-start fixed top-0 right-0 left-0">
-        <div className="font-bold text-xl">드려유</div>
-      </div>
-      <div className="w-full h-12"></div>
-      <div className="w-full min-h-screen bg-slate-50 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4 gap-2">
+      <HeadBar title="드려유" />
+      <Layout>
+        <ProductGrid>
           {products.map((data, key) => (
             <Link href={`/products/${data.id}`} key={key}>
               <div
@@ -75,10 +75,12 @@ export default function Home() {
               </div>
             </Link>
           ))}
-          <div ref={ref} className="h-8 w-full  sm:col-span-2" />
-        </div>
-        <div className="w-full h-16"></div>
-      </div>
+          <div
+            ref={ref}
+            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+          />
+        </ProductGrid>
+      </Layout>
     </ProtectedPage>
   );
 }
