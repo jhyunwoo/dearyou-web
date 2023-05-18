@@ -24,9 +24,13 @@ export default function MyReviews() {
 
   useEffect(() => {
     async function getChatedUsers() {
+      let userList = [];
       const record = await pb
         .collection("users")
-        .getOne(pb.authStore.model?.id, { expand: "chats(seller)" });
+        .getOne(pb.authStore.model?.id, {
+          expand: "chats(buyer).seller, chats(seller).buyer",
+        });
+
       console.log(record);
     }
     getChatedUsers();
