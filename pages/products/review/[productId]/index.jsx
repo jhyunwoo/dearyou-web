@@ -32,6 +32,69 @@ export default function MyReviews() {
       };
 
       const record = await pb.collection("reviews").create(reviewData);
+      const buyerINfo = await pb.collection("users").getOne(selectedUser.id);
+      const updatedBuyer = await pb
+        .collection("users")
+        .update(selectedUser.id, { dignity: buyerINfo.dignity + rating });
+      const closeProduct = await pb
+        .collection("products")
+        .update(productId, { soldDate: new Date(), buyer: selectedUser.id });
+      console.log(closeProduct);
+
+      const productInfo = await pb
+        .collection("products")
+        .getOne(productId, { expand: "seller, buyer" });
+      const checkChat = await pb.collection("chats").getFullList({
+        // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
+        filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
+                (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
+        expand: "read",
+      });
+
+      let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
+      if (checkChat.length > 0) {
+        // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
+        const newChatRead = await pb
+          .collection("chats_read")
+          .update(checkChat[0].read, {
+            unreaduser: productInfo.expand.seller.id,
+            unreadcount: checkChat[0].expand.read.unreadcount + 1,
+          });
+        newChat = checkChat[0];
+      } else {
+        // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
+        let newChatRead = await pb.collection("chats_read").create({
+          unreaduser: productInfo.expand.seller.id,
+          unreadcount: 1,
+        });
+        newChat = await pb.collection("chats").create({
+          seller: productInfo.expand.seller.id,
+          buyer: pb.authStore.model.id,
+          read: newChatRead.id,
+        });
+        newChatRead.chat = newChat.id;
+        await pb.collection("chats_read").update(newChatRead.id, newChatRead);
+      }
+
+      // 메시지 데이터 create
+      const defaultMessage = {
+        text: `리뷰를 남겨주세요.`,
+        pdlink: closeProduct.id,
+        pdthumblink: closeProduct.photos[0],
+        owner: pb.authStore.model.id,
+      };
+
+      const createDefaultMessage = await pb
+        .collection("messages")
+        .create(defaultMessage);
+
+      // 채팅 데이터 update
+      newChat.messages.push(createDefaultMessage.id);
+      const updateChat = await pb
+        .collection("chats")
+        .update(newChat.id, newChat);
+
+      router.push("/");
     } else {
       alert("후기를 입력해주세요.");
     }
@@ -46,16 +109,15 @@ export default function MyReviews() {
           expand: "chats(buyer).seller, chats(seller).buyer",
         });
 
-      if(record.expand["chats(buyer)"]){
+      if (record.expand["chats(buyer)"]) {
         for (let i = 0; i < record.expand["chats(buyer)"].length; i++) {
           userList.push(record.expand["chats(buyer)"][i].expand.seller);
         }
       }
-      if(record.expand["chats(seller)"]){
+      if (record.expand["chats(seller)"]) {
         for (let i = 0; i < record.expand["chats(seller)"].length; i++) {
           userList.push(record.expand["chats(seller)"][i].expand.buyer);
         }
-
       }
       userList = userList.slice(0, 10);
       setChatedUsers(userList);
