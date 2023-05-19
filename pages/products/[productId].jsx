@@ -9,6 +9,7 @@ import getUploadedTime from "@/lib/getUploadedTime";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
+import Layout from "@/components/Layout";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -25,8 +26,6 @@ export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
   const [userWish, setUserWish] = useState([]);
   const [addWish, setAddWish] = useState(false);
-  const [imageScroll, setImageScroll] = useState(1);
-  const imageRef = useRef();
   const router = useRouter();
 
   useEffect(() => {
@@ -34,7 +33,11 @@ export default function ProductDetail({ productId }) {
       const record = await pb.collection("products").getOne(productId, {
         expand: "seller",
       });
-      setProductInfo(record);
+      if (record.isConfirmed) {
+        setProductInfo(record);
+      } else {
+        setProductInfo(false);
+      }
     }
     async function getUserWish() {
       const userInfo = await pb
@@ -49,15 +52,27 @@ export default function ProductDetail({ productId }) {
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
   const currentUser = usePbAuth().user;
-  async function addToWishlist() {
+
+  async function controlWish() {
     try {
-      const originWishes = await pb.collection("users").getOne(currentUser.id, {
-        expand: "wishes",
-      });
-      const updatedUser = await pb.collection("users").update(currentUser.id, {
-        wishes: [...originWishes.wishes, productId],
-      });
-      setAddWish(true);
+      if (userWish.includes(productId)) {
+        const originWishes = userWish;
+        const updatedWishes = originWishes.filter((wish) => wish !== productId);
+        setUserWish(updatedWishes);
+        const updatedUser = await pb
+          .collection("users")
+          .update(pb.authStore.model?.id, {
+            wishes: updatedWishes,
+          });
+      } else {
+        setUserWish([...userWish, productId]);
+        const originWishes = userWish;
+        const updatedUser = await pb
+          .collection("users")
+          .update(currentUser.id, {
+            wishes: [...originWishes, productId],
+          });
+      }
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
     }
@@ -127,43 +142,16 @@ export default function ProductDetail({ productId }) {
       console.error("Error closing the product:", error);
     }
   }
-  
-  //이미지 넘김 버튼, 현재 이미지 번호가 담긴 UI
-  function ImageUI() {
-    return (
-      <div className="absolute w-full sm:w-80 opacity-60 hover:opacity-100">
-        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white">
-          {imageScroll}/{imageRef?.current?.children.length}</div>
-          {imageScroll < imageRef?.current?.children.length ? 
-          (<ChevronRightIcon className="absolute m-2 right-0 top-36 white w-8 h-8" onClick={() => {
-            imageRef.current.scrollTo({
-              left: (imageScroll) * imageRef.current.offsetWidth,
-              behavior: 'smooth',
-            });
-            }}/>) : null}
-          {imageScroll > 1 ?
-          (<ChevronLeftIcon className="absolute m-2 left-0 top-36 white w-8 h-8"onClick={() => {
-            imageRef.current.scrollTo({
-              left: (imageScroll-2) * imageRef.current.offsetWidth,
-              behavior: 'smooth',
-            });      
-            }}/>) : null}
-      </div>
-    )
-  }
   return (
     <ProtectedPage>
       <BottomBar />
       <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
         {productInfo ? (
-          <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
-            <ImageUI/>
-            <div className="bg-white sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x" ref={imageRef} 
-              onScroll={() => {setImageScroll(Math.round(imageRef?.current.scrollLeft / imageRef?.current.offsetWidth) + 1);
-              console.log(imageRef?.current.scrollLeft, imageRef?.current.offsetWidth)}}>
+          <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x">
               {productInfo.photos.map((data, key) => (
                 <div
-                  className={`w-screen h-80 sm:h-80 sm:w-80 snap-center  flex-shrink-0`}
+                  className={`w-screen h-80 sm:h-80 sm:w-96 snap-center  flex-shrink-0`}
                   key={key}
                 >
                   <Image
@@ -176,9 +164,8 @@ export default function ProductDetail({ productId }) {
                   />
                 </div>
               ))}
-              
             </div>
-            <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
+            <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
               <div className="p-4 sm:p-2 flex flex-col ">
                 <div className=" pb-2 border-b-2 flex justify-between items-center">
                   <div className="text-xl font-bold">{productInfo.name}</div>
@@ -192,71 +179,80 @@ export default function ProductDetail({ productId }) {
                       </div>
                     </div>
 
-                    {currentUser?.id === productInfo?.expand?.seller?.id ? (
-                      <Link href={`/products/update/${productId}`}>
-                        <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
-                      </Link>
-                    ) : null}
+                      {currentUser?.id === productInfo?.expand?.seller?.id ? (
+                        <Link href={`/products/update/${productId}`}>
+                          <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
+                        </Link>
+                      ) : null}
+                    </div>
                   </div>
+                  <div className="mt-2 flex flex-col">
+                    <div className="ml-auto">
+                      {getUploadedTime(productInfo.created)}
+                    </div>
+                    <div className="ml-auto">
+                      {productInfo.soldDate
+                        ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
+                        : "나눔 중"}
+                    </div>
+                    <div className="font-medium text-lg my-2">
+                      {productInfo.explain}
+                    </div>
+                    <div>종류: {productInfo.type}</div>
+                  </div>
+                  <button onClick={controlWish}>
+                    {userWish?.includes(productId) ? (
+                      <HeartIcon className="w-8 h-8 text-red-500" />
+                    ) : (
+                      <HeartIcon className="w-8 h-8 text-red-100" />
+                    )}
+                  </button>
                 </div>
-                <div className="mt-2 flex flex-col">
-                  <div className="ml-auto">
-                    {getUploadedTime(productInfo.created)}
+                {currentUser?.id === productInfo?.expand?.seller?.id ? (
+                  <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                    <button
+                      onClick={() =>
+                        router.push(`/products/review/${productInfo.id}`)
+                      }
+                      className={`p-2 px-6 rounded-full ${
+                        productInfo?.soldDate
+                          ? "bg-gray-400"
+                          : "bg-blue-400 hover:bg-blue-500 transition duration-200"
+                      }`}
+                      disabled={productInfo.soldDate ? true : false}
+                    >
+                      나눔 완료
+                    </button>
                   </div>
-                  <div className="ml-auto">
-                    {productInfo.soldDate
-                      ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
-                      : "나눔 중"}
+                ) : (
+                  <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+                    <button
+                      onClick={goToChat}
+                      className={`p-2 px-6 rounded-full ${
+                        productInfo?.soldDate
+                          ? "bg-gray-400"
+                          : "bg-amber-400 hover:bg-amber-500 transition duration-200"
+                      }`}
+                      disabled={productInfo.soldDate ? true : false}
+                    >
+                      판매자와 채팅
+                    </button>
                   </div>
-                  <div className="font-medium text-lg my-2">
-                    {productInfo.explain}
-                  </div>
-                  <div>종류: {productInfo.type}</div>
-                </div>
-                <button onClick={addToWishlist}>
-                  {userWish?.includes(productId) || addWish ? (
-                    <HeartIcon className="w-8 h-8 text-red-500" />
-                  ) : (
-                    <HeartIcon className="w-8 h-8 text-red-100" />
-                  )}
-                </button>
+                )}
+                <div className="w-full h-16 sm:h-0"></div>
               </div>
-              {currentUser?.id === productInfo?.expand?.seller?.id ? (
-                <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                  <button
-                    onClick={closeProduct}
-                    className={`p-2 px-6 rounded-full ${
-                      productInfo?.soldDate
-                        ? "bg-gray-400"
-                        : "bg-blue-400 hover:bg-blue-500 transition duration-200"
-                    }`}
-                    disabled={productInfo.soldDate ? true : false}
-                  >
-                    나눔 완료
-                  </button>
-                </div>
-              ) : (
-                <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                  <button
-                    onClick={goToChat}
-                    className={`p-2 px-6 rounded-full ${
-                      productInfo?.soldDate
-                        ? "bg-gray-400"
-                        : "bg-amber-400 hover:bg-amber-500 transition duration-200"
-                    }`}
-                    disabled={productInfo.soldDate ? true : false}
-                  >
-                    판매자와 채팅
-                  </button>
-                </div>
-              )}
-              <div className="w-full h-16 sm:h-0"></div>
             </div>
+          ) : (
+            ""
+          )}
+        </div>
+      ) : (
+        <Layout>
+          <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+            <div>정보가 없습니다.</div>
           </div>
-        ) : (
-          ""
-        )}
-      </div>
+        </Layout>
+      )}
     </ProtectedPage>
   );
 }

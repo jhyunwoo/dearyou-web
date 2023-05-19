@@ -62,7 +62,7 @@ export default function Profile() {
             내 상품
           </Link>
           <Link
-            href={"/profile/my-products"}
+            href={"/profile/my-reviews"}
             className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
           >
             거래 후기

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import { useRouter } from "next/router";
