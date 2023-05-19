@@ -46,11 +46,15 @@ export default function MyReviews() {
           expand: "chats(buyer).seller, chats(seller).buyer",
         });
 
-      for (let i = 0; i < record.expand["chats(buyer)"].length; i++) {
-        userList.push(record.expand["chats(buyer)"][i].expand.seller);
+      if(record.expand["chats(buyer)"]){
+        for (let i = 0; i < record.expand["chats(buyer)"].length; i++) {
+          userList.push(record.expand["chats(buyer)"][i].expand.seller);
+        }
       }
-      for (let i = 0; i < record.expand["chats(seller)"].length; i++) {
-        userList.push(record.expand["chats(seller)"][i].expand.buyer);
+      if(record.expand["chats(seller)"]){
+        for (let i = 0; i < record.expand["chats(seller)"].length; i++) {
+          userList.push(record.expand["chats(seller)"][i].expand.buyer);
+        }
       }
       userList = userList.slice(0, 10);
       setChatedUsers(userList);
