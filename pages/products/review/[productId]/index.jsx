@@ -55,6 +55,7 @@ export default function MyReviews() {
         for (let i = 0; i < record.expand["chats(seller)"].length; i++) {
           userList.push(record.expand["chats(seller)"][i].expand.buyer);
         }
+
       }
       userList = userList.slice(0, 10);
       setChatedUsers(userList);

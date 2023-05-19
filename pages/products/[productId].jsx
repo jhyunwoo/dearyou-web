@@ -28,6 +28,7 @@ export default function ProductDetail({ productId }) {
   const [addWish, setAddWish] = useState(false);
   const [imageScroll, setImageScroll] = useState(1);
   const imageRef = useRef();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -206,8 +207,8 @@ export default function ProductDetail({ productId }) {
                       </div>
                       <div className="text-sm">
                         {productInfo.expand.seller.studentId}
+
                       </div>
-                    </div>
 
                       {currentUser?.id === productInfo?.expand?.seller?.id ? (
                         <Link href={`/products/update/${productId}`}>
@@ -272,7 +273,9 @@ export default function ProductDetail({ productId }) {
                 <div className="w-full h-16 sm:h-0"></div>
               </div>
             </div>
+
           ) : ""}
+
         </div>
       ) : (
         <Layout>
@@ -281,7 +284,9 @@ export default function ProductDetail({ productId }) {
           </div>
         </Layout>
       )}
+
       <BottomBar />
+
     </ProtectedPage>
   );
 }
