@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { usePbAuth } from "../../../contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
+import ProductImageView from "@/components/ProductImageView";
+import ProductInfoForm from "@/components/ProductInfoForm";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -19,13 +21,6 @@ export const getServerSideProps = async (context) => {
 };
 
 export default function UpdateProduct({ productId }) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-
   const { user, signOut } = usePbAuth();
   const [productInfo, setProductInfo] = useState("");
   const useWindowSize = () => {
@@ -84,61 +79,9 @@ export default function UpdateProduct({ productId }) {
           {productInfo ? (
             <div className="sm:flex sm:flex-row">
               <div className="flex flex-col sm:w-1/2">
-                <div className="flex overflow-x-auto space-x-8 scrollbar-hide snap-x">
-                  {productInfo.photos.map((data, key) => (
-                    <div
-                      className={`w-[${windows.width}px] h-[${windows.width}px] sm:w-96 snap-center my-auto flex-shrink-0`}
-                    >
-                      <Image
-                        key={key}
-                        src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
-                        width={300}
-                        height={300}
-                        priority={true}
-                        alt={"Product Image"}
-                        className="w-screen"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <ProductImageView productInfo={productInfo} productId={productId} />
               </div>
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="p-4 flex flex-col sm:w-1/2"
-              >
-                <div className="text-lg font-semibold">제품명</div>
-                <input
-                  {...register("name", { required: true })}
-                  defaultValue={productInfo?.name}
-                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
-                  maxLength={50}
-                />
-                <div className="text-lg font-semibold">
-                  설명{" "}
-                  <span className="text-gray-400 text-sm">(최대 300자)</span>
-                </div>
-                <textarea
-                  {...register("explain", { required: true })}
-                  defaultValue={productInfo?.explain}
-                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
-                  maxLength={300}
-                />
-                {errors.exampleRequired && <span>This field is required</span>}
-                <div className="text-lg font-semibold">종류</div>
-                <input
-                  {...register("type", { required: true })}
-                  defaultValue={productInfo?.type}
-                  className="p-2 rounded-lg outline-none bg-white ring-2 ring-amber-300 my-2"
-                  maxLength={50}
-                />
-
-                <button
-                  className="bg-amber-400 font-bold mt-4 p-2 px-6 rounded-full text-white"
-                  type="submit"
-                >
-                  확인
-                </button>
-              </form>
+              <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
             </div>
           ) : null}
         </div>
