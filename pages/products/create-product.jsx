@@ -24,6 +24,11 @@ export default function CreateProduct() {
     const imageLists = event.target.files;
     let imageUrlLists = [...showImages];
 
+    if(showImages.length + imageLists.length > 10){
+      alert('이미지는 최대 10개까지 업로드할 수 있습니다!');
+      return;
+    }
+
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push({ id: (i + refImages.length), file: currentImageUrl });
