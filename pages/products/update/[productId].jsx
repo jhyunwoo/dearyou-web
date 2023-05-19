@@ -8,6 +8,7 @@ import { usePbAuth } from "../../../contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
 import ProductImageView from "@/components/ProductImageView";
 import ProductInfoForm from "@/components/ProductInfoForm";
+import Loading from "@/components/Loading";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;
@@ -74,17 +75,16 @@ export default function UpdateProduct({ productId }) {
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
       <ProtectedPage>
-        <div className="w-screen min-h-screen bg-slate-50">
+        {isLoading ? <Loading /> : ""}
           <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
           {productInfo ? (
-            <div className="sm:flex sm:flex-row">
-              <div className="flex flex-col sm:w-1/2">
+            <div className="sm:flex sm:flex-row  sm:justify-center">
+              <div className="sm:m-4">
                 <ProductImageView productInfo={productInfo} productId={productId} />
               </div>
               <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
             </div>
           ) : null}
-        </div>
       </ProtectedPage>
     );
   } else {

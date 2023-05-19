@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 
 
 // 등록 가능한 물품 종류
-const typeOptions = ['교과서', '문제집/인강교재', '기타'];
+const typeOptions = ['교과서', '문제집 / 인강 교재', '교양서', '기타'];
 
 export default function ProductInfoForm(props){
     const {
