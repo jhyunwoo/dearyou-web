@@ -21,6 +21,8 @@ export default function CreateProduct() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const typeOptions = ['교과서', '문제집/인강교재', '기타'];
+
   // 이미지 상대경로 저장
   const handleAddImages = (event) => {
     const imageLists = event.target.files;
@@ -135,11 +137,12 @@ export default function CreateProduct() {
               />
               {errors.exampleRequired && <span>This field is required</span>}
               <div className="text-lg font-semibold">종류</div>
-              <input
+              <select 
                 {...register("type", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
-                maxLength={50}
-              />
+                className = "p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2">
+                { typeOptions.map((item) => (
+                  <option value={item}>{item}</option>))}
+              </select>
 
               <button
                 className="bg-amber-400 hover:bg-amber-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
