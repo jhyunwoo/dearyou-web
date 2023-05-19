@@ -19,9 +19,11 @@ export default function Home() {
 
   const fetch = useCallback(async () => {
     try {
-      const data = await pb
-        .collection("products")
-        .getList(page.current, 40, { expand: "seller", sort: "-created" });
+      const data = await pb.collection("products").getList(page.current, 40, {
+        expand: "seller",
+        sort: "-created",
+        filter: "isConfirmed=True",
+      });
       setProducts((prevPosts) => [...prevPosts, ...data.items]);
       setHasNextPage(data.items.length === 40);
       if (data.items.length) {
