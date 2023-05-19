@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import getUploadedTime from "@/lib/getUploadedTime";
@@ -25,6 +25,10 @@ export const getServerSideProps = async (context) => {
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("");
   const [userWish, setUserWish] = useState([]);
+  const [addWish, setAddWish] = useState(false);
+  const [imageScroll, setImageScroll] = useState(1);
+  const imageRef = useRef();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -141,43 +145,69 @@ export default function ProductDetail({ productId }) {
       console.error("Error closing the product:", error);
     }
   }
-
+    
+  //이미지 넘김 버튼, 현재 이미지 번호가 담긴 UI
+  function ImageUI() {
+    return (
+      <div className="absolute w-full sm:w-80 opacity-60 hover:opacity-100">
+        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white">
+          {imageScroll}/{imageRef?.current?.children.length}</div>
+          {imageScroll < imageRef?.current?.children.length ? 
+          (<ChevronRightIcon className="absolute m-2 right-0 top-36 white w-8 h-8" onClick={() => {
+            imageRef.current.scrollTo({
+              left: (imageScroll) * imageRef.current.offsetWidth,
+              behavior: 'smooth',
+            });
+            }}/>) : null}
+          {imageScroll > 1 ?
+          (<ChevronLeftIcon className="absolute m-2 left-0 top-36 white w-8 h-8"onClick={() => {
+            imageRef.current.scrollTo({
+              left: (imageScroll-2) * imageRef.current.offsetWidth,
+              behavior: 'smooth',
+            });      
+            }}/>) : null}
+      </div>
+    )
+  }
   return (
     <ProtectedPage>
-      <BottomBar />
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
-          {productInfo ? (
-            <div className="sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
-              <div className="sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x">
-                {productInfo.photos.map((data, key) => (
-                  <div
-                    className={`w-screen h-80 sm:h-80 sm:w-96 snap-center  flex-shrink-0`}
-                    key={key}
-                  >
-                    <Image
-                      src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
-                      width={300}
-                      height={300}
-                      priority={true}
-                      alt={"Product Image"}
-                      className="object-cover w-screen h-80 sm:w-80"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
-                <div className="p-4 sm:p-2 flex flex-col ">
-                  <div className=" pb-2 border-b-2 flex justify-between items-center">
-                    <div className="text-xl font-bold">{productInfo.name}</div>
-                    <div className="flex items-center">
-                      <div className="flex flex-col mr-2 items-end font-medium">
-                        <div className="text-sm">
-                          {productInfo.expand.seller.name}
-                        </div>
-                        <div className="text-sm">
-                          {productInfo.expand.seller.studentId}
-                        </div>
+      <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
+        {productInfo ? (
+          <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <ImageUI/>
+            <div className="bg-white sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x" ref={imageRef} 
+              onScroll={() => {
+                setImageScroll(Math.round(imageRef?.current.scrollLeft / imageRef?.current.offsetWidth) + 1);
+              }}>
+              {productInfo.photos.map((data, key) => (
+                <div
+                  className={`w-screen h-80 sm:h-80 sm:w-80 snap-center  flex-shrink-0`}
+                  key={key}
+                >
+                  <Image
+                    src={`https://dearyouapi.moveto.kr/api/files/products/${productId}/${data}`}
+                    width={300}
+                    height={300}
+                    priority={true}
+                    alt={"Product Image"}
+                    className="object-cover w-screen h-80 sm:w-80"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
+              <div className="p-4 sm:p-2 flex flex-col ">
+                <div className=" pb-2 border-b-2 flex justify-between items-center">
+                  <div className="text-xl font-bold">{productInfo.name}</div>
+                  <div className="flex items-center">
+                    <div className="flex flex-col mr-2">
+                      <div className="text-sm">
+                        {productInfo.expand.seller.name}
+                      </div>
+                      <div className="text-sm">
+                        {productInfo.expand.seller.studentId}
+
                       </div>
 
                       {currentUser?.id === productInfo?.expand?.seller?.id ? (
@@ -243,9 +273,9 @@ export default function ProductDetail({ productId }) {
                 <div className="w-full h-16 sm:h-0"></div>
               </div>
             </div>
-          ) : (
-            ""
-          )}
+
+          ) : ""}
+
         </div>
       ) : (
         <Layout>
@@ -254,6 +284,9 @@ export default function ProductDetail({ productId }) {
           </div>
         </Layout>
       )}
+
+      <BottomBar />
+
     </ProtectedPage>
   );
 }
