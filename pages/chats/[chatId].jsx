@@ -114,6 +114,26 @@ export default function Chat() {
     );
   }
 
+  function ReviewLink(props) {
+    console.log(props);
+    return (
+      <div className="mx-3">
+        <Link href={`/products/review/${props.link}/${userOther.id}`}>
+          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
+            <Image
+              src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
+              width={255}
+              height={255}
+              alt="product image"
+              className="p-2 rounded-xl"
+            />
+            <div className="pb-2 font-bold">리뷰 남기러 가기</div>
+          </div>
+        </Link>
+      </div>
+    );
+  }
+
   function ChatHistory() {
     //채팅 창 컴포넌트
     const messages = chatRecord?.expand["messages"];
@@ -154,8 +174,11 @@ export default function Chat() {
                   </div>
                 </div>
 
-                {data?.pdlink ? (
+                {data?.pdlink && !data?.text?.includes("리뷰") ? (
                   <ProductLink link={data?.pdlink} thumb={data?.pdthumblink} />
+                ) : null}
+                {data?.pdlink && data?.text?.includes("리뷰") ? (
+                  <ReviewLink link={data?.pdlink} thumb={data?.pdthumblink} />
                 ) : null}
                 {data.image.length > 0 ? (
                   <Image

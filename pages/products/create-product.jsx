@@ -15,6 +15,7 @@ export default function CreateProduct() {
 
   const imgRef = useRef();
   const [showImages, setShowImages] = useState([]);
+  const [refImages, setRefImages] = useState([]);
 
   const router = useRouter();
 
@@ -27,10 +28,12 @@ export default function CreateProduct() {
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
-      imageUrlLists.push({ id: i, file: currentImageUrl });
+      imageUrlLists.push({ id: (i + refImages.length), file: currentImageUrl });
     }
 
     setShowImages(imageUrlLists);
+    setRefImages([...refImages, ...imgRef.current.files]); 
+    // imgRef에서 새로 들어온 이미지들을 refImage state에 저장함
   };
 
   // X버튼 클릭 시 이미지 삭제
@@ -46,7 +49,7 @@ export default function CreateProduct() {
       setIsLoading(true);
       const formData = new FormData();
       showImages.map(async (data) => {
-        const file = imgRef.current.files[data.id];
+        const file = refImages[data.id];
         formData.append("photos", file);
       });
       formData.append("seller", pb.authStore.model.id);
