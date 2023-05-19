@@ -5,13 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/components/ProtectedPage";
 import Loading from "@/components/Loading";
+import ProductInfoForm from "@/components/ProductInfoForm";
 
 export default function CreateProduct() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   const imgRef = useRef();
   const [showImages, setShowImages] = useState([]);
@@ -21,10 +17,17 @@ export default function CreateProduct() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const typeOptions = ['교과서', '문제집/인강교재', '기타'];
+
   // 이미지 상대경로 저장
   const handleAddImages = (event) => {
     const imageLists = event.target.files;
     let imageUrlLists = [...showImages];
+
+    if(showImages.length + imageLists.length > 10){
+      alert('이미지는 최대 10개까지 업로드할 수 있습니다!');
+      return;
+    }
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
@@ -117,38 +120,7 @@ export default function CreateProduct() {
               </label>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-              <div className="text-lg font-semibold">제품명</div>
-              <input
-                {...register("name", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
-                maxLength={50}
-              />
-              <div className="text-lg font-semibold">
-                설명 <span className="text-gray-400 text-sm">(최대 300자)</span>
-              </div>
-              <textarea
-                {...register("explain", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-300 my-2"
-                maxLength={300}
-              />
-              {errors.exampleRequired && <span>This field is required</span>}
-              <div className="text-lg font-semibold">종류</div>
-              <input
-                {...register("type", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
-                maxLength={50}
-              />
-
-              <button
-                className="bg-amber-400 hover:bg-amber-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
-                type="submit"
-              >
-                제출
-              </button>
-            </form>
-          </div>
+          <ProductInfoForm onSubmit={onSubmit}/>
         </div>
       </div>
     </ProtectedPage>
