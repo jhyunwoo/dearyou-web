@@ -1,6 +1,7 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +10,8 @@ import {
   ArrowLeftIcon,
   PhotoIcon,
   PaperAirplaneIcon,
-  CheckIcon
+  CheckIcon,
+  ArrowDownIcon
 } from "@heroicons/react/24/outline";
 import getUploadedTime from "@/lib/getUploadedTime";
 
@@ -32,6 +34,7 @@ export default function Chat() {
   const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
   const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
+  const lastMsgRef = useRef(); // 마지막 메시지 ref -> y좌표 가져오기
 
   async function handleRead() {
     setIsLoading(true);
@@ -142,6 +145,23 @@ export default function Chat() {
     let lastreadidx = -1;
     let lastunread = true;
 
+    // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
+    const [msgRef, msgInView] = useInView();
+    const [showDown, setShowDown] = useState(false);
+    
+    useEffect(() => {
+      if(isLoading) return;
+
+      const history = historyRef.current;
+      const height = parseInt(localStorage.getItem('chatScroll'));
+      if(msgInView){
+        setShowDown(false);
+      }
+      else if(height + history.clientHeight + 2 < history.scrollHeight){
+        setShowDown(true);
+      }
+    }, [msgInView]);
+
     for(let i=0; i < messages.length; i++){
       if(messages[i].expand["owner"]?.id === user.id && messages[i].created < lastread){
         lastreadidx = i;
@@ -219,9 +239,20 @@ export default function Chat() {
                   </div>
                 )}
               </div>
+              <div ref={lastMsgRef} />
             </div>
           ))}
+          <div ref={msgRef} className="p-1" />
         </div>
+        
+        {showDown ? (
+        <ArrowDownIcon 
+          onClick={ () => {
+            lastMsgRef.current.scrollIntoView({behavior:'smooth'});
+          } }
+          className="absolute p-2 w-10 h-10 bg-amber-200 self-center bottom-20 rounded-full stroke-white"
+        />) : null}
+
         <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
@@ -234,6 +265,7 @@ export default function Chat() {
   }
 
   async function uploadNewChat(msgData) {
+    setIsLoading(true);
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
@@ -250,6 +282,7 @@ export default function Chat() {
       console.error("Message Upload Failed");
     }
     clearDraft();
+    setIsLoading(false);
     return;
   }
 
@@ -358,9 +391,17 @@ export default function Chat() {
   useLayoutEffect(() => {
     try {
       const history = historyRef.current;
-      
-      history.scrollTop = localStorage.getItem('chatScroll');
-      //history.scrollTop = history.scrollHeight;
+      const lastMsg = lastMsgRef.current;
+      const height = parseInt(localStorage.getItem('chatScroll'));
+
+      if(height + history.clientHeight + lastMsg.clientHeight
+           + 5 < history.scrollHeight){ //사용자가 채팅창 상단을 보고 있는 경우
+        history.scrollTop = height;
+      }
+      else{
+        history.scrollTop = history.scrollHeight;
+        localStorage.setItem('chatScroll', history.scrollTop);
+      }
     } catch {}
   }, [chatRecord, readRecord, isLoading]);
 
