@@ -11,7 +11,7 @@ import {
   PhotoIcon,
   PaperAirplaneIcon,
   CheckIcon,
-  ArrowDownIcon
+  ArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import getUploadedTime from "@/lib/getUploadedTime";
 
@@ -92,7 +92,7 @@ export default function Chat() {
     // UserMe, UserOther 저장
     const buyer = record.expand.buyer;
     const seller = record.expand.seller;
-    setUserMe(buyer.id === user.id ? buyer : seller);
+    setUserMe(buyer?.id === user?.id ? buyer : seller);
     setUserOther(buyer.id === user.id ? seller : buyer);
     setIsLoading(false);
     return;
@@ -122,7 +122,7 @@ export default function Chat() {
     console.log(props);
     return (
       <div className="mx-3">
-        <Link href={`/products/review/${props.link}/${userOther.id}`}>
+        <Link href={`/products/review/${props.link}/${userOther?.id}`}>
           <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
             <Image
               src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
@@ -148,28 +148,29 @@ export default function Chat() {
     // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
     const [msgRef, msgInView] = useInView();
     const [showDown, setShowDown] = useState(false);
-    
+
     useEffect(() => {
-      if(isLoading) return;
+      if (isLoading) return;
 
       const history = historyRef.current;
-      const height = parseInt(localStorage.getItem('chatScroll'));
-      if(msgInView){
+      const height = parseInt(localStorage.getItem("chatScroll"));
+      if (msgInView) {
         setShowDown(false);
-      }
-      else if(height + history.clientHeight + 2 < history.scrollHeight){
+      } else if (height + history.clientHeight + 2 < history.scrollHeight) {
         setShowDown(true);
       }
     }, [msgInView]);
 
-    for(let i=0; i < messages.length; i++){
-      if(messages[i].expand["owner"]?.id === user.id && messages[i].created < lastread){
+    for (let i = 0; i < messages.length; i++) {
+      if (
+        messages[i].expand["owner"]?.id === user.id &&
+        messages[i].created < lastread
+      ) {
         lastreadidx = i;
-        if(i == messages.length-1){
+        if (i == messages.length - 1) {
           lastunread = false;
         }
-      }
-      else if(messages[i].expand["owner"]?.id !== user.id){
+      } else if (messages[i].expand["owner"]?.id !== user.id) {
         lastreadidx = -1;
       }
     }
@@ -179,8 +180,8 @@ export default function Chat() {
         <div
           className="flex flex-col h-full pt-12 overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
-          onScroll={() =>{
-            localStorage.setItem('chatScroll', historyRef.current.scrollTop);
+          onScroll={() => {
+            localStorage.setItem("chatScroll", historyRef.current.scrollTop);
           }}
         >
           {messages?.map((data, key) => (
@@ -194,17 +195,19 @@ export default function Chat() {
             >
               <div
                 className={
-                  data?.expand["owner"]?.id === user.id ? "relative ml-auto" : "mr-auto"
+                  data?.expand["owner"]?.id === user.id
+                    ? "relative ml-auto"
+                    : "mr-auto"
                 }
                 key={key}
               >
-                {(key === lastreadidx) ? (
+                {key === lastreadidx ? (
                   <div className="absolute bottom-0 left-[-30px] flex">
-                    <CheckIcon className="stroke-slate-400 w-4 h-4"/>
+                    <CheckIcon className="stroke-slate-400 w-4 h-4" />
                     <div className="text-slate-400 text-xs">읽음</div>
                   </div>
                 ) : null}
-                {(key === messages.length-1 && lastunread) ? (
+                {key === messages.length - 1 && lastunread ? (
                   <div className="absolute bottom-0 left-[-30px] flex">
                     <div className="text-slate-400 text-xs">안읽음</div>
                   </div>
@@ -244,14 +247,15 @@ export default function Chat() {
           ))}
           <div ref={msgRef} className="p-1" />
         </div>
-        
+
         {showDown ? (
-        <ArrowDownIcon 
-          onClick={ () => {
-            lastMsgRef.current.scrollIntoView({behavior:'smooth'});
-          } }
-          className="absolute p-2 w-10 h-10 bg-amber-200 self-center bottom-20 rounded-full stroke-white"
-        />) : null}
+          <ArrowDownIcon
+            onClick={() => {
+              lastMsgRef.current.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="absolute p-2 w-10 h-10 bg-amber-200 self-center bottom-20 rounded-full stroke-white"
+          />
+        ) : null}
 
         <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
           <Link href={"/chats"}>
@@ -384,7 +388,7 @@ export default function Chat() {
 
     const history = historyRef.current;
     history.scrollTop = history.scrollHeight;
-    localStorage.setItem('chatScroll', history.scrollTop);
+    localStorage.setItem("chatScroll", history.scrollTop);
   }, [userOther]);
 
   /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
@@ -392,15 +396,17 @@ export default function Chat() {
     try {
       const history = historyRef.current;
       const lastMsg = lastMsgRef.current;
-      const height = parseInt(localStorage.getItem('chatScroll'));
+      const height = parseInt(localStorage.getItem("chatScroll"));
 
-      if(height + history.clientHeight + lastMsg.clientHeight
-           + 5 < history.scrollHeight){ //사용자가 채팅창 상단을 보고 있는 경우
+      if (
+        height + history.clientHeight + lastMsg.clientHeight + 5 <
+        history.scrollHeight
+      ) {
+        //사용자가 채팅창 상단을 보고 있는 경우
         history.scrollTop = height;
-      }
-      else{
+      } else {
         history.scrollTop = history.scrollHeight;
-        localStorage.setItem('chatScroll', history.scrollTop);
+        localStorage.setItem("chatScroll", history.scrollTop);
       }
     } catch {}
   }, [chatRecord, readRecord, isLoading]);
