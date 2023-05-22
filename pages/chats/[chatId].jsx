@@ -1,6 +1,7 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,7 +9,9 @@ import pb from "@/lib/pocketbase";
 import {
   ArrowLeftIcon,
   PhotoIcon,
-  ArrowSmallUpIcon,
+  PaperAirplaneIcon,
+  CheckIcon,
+  ArrowDownIcon
 } from "@heroicons/react/24/outline";
 import getUploadedTime from "@/lib/getUploadedTime";
 
@@ -31,6 +34,7 @@ export default function Chat() {
   const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
   const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
+  const lastMsgRef = useRef(); // 마지막 메시지 ref -> y좌표 가져오기
 
   async function handleRead() {
     setIsLoading(true);
@@ -137,18 +141,47 @@ export default function Chat() {
   function ChatHistory() {
     //채팅 창 컴포넌트
     const messages = chatRecord?.expand["messages"];
+    const lastread = readRecord?.lastread;
+    let lastreadidx = -1;
+    let lastunread = true;
+
+    // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
+    const [msgRef, msgInView] = useInView();
+    const [showDown, setShowDown] = useState(false);
+    
+    useEffect(() => {
+      if(isLoading) return;
+
+      const history = historyRef.current;
+      const height = parseInt(localStorage.getItem('chatScroll'));
+      if(msgInView){
+        setShowDown(false);
+      }
+      else if(height + history.clientHeight + 2 < history.scrollHeight){
+        setShowDown(true);
+      }
+    }, [msgInView]);
+
+    for(let i=0; i < messages.length; i++){
+      if(messages[i].expand["owner"]?.id === user.id && messages[i].created < lastread){
+        lastreadidx = i;
+        if(i == messages.length-1){
+          lastunread = false;
+        }
+      }
+      else if(messages[i].expand["owner"]?.id !== user.id){
+        lastreadidx = -1;
+      }
+    }
 
     return (
       <div className="h-screen flex flex-col">
-        <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
-          <Link href={"/chats"}>
-            <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
-          </Link>
-          <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
-        </div>
         <div
           className="flex flex-col h-full pt-12 overflow-y-auto border-y-2 scrollbar-hide"
           ref={historyRef}
+          onScroll={() =>{
+            localStorage.setItem('chatScroll', historyRef.current.scrollTop);
+          }}
         >
           {messages?.map((data, key) => (
             <div
@@ -161,10 +194,22 @@ export default function Chat() {
             >
               <div
                 className={
-                  data?.expand["owner"]?.id === user.id ? "ml-auto" : "mr-auto"
+                  data?.expand["owner"]?.id === user.id ? "relative ml-auto" : "mr-auto"
                 }
                 key={key}
               >
+                {(key === lastreadidx) ? (
+                  <div className="absolute bottom-0 left-[-30px] flex">
+                    <CheckIcon className="stroke-slate-400 w-4 h-4"/>
+                    <div className="text-slate-400 text-xs">읽음</div>
+                  </div>
+                ) : null}
+                {(key === messages.length-1 && lastunread) ? (
+                  <div className="absolute bottom-0 left-[-30px] flex">
+                    <div className="text-slate-400 text-xs">안읽음</div>
+                  </div>
+                ) : null}
+
                 <div className="ml-4 flex items-center mt-4">
                   <div className="text-slate-700 font-semibold">
                     {data?.expand["owner"]?.name}
@@ -194,15 +239,33 @@ export default function Chat() {
                   </div>
                 )}
               </div>
+              <div ref={lastMsgRef} />
             </div>
           ))}
+          <div ref={msgRef} className="p-1" />
         </div>
-        <div className="w-full h-20"></div>
+        
+        {showDown ? (
+        <ArrowDownIcon 
+          onClick={ () => {
+            lastMsgRef.current.scrollIntoView({behavior:'smooth'});
+          } }
+          className="absolute p-2 w-10 h-10 bg-amber-200 self-center bottom-20 rounded-full stroke-white"
+        />) : null}
+
+        <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
+          <Link href={"/chats"}>
+            <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
+          </Link>
+          <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
+        </div>
+        <div className="w-full h-16"></div>
       </div>
     );
   }
 
   async function uploadNewChat(msgData) {
+    setIsLoading(true);
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
@@ -219,6 +282,7 @@ export default function Chat() {
       console.error("Message Upload Failed");
     }
     clearDraft();
+    setIsLoading(false);
     return;
   }
 
@@ -296,13 +360,12 @@ export default function Chat() {
             defaultValue={localStorage.getItem(`${user?.id}-${chatRecord?.id}`)}
             autoFocus
           />
-          <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-full my-auto mx-1 flex justify-center items-center p-1">
-            <ArrowSmallUpIcon
+          <div className=" bg-amber-300 hover:bg-amber-400 transition duration-200 rounded-xl my-auto mx-1 flex justify-center items-center p-1">
+            <PaperAirplaneIcon
               onClick={handleChatInput}
               className="w-7 h-7 text-white"
             />
           </div>
-          <div>{readRecord?.unreadcount}</div>
         </div>
       </div>
     );
@@ -318,13 +381,27 @@ export default function Chat() {
   useEffect(() => {
     if (!userOther) return;
     getChatRecord();
+
+    const history = historyRef.current;
+    history.scrollTop = history.scrollHeight;
+    localStorage.setItem('chatScroll', history.scrollTop);
   }, [userOther]);
 
   /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
   useLayoutEffect(() => {
     try {
       const history = historyRef.current;
-      history.scrollTop = history.scrollHeight;
+      const lastMsg = lastMsgRef.current;
+      const height = parseInt(localStorage.getItem('chatScroll'));
+
+      if(height + history.clientHeight + lastMsg.clientHeight
+           + 5 < history.scrollHeight){ //사용자가 채팅창 상단을 보고 있는 경우
+        history.scrollTop = height;
+      }
+      else{
+        history.scrollTop = history.scrollHeight;
+        localStorage.setItem('chatScroll', history.scrollTop);
+      }
     } catch {}
   }, [chatRecord, readRecord, isLoading]);
 
