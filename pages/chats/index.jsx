@@ -53,7 +53,7 @@ export default function Chats() {
   useEffect(() => {
     if (!router.isReady) return;
     getSortedChats();
-    pb.collection("chats").subscribe(getSortedChats);
+    pb.collection("chats").subscribe("*", getSortedChats);
   }, [router.isReady]);
 
   return (
