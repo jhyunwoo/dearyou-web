@@ -11,6 +11,7 @@ export default function MyReviews() {
   const router = useRouter();
   const { productId, sellerId } = router.query;
   const [rating, setRating] = useState(0);
+  const [seller, setSeller] = useState();
 
   const {
     register,
@@ -20,8 +21,6 @@ export default function MyReviews() {
 
   async function onSubmit(data) {
     if (rating) {
-      console.log(data, sellerId, rating);
-      const sellerInfo = await pb.collection("users").getOne(sellerId);
       const reviewData = {
         product: productId,
         seller: sellerId,
@@ -31,7 +30,8 @@ export default function MyReviews() {
       };
 
       const record = await pb.collection("reviews").create(reviewData);
-      const updatedSeller = await pb
+      const sellerInfo = await pb.collection("users").getOne(sellerId);
+      const updateSeller = await pb
         .collection("users")
         .update(sellerId, { dignity: sellerInfo.dignity + rating });
 
@@ -41,11 +41,24 @@ export default function MyReviews() {
     }
   }
 
+  useEffect(() => {
+    async function getSellerInfo() {
+      const sellerInfo = await pb.collection("users").getOne(sellerId);
+      setSeller(sellerInfo);
+    }
+    getSellerInfo();
+  }, []);
+
   return (
     <ProtectedPage>
       <HeadBar title="거래 후기 남기기" />
       <BottomBar />
       <Layout>
+        <div>
+          <div className="text-lg font-semibold my-2">
+            거래한 사람: {seller?.name}
+          </div>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
           <div className="text-lg font-semibold my-2">거래 만족도</div>
           <div className="flex w-full justify-around space-x-1">
