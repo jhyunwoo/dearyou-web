@@ -22,7 +22,6 @@ export default function MyReviews() {
 
   async function onSubmit(data) {
     if (selectedUser && rating) {
-      console.log(data, selectedUser, rating);
       const reviewData = {
         product: productId,
         seller: pb.authStore.model?.id,
@@ -32,26 +31,26 @@ export default function MyReviews() {
       };
 
       const record = await pb.collection("reviews").create(reviewData);
-      const buyerINfo = await pb.collection("users").getOne(selectedUser.id);
+      const buyerInfo = await pb.collection("users").getOne(selectedUser.id);
       const updatedBuyer = await pb
         .collection("users")
-        .update(selectedUser.id, { dignity: buyerINfo.dignity + rating });
+        .update(selectedUser.id, { dignity: buyerInfo.dignity + rating });
       const closeProduct = await pb
         .collection("products")
         .update(productId, { soldDate: new Date(), buyer: selectedUser.id });
-      console.log(closeProduct);
 
       const productInfo = await pb
         .collection("products")
         .getOne(productId, { expand: "seller, buyer" });
       const checkChat = await pb.collection("chats").getFullList({
         // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-        filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
-                (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
+        filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.buyer.id}")||
+                (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.buyer.id}")`,
         expand: "read",
       });
 
       let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
+
       if (checkChat.length > 0) {
         // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
         const newChatRead = await pb
