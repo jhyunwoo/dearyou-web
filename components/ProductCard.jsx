@@ -5,8 +5,8 @@ export default function ProductCard(props) {
   return (
     <Link href={
       props.autonomy ? 
-      `/products/${props.data.id}` : 
-      `/autonomy/${props.data.id}`}>
+      `/autonomy/${props.data.id}` : 
+      `/products/${props.data.id}`}>
       <div
         className={`flex rounded-lg p-2  w-full ${
           props.data?.soldDate ? "bg-slate-100" : "bg-white"

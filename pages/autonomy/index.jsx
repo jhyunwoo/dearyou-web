@@ -43,8 +43,6 @@ export default function Autonomy() {
           <div className="pl-2">
             <div className="font-bold text-2xl">상품 승인 관리 페이지</div>
             <div className="font-bold">
-              바른품성, 창의력, 리더십을 겸비한</div>
-            <div className="font-bold">
                 자율위원 <span className="text-amber-200">{pb.authStore?.model?.name}</span>
                 님 반갑습니다.</div>
           </div>
@@ -55,7 +53,7 @@ export default function Autonomy() {
         </div>
         <ProductGrid>
           {products?.map((data, key) => (
-            <ProductCard data={data} key={key} />
+            <ProductCard data={data} key={key} autonomy={true} />
           ))}
           <div
             className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
