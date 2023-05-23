@@ -3,6 +3,8 @@ import {
   MagnifyingGlassIcon,
   ChatBubbleBottomCenterTextIcon,
   UserCircleIcon,
+  ComputerDesktopIcon,
+  CheckBadgeIcon,
 } from "@heroicons/react/24/outline";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import { useState, useEffect} from "react";
@@ -12,6 +14,7 @@ import Link from "next/link";
 export default function BottomBar() {
   const { user } = usePbAuth();
   const [ unreadChat, setUnreadChat ] = useState(false)
+  const [ autonomy, setAutonomy ] = useState(false);
   
   async function getChat(){
     const resultList = await pb.collection("chats").getFullList({
@@ -31,11 +34,22 @@ export default function BottomBar() {
   useEffect(() => {
     getChat();
     pb.collection("chats").subscribe("*", getChat);
+    setAutonomy(pb.authStore.model.autonomy);
   }, []);
 
   const Notify = () => (<div className="absolute top-1 right-1 w-4 h-4 rounded-2xl bg-red-600"/>);
   return (
     <div className="fixed bottom-0 left-0 right-0 w-full h-16 bg-white rounded-t-3xl flex justify-around items-center">
+
+      {autonomy ? (
+        <Link
+          href={"/autonomy"}
+          className="text-amber-600 hover:bg-amber-500 hover:shadow-md hover:text-white p-2 rounded-2xl transition duration-200"  
+        >
+          <CheckBadgeIcon className="w-8 h-8"/>
+        </Link>
+      ) : null}
+      
       <Link
         href={"/"}
         className="text-amber-600 hover:bg-amber-500 hover:shadow-md hover:text-white p-2 rounded-2xl transition duration-200"
@@ -55,6 +69,7 @@ export default function BottomBar() {
         <ChatBubbleBottomCenterTextIcon className="w-8 h-8  " />
         {unreadChat ? <Notify /> : null}
       </Link>
+      
       <Link
         href={"/profile"}
         className="text-amber-600 hover:bg-amber-500 hover:shadow-md hover:text-white p-2 rounded-2xl transition duration-200"

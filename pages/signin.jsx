@@ -17,10 +17,10 @@ export default function SignIn() {
         .authWithOAuth2({ provider: "kakao" });
       if (authData.token) {
         setUserData(authData.record);
-        router.replace("/");
+        router?.replace("/");
       }
     } catch {
-      router.refresh();
+      router?.refresh();
       alert("로그인을 다시 시도해주세요.");
     }
     setIsLoading(false);
