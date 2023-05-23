@@ -122,7 +122,9 @@ export default function Chat() {
     console.log(props);
     return (
       <div className="mx-3">
-        <Link href={`/products/review/${props.link}/${userOther?.id}`}>
+        <Link
+          href={`/products/buyer-review/${props.link}?sellerId=${userOther?.id}`}
+        >
           <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
             <Image
               src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
