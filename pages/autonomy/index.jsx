@@ -60,6 +60,7 @@ export default function Autonomy() {
           />
         </ProductGrid>
       </div>
+      <div className="w-full h-8"></div>
       <BottomBar/>
     </AutonomyPage>
     </ProtectedPage>
