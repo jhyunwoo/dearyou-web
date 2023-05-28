@@ -58,6 +58,7 @@ export default function ProductDetail({ productId }) {
     let newInfo = productInfo;
     newInfo.isConfirmed = true;
     newInfo.confirmedBy = currentUser.id;
+    newInfo.rejectedReason = null;
     
     await pb.collection("products").update(productInfo.id, newInfo);
     alert(`승인되었습니다.`);
@@ -92,11 +93,12 @@ export default function ProductDetail({ productId }) {
   return (
     <ProtectedPage>
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
+        <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
-            <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="relative sm:flex ">
               <ProductImageView productInfo={productInfo} productId={productId}/>
-              <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
+              <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
                 <div className="p-4 sm:p-2 flex flex-col ">
                   <div className=" pb-2 border-b-2 flex flex-col ">
                     <div className="flex justify-between">
@@ -133,8 +135,9 @@ export default function ProductDetail({ productId }) {
                   </div>
                 </div>
               </div>
+            </div>
 
-
+            <div>  
             <div className="p-4 sm:p-2 flex flex-col ">
                 <div className="pb-4 font-bold text-xl text-center">물건 등록 검토</div>
                 <div className="flex items-center mx-auto">
@@ -151,6 +154,7 @@ export default function ProductDetail({ productId }) {
                     </label>
                     <div className="font-bold ml-4">등록된 물품 정보를 잘 확인했습니다.</div>
                 </div>
+            </div>
             </div>
 
             {checked ? (

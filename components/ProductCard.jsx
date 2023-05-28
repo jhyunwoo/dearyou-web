@@ -9,7 +9,7 @@ export default function ProductCard(props) {
       `/products/${props.data.id}`}>
       <div
         className={`flex rounded-lg p-2  w-full ${
-          props.data?.soldDate ? "bg-slate-100" : "bg-white"
+          (props.data?.soldDate || props.data?.rejectedReason) ? "bg-slate-100" : "bg-white"
         }`}
       >
         <Image
@@ -27,7 +27,8 @@ export default function ProductCard(props) {
               {props.data?.expand?.seller?.name}
             </div>
             <div>{props.data?.expand?.seller?.studentId}</div>
-            <div>{props.data?.soldDate ? "나눔 완료" : ""}</div>
+            <div className="text-red-500">{props.data?.soldDate ? "나눔 완료" : ""}</div>
+            <div className="text-red-500">{props.data?.rejectedReason ? "반려됨" : ""}</div>
           </div>
         </div>
       </div>
