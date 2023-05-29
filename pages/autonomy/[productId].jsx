@@ -29,7 +29,7 @@ export default function ProductDetail({ productId }) {
 
   const router = useRouter();
   const currentUser = usePbAuth().user;
-  
+
   const {
     register,
     handleSubmit,
@@ -138,28 +138,31 @@ export default function ProductDetail({ productId }) {
             </div>
 
             <div>  
-            <div className="p-4 sm:p-2 flex flex-col ">
-                <div className="pb-4 font-bold text-xl text-center">물건 등록 검토</div>
-                <div className="flex items-center mx-auto">
+            <div className="px-4 sm:p-2 flex flex-col ">
+                <div className="pb-2 font-bold text-center">물건을 검토하려면 아래 상자에 체크하세요.</div>
+                <div className="pb-4 flex items-center mx-auto">
                     <input
                         className="w-0 h-0"
                         type="checkbox"
                         id="check"
-                        onChange={({ target: { checked } }) => setChecked(checked)}
+                        onChange={({ target: { checked } }) => {
+                          setChecked(checked);
+                        }}
                     />
-                    <label for="check" className="w-10 h-10">
+                    <label for="check" className="w-8 h-8">
                         <CheckIcon className={ checked ?
                          "bg-amber-500 stroke-white border-2 border-transparent rounded-xl" :
                          "bg-white stroke-slate-100 border-2 border-slate-300 rounded-xl"}/>
                     </label>
-                    <div className="font-bold ml-4">등록된 물품 정보를 잘 확인했습니다.</div>
+                    <div className="ml-2">등록된 물건 정보를 잘 확인했습니다.</div>
                 </div>
             </div>
             </div>
 
             {checked ? (
                 <div className="">
-                    <div className="m-2 p-4 rounded-lg border-2">
+                    <div className="m-2 p-6 rounded-lg border-2">
+                    <div className="text-lg font-bold text-center">물건 검토</div>
                     <button 
                         className="w-full bg-lime-400 hover:bg-lime-500 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
                         onClick={handleConfirm}>
