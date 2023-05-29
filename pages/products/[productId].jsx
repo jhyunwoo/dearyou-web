@@ -195,8 +195,8 @@ export default function ProductDetail({ productId }) {
                             {productInfo.expand.seller.studentId}
                           </div>
 
-                          {currentUser?.id ===
-                          productInfo?.expand?.seller?.id ? (
+                          {(currentUser?.id === productInfo?.expand?.seller?.id
+                          && !productInfo?.rejectedReason) ? (
                             <Link href={`/products/update/${productId}`}>
                               <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
                             </Link>
@@ -206,14 +206,17 @@ export default function ProductDetail({ productId }) {
                     </div>
                     <div className="mt-2 flex flex-col">
                       <div className="ml-auto">
-                        {getUploadedTime(productInfo.created)}
+                        {getUploadedTime(productInfo.created)}에 등록
                       </div>
-                      <div className="ml-auto">
-                        {productInfo.soldDate
-                          ? `${getUploadedTime(
-                              productInfo.soldDate,
-                            )}에 나눔 완료`
-                          : "나눔 중"}
+                      <div className="ml-auto font-bold text-slate-500">
+                        {productInfo.isConfirmed ? (
+                          productInfo.soldDate
+                          ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
+                          : "나눔 중") : (
+                          productInfo.rejectedReason
+                          ? '반려됨'
+                          : '승인 대기 중'
+                          )}
                       </div>
                       <div className="font-medium text-lg my-2">
                         {productInfo.explain}
@@ -239,8 +242,7 @@ export default function ProductDetail({ productId }) {
                     productInfo.rejectedReason ?
                       (
                       <div className="text-red-500">
-                        상품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason}) 
-                        상품을 삭제하거나 정보를 수정해 다시 검토를 요청할 수 있습니다.
+                        상품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
                       </div>
                       ) : (
                       <div className="text-amber-500">

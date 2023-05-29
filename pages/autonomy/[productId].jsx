@@ -39,7 +39,7 @@ export default function ProductDetail({ productId }) {
   useEffect(() => {
     async function getProductInfo() {
       const record = await pb.collection("products").getOne(productId, {
-        expand: "seller",
+        expand: "seller, confirmedBy",
       });
       if (!record.isConfirmed) {
         setProductInfo(record);
@@ -127,6 +127,13 @@ export default function ProductDetail({ productId }) {
                       <div className="ml-auto">
                         {getUploadedTime(productInfo.created)}에 등록
                       </div>
+                      
+                      <div className="ml-auto font-bold text-slate-500">
+                        {productInfo.rejectedReason
+                          ? `반려됨 (검토인: ${productInfo.expand.confirmedBy?.name})`
+                          : '승인 대기 중'}
+                      </div>
+
                       <div className="font-medium text-lg my-2">
                         {productInfo.explain}
                       </div>
@@ -138,8 +145,14 @@ export default function ProductDetail({ productId }) {
             </div>
 
             <div>  
-            <div className="px-4 sm:p-2 flex flex-col ">
-                <div className="pb-2 font-bold text-center">물건을 검토하려면 아래 상자에 체크하세요.</div>
+            <div className="px-4 sm:p-2 flex flex-col text-center">
+                { productInfo.rejectedReason ? 
+                <div className="font-bold text-red-500">
+                  앞선 검토에서 "{productInfo.rejectedReason}" 사유로 등록이 거절된 물건입니다.
+                </div> : null }
+                <div className="pb-2 font-bold ">
+                  물건을 {productInfo.rejectedReason ? "재" : null}검토하려면 아래 상자에 체크하세요.
+                </div>
                 <div className="pb-4 flex items-center mx-auto">
                     <input
                         className="w-0 h-0"
