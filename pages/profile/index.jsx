@@ -69,8 +69,14 @@ export default function Profile() {
           </Link>
         </div>
         <Link
+          href={"/credits"}
+          className="text-sm mx-auto mt-12 mb-2 text-slate-600"
+        >
+          만든 사람들
+        </Link>
+        <Link
           href={"/privacy"}
-          className="text-sm mx-auto mt-12 text-slate-600"
+          className="text-sm mx-auto mb-12 mt-2 text-slate-600"
         >
           개인정보처리방침
         </Link>
@@ -78,3 +84,4 @@ export default function Profile() {
     </ProtectedPage>
   );
 }
+
