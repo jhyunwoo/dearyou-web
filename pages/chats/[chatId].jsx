@@ -119,7 +119,6 @@ export default function Chat() {
   }
 
   function ReviewLink(props) {
-    console.log(props);
     return (
       <div className="mx-3">
         <Link

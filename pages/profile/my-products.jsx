@@ -2,7 +2,6 @@ import ProtectedPage from "@/components/ProtectedPage";
 import pb from "@/lib/pocketbase";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import BottomBar from "@/components/BottomBar";
 import Layout from "@/components/Layout";
 import HeadBar from "@/components/HeadBar";
