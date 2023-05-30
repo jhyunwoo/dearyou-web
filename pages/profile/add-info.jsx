@@ -2,7 +2,6 @@ import { useForm, useWatch } from "react-hook-form";
 import pb from "@/lib/pocketbase";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import ProtectedPage from "@/components/ProtectedPage";
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false);

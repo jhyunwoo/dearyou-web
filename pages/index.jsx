@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import pb from "@/lib/pocketbase";

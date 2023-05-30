@@ -1,9 +1,6 @@
-import { useForm } from "react-hook-form";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import pb from "@/lib/pocketbase";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import { usePbAuth } from "../../../contexts/AuthWrapper";
 import ProtectedPage from "@/components/ProtectedPage";
 import ProductImageView from "@/components/ProductImageView";
@@ -76,15 +73,18 @@ export default function UpdateProduct({ productId }) {
     return (
       <ProtectedPage>
         {isLoading ? <Loading /> : ""}
-          <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
-          {productInfo ? (
-            <div className="sm:flex sm:flex-row  sm:justify-center">
-              <div className="sm:m-4">
-                <ProductImageView productInfo={productInfo} productId={productId} />
-              </div>
-              <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
+        <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
+        {productInfo ? (
+          <div className="sm:flex sm:flex-row  sm:justify-center">
+            <div className="sm:m-4">
+              <ProductImageView
+                productInfo={productInfo}
+                productId={productId}
+              />
             </div>
-          ) : null}
+            <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
+          </div>
+        ) : null}
       </ProtectedPage>
     );
   } else {
