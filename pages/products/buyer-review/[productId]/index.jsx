@@ -23,8 +23,8 @@ export default function MyReviews() {
     if (rating) {
       const reviewData = {
         product: productId,
-        seller: sellerId,
-        buyer: pb.authStore.model?.id,
+        to: sellerId,
+        from: pb.authStore.model?.id,
         comment: data.review,
         rate: rating,
       };
