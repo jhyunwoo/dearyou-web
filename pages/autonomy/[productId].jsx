@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import pb from "@/lib/pocketbase";
 import Link from "next/link";
-import { CheckIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  PencilSquareIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import getUploadedTime from "@/lib/getUploadedTime";
 import { usePbAuth } from "@/contexts/AuthWrapper";
@@ -183,7 +187,11 @@ export default function ProductDetail({ productId }) {
 
               {checked ? (
                 <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50/50">
-                  <div className="m-2 p-6 rounded-lg border-2 w-4/5 bg-white">
+                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white">
+                    <XCircleIcon
+                      onClick={() => setChecked(null)}
+                      className="absolute top-0 right-0 w-8 h-8 text-slate-600"
+                    />
                     <div className="text-lg font-bold text-center">
                       물건 검토
                     </div>
