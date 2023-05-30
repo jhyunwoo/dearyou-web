@@ -37,7 +37,7 @@ export default function ProductDetail({ productId }) {
       const record = await pb.collection("products").getOne(productId, {
         expand: "seller",
       });
-      if (record.isConfirmed) {
+      if (record.isConfirmed || record.seller === pb.authStore.model.id) {
         setProductInfo(record);
       } else {
         setProductInfo(false);
@@ -134,6 +134,44 @@ export default function ProductDetail({ productId }) {
 
     router.push(`/chats/${newChat.id}`);
   }
+
+  function CloseProductButton(){
+    return (
+    <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+      <button
+        onClick={() =>
+          router.push(`/products/review/${productInfo.id}`)
+        }
+        className={`p-2 px-6 rounded-full ${
+          productInfo?.soldDate
+            ? "bg-gray-400"
+            : "bg-blue-400 hover:bg-blue-500 transition duration-200"
+        }`}
+        disabled={productInfo.soldDate ? true : false}
+      >
+        나눔 완료
+      </button>
+    </div>
+    )
+  }
+  function GoToChatButton(){
+    return (
+      <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+        <button
+          onClick={goToChat}
+          className={`p-2 px-6 rounded-full ${
+            productInfo?.soldDate
+          ? "bg-gray-400"
+          : "bg-amber-400 hover:bg-amber-500 transition duration-200"
+        }`}
+        disabled={productInfo.soldDate ? true : false}
+        >
+          판매자와 채팅
+        </button>
+      </div>
+    )
+  }
+
   return (
     <ProtectedPage>
       {productInfo ? (
@@ -157,8 +195,8 @@ export default function ProductDetail({ productId }) {
                             {productInfo.expand.seller.studentId}
                           </div>
 
-                          {currentUser?.id ===
-                          productInfo?.expand?.seller?.id ? (
+                          {(currentUser?.id === productInfo?.expand?.seller?.id
+                          && !productInfo?.rejectedReason) ? (
                             <Link href={`/products/update/${productId}`}>
                               <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
                             </Link>
@@ -168,58 +206,49 @@ export default function ProductDetail({ productId }) {
                     </div>
                     <div className="mt-2 flex flex-col">
                       <div className="ml-auto">
-                        {getUploadedTime(productInfo.created)}
+                        {getUploadedTime(productInfo.created)}에 등록
                       </div>
-                      <div className="ml-auto">
-                        {productInfo.soldDate
-                          ? `${getUploadedTime(
-                              productInfo.soldDate,
-                            )}에 나눔 완료`
-                          : "나눔 중"}
+                      <div className="ml-auto font-bold text-slate-500">
+                        {productInfo.isConfirmed ? (
+                          productInfo.soldDate
+                          ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
+                          : "나눔 중") : (
+                          productInfo.rejectedReason
+                          ? '반려됨'
+                          : '승인 대기 중'
+                          )}
                       </div>
                       <div className="font-medium text-lg my-2">
                         {productInfo.explain}
                       </div>
                       <div>종류: {productInfo.type}</div>
                     </div>
+                    {productInfo.isConfirmed ? 
                     <button onClick={controlWish}>
                       {userWish?.includes(productId) ? (
                         <HeartIcon className="w-8 h-8 text-red-500" />
                       ) : (
                         <HeartIcon className="w-8 h-8 text-red-100" />
                       )}
-                    </button>
+                    </button> : null}
                   </div>
-                  {currentUser?.id === productInfo?.expand?.seller?.id ? (
-                    <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                      <button
-                        onClick={() =>
-                          router.push(`/products/review/${productInfo.id}`)
-                        }
-                        className={`p-2 px-6 rounded-full ${
-                          productInfo?.soldDate
-                            ? "bg-gray-400"
-                            : "bg-blue-400 hover:bg-blue-500 transition duration-200"
-                        }`}
-                        disabled={productInfo.soldDate ? true : false}
-                      >
-                        나눔 완료
-                      </button>
-                    </div>
+                  {productInfo.isConfirmed ? (
+                    currentUser?.id === productInfo?.expand?.seller?.id ? (
+                      <CloseProductButton/>
+                    ) : (
+                      <GoToChatButton/>
+                    )
                   ) : (
-                    <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-                      <button
-                        onClick={goToChat}
-                        className={`p-2 px-6 rounded-full ${
-                          productInfo?.soldDate
-                            ? "bg-gray-400"
-                            : "bg-amber-400 hover:bg-amber-500 transition duration-200"
-                        }`}
-                        disabled={productInfo.soldDate ? true : false}
-                      >
-                        판매자와 채팅
-                      </button>
-                    </div>
+                    productInfo.rejectedReason ?
+                      (
+                      <div className="text-red-500">
+                        상품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
+                      </div>
+                      ) : (
+                      <div className="text-amber-500">
+                        상품 등록 승인 대기 중입니다.
+                      </div>
+                      )
                   )}
                   <div className="w-full h-16 sm:h-0"></div>
                 </div>

@@ -67,7 +67,7 @@ export default function UpdateProduct({ productId }) {
     newInfo.type = data.type;
     newInfo.lastupdated = new Date().getTime();
 
-    let result = await pb.collection("Products").update(productId, newInfo);
+    let result = await pb.collection("products").update(productId, newInfo);
     setIsLoading(false);
     router.replace("/");
   }

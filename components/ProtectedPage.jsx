@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { usePbAuth } from "../contexts/AuthWrapper";
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
@@ -9,12 +10,21 @@ export default function ProtectedPage(props) {
     /** 로그인이 돼있지 않을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 p-4 flex justify-center items-center">
-        <Link
-          className="bg-amber-400 hover:bg-amber-500 duration-200 transition text-white font-semibold text-xl p-2 px-6 rounded-full"
-          href={"/signin"}
-        >
-          로그인 페이지
-        </Link>
+          <div className="">
+            <Image
+              className="mx-auto my-4"
+              src="./favicon.ico"
+              width={100}
+              height={100}
+            />
+            <Link
+              className="bg-amber-400 hover:bg-amber-500 duration-200 transition text-white font-semibold text-xl p-2 px-6 rounded-full"
+              href={"/signin"}
+            >
+              로그인 페이지
+            </Link>
+          </div>
+
       </div>
     );
   } else if (user.studentId === 0 || user.studentId == null) {

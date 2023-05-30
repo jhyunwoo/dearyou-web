@@ -17,7 +17,7 @@ export default function SignIn() {
         .authWithOAuth2({ provider: "kakao" });
       if (authData.token) {
         setUserData(authData.record);
-        router.replace("/");
+        router?.replace("/");
       }
     } catch {
       router.reload();
