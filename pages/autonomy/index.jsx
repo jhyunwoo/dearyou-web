@@ -1,13 +1,8 @@
-import Link from "next/link";
-import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useCallback, useEffect, useState } from "react";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { CheckBadgeIcon, PlusIcon } from "@heroicons/react/24/outline";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
+import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
 import AutonomyPage from "@/components/AutonomyPage";

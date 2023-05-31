@@ -14,7 +14,6 @@ import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
 import Layout from "@/components/Layout";
 import ProductImageView from "@/components/ProductImageView";
-import HeadBar from "@/components/HeadBar";
 
 export const getServerSideProps = async (context) => {
   const { query } = context;

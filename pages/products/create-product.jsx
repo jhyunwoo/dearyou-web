@@ -1,4 +1,3 @@
-import { useForm } from "react-hook-form";
 import { useState, useRef } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
@@ -8,7 +7,6 @@ import Loading from "@/components/Loading";
 import ProductInfoForm from "@/components/ProductInfoForm";
 
 export default function CreateProduct() {
-
   const imgRef = useRef();
   const [showImages, setShowImages] = useState([]);
   const [refImages, setRefImages] = useState([]);
@@ -17,25 +15,25 @@ export default function CreateProduct() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const typeOptions = ['교과서', '문제집/인강교재', '기타'];
+  const typeOptions = ["교과서", "문제집/인강교재", "기타"];
 
   // 이미지 상대경로 저장
   const handleAddImages = (event) => {
     const imageLists = event.target.files;
     let imageUrlLists = [...showImages];
 
-    if(showImages.length + imageLists.length > 10){
-      alert('이미지는 최대 10개까지 업로드할 수 있습니다!');
+    if (showImages.length + imageLists.length > 10) {
+      alert("이미지는 최대 10개까지 업로드할 수 있습니다!");
       return;
     }
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
-      imageUrlLists.push({ id: (i + refImages.length), file: currentImageUrl });
+      imageUrlLists.push({ id: i + refImages.length, file: currentImageUrl });
     }
 
     setShowImages(imageUrlLists);
-    setRefImages([...refImages, ...imgRef.current.files]); 
+    setRefImages([...refImages, ...imgRef.current.files]);
     // imgRef에서 새로 들어온 이미지들을 refImage state에 저장함
   };
 
@@ -120,7 +118,7 @@ export default function CreateProduct() {
               </label>
             </div>
           </div>
-          <ProductInfoForm onSubmit={onSubmit}/>
+          <ProductInfoForm onSubmit={onSubmit} />
         </div>
       </div>
     </ProtectedPage>
