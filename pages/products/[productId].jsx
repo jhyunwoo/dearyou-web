@@ -29,6 +29,7 @@ export default function ProductDetail({ productId }) {
   const [addWish, setAddWish] = useState(false);
   const [imageScroll, setImageScroll] = useState(1);
   const imageRef = useRef();
+  const autonomy = pb.authStore.model.autonomy;
 
   const router = useRouter();
 
@@ -135,6 +136,24 @@ export default function ProductDetail({ productId }) {
     router.push(`/chats/${newChat.id}`);
   }
 
+  async function onProductHide(){
+    if (!autonomy) return null;
+
+    if(window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
+숨긴 물품은 승인 페이지에서 다시 승인할 수 있습니다.
+꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)){
+      
+      let newInfo = productInfo;
+      newInfo.rejectedReason = "임시로 숨김 처리되었습니다.";
+      newInfo.isConfirmed = false;
+      newInfo.confirmedBy = currentUser.id;
+
+      await pb.collection("products").update(productInfo.id, newInfo);
+      alert("물품을 숨겼습니다.");
+      router.replace("/");
+    }
+  }
+
   function CloseProductButton(){
     return (
     <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
@@ -167,6 +186,23 @@ export default function ProductDetail({ productId }) {
         disabled={productInfo.soldDate ? true : false}
         >
           판매자와 채팅
+        </button>
+      </div>
+    )
+  }
+  // (자율위원 전용) 상품 숨기기 버튼
+  function HideProductButton(){
+    if (!autonomy) return null;
+
+    return (
+      <div className="w-full text-white font-bold flex justify-center items-center">
+        <button
+          className={`p-2 px-6 rounded-full ${
+          "bg-red-400 hover:bg-red-500 transition duration-200"
+        }`}
+        onClick={onProductHide}
+        >
+          물품 숨기기
         </button>
       </div>
     )
@@ -236,9 +272,12 @@ export default function ProductDetail({ productId }) {
                     currentUser?.id === productInfo?.expand?.seller?.id ? (
                       <CloseProductButton/>
                     ) : (
+                      <div>
                       <GoToChatButton/>
+                      <HideProductButton/>
+                      </div>
                     )
-                  ) : (
+                    ) : (
                     productInfo.rejectedReason ?
                       (
                       <div className="text-red-500">
