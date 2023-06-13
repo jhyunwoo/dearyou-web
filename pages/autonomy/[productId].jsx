@@ -41,13 +41,17 @@ export default function ProductDetail({ productId }) {
 
   useEffect(() => {
     async function getProductInfo() {
-      const record = await pb.collection("products").getOne(productId, {
-        expand: "seller, confirmedBy",
-      });
-      if (!record.isConfirmed) {
-        setProductInfo(record);
-      } else {
-        setProductInfo(false);
+      try{
+        const record = await pb.collection("products").getOne(productId, {
+          expand: "seller, confirmedBy",
+        });
+        if (!record.isConfirmed) {
+          setProductInfo(record);
+        } else {
+          setProductInfo(false);
+        }
+      }catch(e){
+        console.log(e)
       }
     }
 

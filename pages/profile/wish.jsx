@@ -43,7 +43,7 @@ export default function WishPage() {
           ) : (
             ""
           )}
-          {productList.map((data, key) => (
+          {productList?.map((data, key) => (
             <ProductCard data={data} key={key} />
           ))}
         </ProductGrid>

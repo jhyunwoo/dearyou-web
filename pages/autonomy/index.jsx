@@ -21,7 +21,9 @@ export default function Autonomy() {
         filter: "isConfirmed=False",
       });
       setProducts(data);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }, []);
 
   useEffect( () => {
