@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import pb from "../lib/pocketbase";
-import { usePbAuth } from "../contexts/AuthWrapper";
+import { usePbAuth } from "@/contexts/AuthWrapper";
 import Loading from "@/components/Loading";
 import { useState, useEffect } from "react";
 
@@ -8,17 +8,18 @@ export default function SignIn() {
   const router = useRouter();
   const { setUserData } = usePbAuth();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [startLogin, setStartLogin] = useState(false);
 
   async function kakaoLogin() {
     setIsLoading(true);
+    setStartLogin(true);
     try {
       const authData = await pb
         .collection("users")
         .authWithOAuth2({ provider: "kakao" });
       if (authData.token) {
         setUserData(authData.record);
-        router?.replace("/");
+        await router?.replace("/");
       }
     } catch {
       router.reload();
@@ -40,6 +41,14 @@ export default function SignIn() {
             카카오로 로그인
           </div>
         </button>
+        {startLogin ? (
+          <div className={"mt-4 text-center"}>
+            사파리에서 로그인이 되지 않는다면 설정 {">"} Safari {">"} 팝업
+            차단을 해재해주세요.
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
