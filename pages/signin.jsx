@@ -9,6 +9,7 @@ export default function SignIn() {
   const { setUserData } = usePbAuth();
   const [isLoading, setIsLoading] = useState(false);
 
+
   async function kakaoLogin() {
     setIsLoading(true);
     try {
@@ -25,17 +26,6 @@ export default function SignIn() {
     }
     setIsLoading(false);
   }
-
-  useEffect(()=>{
-    function popup(){ 
-      var newWin = open("", "window1", "팝업창 옵션"); 
-    
-      if(!newWin || newWin.closed || typeof newWin.closed=="undefined"){
-        alert("팝업 제한을 해재해주세요.")
-      }
-    } 
-    popup()
-  },[])
 
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
