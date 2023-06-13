@@ -7,6 +7,15 @@ import Loading from "@/components/Loading";
 import * as gtag from "../lib/gtags";
 import Script from "next/script";
 
+
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+const plex_sans = IBM_Plex_Sans_KR(
+  { 
+    subsets: ['latin'],
+    weight: ['100', '200', '300', '400', '500','600'],
+  });
+
+
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
 
@@ -62,6 +71,12 @@ export default function App({ Component, pageProps }) {
           />
         </>
       )}
+      
+      <style jsx global>{`
+        html {
+          font-family: ${plex_sans.style.fontFamily};
+        }
+      `}</style>
       {loading ? <Loading /> : ""}
       <Component {...pageProps} />
     </AuthWrapper>

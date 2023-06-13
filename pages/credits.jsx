@@ -61,7 +61,7 @@ export default function Profile() {
 
             <div className="w-full my-10 border-2 rounded-full border-slate-200"/>
             <div className="text-lg my-2 font-bold">IN ASSOCIATION WITH</div>
-            <div>충남삼성고 자율위원단 10기</div>
+            <div>충남삼성고 10대 자율위원단</div>
         </div>
       </Layout>
     </ProtectedPage>
