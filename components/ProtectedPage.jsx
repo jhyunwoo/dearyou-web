@@ -10,21 +10,21 @@ export default function ProtectedPage(props) {
     /** 로그인이 돼있지 않을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 p-4 flex justify-center items-center">
-          <div className="">
-            <Image
-              className="mx-auto my-4"
-              src="./favicon.ico"
-              width={100}
-              height={100}
-            />
-            <Link
-              className="bg-amber-400 hover:bg-amber-500 duration-200 transition text-white font-semibold text-xl p-2 px-6 rounded-full"
-              href={"/signin"}
-            >
-              로그인 페이지
-            </Link>
-          </div>
-
+        <div className="">
+          <Image
+            className="mx-auto my-4"
+            src="./favicon.ico"
+            width={100}
+            height={100}
+            alt="logo"
+          />
+          <Link
+            className="bg-amber-400 hover:bg-amber-500 duration-200 transition text-white font-semibold text-xl p-2 px-6 rounded-full"
+            href={"/signin"}
+          >
+            로그인 페이지
+          </Link>
+        </div>
       </div>
     );
   } else if (user.studentId === 0 || user.studentId == null) {

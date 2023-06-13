@@ -1,6 +1,6 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePbAuth } from "../../contexts/AuthWrapper";
 import Link from "next/link";
 import pb from "@/lib/pocketbase";
