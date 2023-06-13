@@ -54,6 +54,7 @@ export default function Chat() {
   useEffect(() => {
     if (!chatRecord) return;
     handleRead();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRecord]);
 
   /* 'Chats' 콜렉션에서 Record 가져오는 function (subscribe로 호출) */
@@ -380,6 +381,7 @@ export default function Chat() {
   useEffect(() => {
     if (!router.isReady) return;
     subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
   /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
@@ -390,6 +392,7 @@ export default function Chat() {
     const history = historyRef.current;
     history.scrollTop = history.scrollHeight;
     localStorage.setItem("chatScroll", history.scrollTop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userOther]);
 
   /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
@@ -431,9 +434,4 @@ export default function Chat() {
       </ProtectedPage>
     );
   }
-
-  /*
-          <div>Chat Id: '{chatRecord['id']}'</div>
-          <div>Buyer: '{chatRecord['buyer']}' Seller: '{chatRecord['seller']}'</div>
-  */
 }

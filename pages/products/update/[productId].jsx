@@ -37,7 +37,8 @@ export default function UpdateProduct({ productId }) {
       };
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
-    }, []);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isClient]);
     return windowSize;
   };
   const windows = useWindowSize();
@@ -54,7 +55,7 @@ export default function UpdateProduct({ productId }) {
     }
 
     getProductInfo();
-  }, []);
+  }, [productId]);
 
   async function onSubmit(data) {
     setIsLoading(true);
