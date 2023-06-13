@@ -27,7 +27,7 @@ export default function ProductCard(props) {
               {props.data?.expand?.seller?.name}
             </div>
             <div>{props.data?.expand?.seller?.studentId}</div>
-            <div className="text-red-500">{props.data?.soldDate ? "나눔 완료" : ""}</div>
+            <div className="text-orange-500">{props.data?.soldDate ? "나눔 완료" : ""}</div>
             <div className="text-red-500">{!props.data?.isConfirmed && props.data?.rejectedReason ? "반려됨" : ""}</div>
             <div className="text-amber-500">{!props.data?.isConfirmed && !props.data?.rejectedReason ? "승인 대기 중" : ""}</div>
           </div>

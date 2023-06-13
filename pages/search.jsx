@@ -1,26 +1,27 @@
 import Link from "next/link";
 import ProtectedPage from "@/components/ProtectedPage";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Layout from "@/components/Layout";
 import HeadBar from "@/components/HeadBar";
 import ProductGrid from "@/components/ProductGrid";
 
 export default function Search() {
   const [searched, setSearched] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
+  const [openOnly, setOpenOnly] = useState(true);
   const searchInput = useRef("");
 
-  async function handleSearch(event) {
-    event.preventDefault();
-    let searchWord = searchInput.current.value; // 검색어
-    if (searchWord.length === 0) return;
-
+  async function doSearch(word, isOpenOnly){
+    if (word.length === 0) return;
+    
     const searchResult = await pb.collection("products").getFullList({
-      filter: `name~"${searchWord}"||explain~"${searchWord}"||seller.name~"${searchWord}"`,
+      filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
+      ${isOpenOnly ? `&&soldDate=null` : ""}`,
       expand: "seller",
     });
 
@@ -28,25 +29,50 @@ export default function Search() {
     setSearched(searchResult);
   }
 
+  async function handleSearch(event) {
+    event.preventDefault();
+    let word = searchInput?.current?.value; // 검색어
+    if (word.length === 0) return;
+
+    setSearchWord(word);
+    await doSearch(word, openOnly);
+  }
+
   // SearchBar -> 'searchQuery' state에 검색어 저장
   function SearchBar() {
     return (
-      <div className="w-full h-16  flex justify-center items-center ">
-        <form onSubmit={handleSearch} className="w-full flex">
-          <input
-            ref={searchInput}
-            type="text"
-            placeholder="검색어를 입력하세요..."
-            autoFocus
-            className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
-          />
+      <div>
+        <div className="w-full h-16  flex justify-center items-center ">
+          <form onSubmit={handleSearch} className="w-full flex">
+            <input
+              ref={searchInput}
+              type="text"
+              placeholder="검색어를 입력하세요..."
+              autoFocus
+              className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
+            />
+            <button
+              type="submit"
+              className="text-orange-500 p-1 rounded-full m-1"
+            >
+              <MagnifyingGlassIcon className="w-8 h-8 hover:scale-105 transition duration-200" />
+            </button>
+          </form>
+        </div>
+        <div className="flex pb-2 items-center">
+          <div className="ml-auto text-slate-500">
+          나눔 완료된 물건 숨기기
+          </div>
           <button
-            type="submit"
-            className="text-orange-500 p-1 rounded-full m-1"
+            onClick={() => {
+              setOpenOnly(!openOnly);
+              doSearch(searchWord, !openOnly);
+            }}
           >
-            <MagnifyingGlassIcon className="w-8 h-8 hover:scale-105 transition duration-200" />
-          </button>
-        </form>
+            <EyeSlashIcon className={`w-8 h-8 mx-2 ${openOnly ? "stroke-orange-400" : "stroke-slate-400"}`}/>
+          </button> 
+        </div>
+        
       </div>
     );
   }
@@ -87,13 +113,16 @@ export default function Search() {
                         {data?.expand?.seller?.name}
                       </div>
                       <div>{data?.expand?.seller?.studentId}</div>
-                      <div>{data?.soldDate ? "나눔 완료" : ""}</div>
+                      <div className="text-orange-500">{data?.soldDate ? "나눔 완료" : ""}</div>
                     </div>
                   </div>
                 </div>
               </Link>
             ))}
           </ProductGrid>
+          <div
+            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+          />
         </div>
       );
     }
