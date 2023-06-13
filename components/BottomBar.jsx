@@ -17,17 +17,21 @@ export default function BottomBar() {
   const [ autonomy, setAutonomy ] = useState(false);
   
   async function getChat(){
-    const resultList = await pb.collection("chats").getFullList({
-      expand: "seller,buyer,messages,read",
-      filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
-    });
-
-    for(let i = 0; i < resultList.length; i++){
-      let read = resultList[i].expand.read
-      if(read.unreaduser == user.id && read.unreadcount > 0 ){
-        setUnreadChat(true);
-        break;
+    try{
+      const resultList = await pb.collection("chats").getFullList({
+        expand: "seller,buyer,messages,read",
+        filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
+      });
+  
+      for(let i = 0; i < resultList.length; i++){
+        let read = resultList[i].expand.read
+        if(read.unreaduser == user.id && read.unreadcount > 0 ){
+          setUnreadChat(true);
+          break;
+        }
       }
+    }catch(e){
+      console.log(e)
     }
   }
 

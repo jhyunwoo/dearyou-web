@@ -6,9 +6,12 @@ import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
 import AutonomyPage from "@/components/AutonomyPage";
+import Loading from "@/components/Loading";
 
 export default function Autonomy() {
   const [products, setProducts] = useState([]);
+
+  const [isLoading, setIsLoading]=useState(false)
 
   const fetch = useCallback(async () => {
     try {
@@ -18,16 +21,24 @@ export default function Autonomy() {
         filter: "isConfirmed=False",
       });
       setProducts(data);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }, []);
 
-  useEffect(() => {
-    fetch();
+  useEffect( () => {
+    async function effect(){
+      setIsLoading(true)
+    await fetch();
+    setIsLoading(false)
+    }
+    effect()
   }, []);
 
   return (
     <ProtectedPage>
       <AutonomyPage>
+        {isLoading?<Loading/>:""}
         <div
           href={"/autonomy"}
           className="flex bg-amber-500 text-white p-3 items-center"
