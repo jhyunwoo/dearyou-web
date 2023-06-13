@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import Loading from "@/components/Loading";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function SignIn() {
   const router = useRouter();
