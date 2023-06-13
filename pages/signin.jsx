@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import Loading from "@/components/Loading";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function SignIn() {
   const router = useRouter();
@@ -25,6 +25,17 @@ export default function SignIn() {
     }
     setIsLoading(false);
   }
+
+  useEffect(()=>{
+    function popup(){ 
+      var newWin = open("", "window1", "팝업창 옵션"); 
+    
+      if(!newWin || newWin.closed || typeof newWin.closed=="undefined"){
+        alert("팝업 제한을 해재해주세요.")
+      }
+    } 
+    popup()
+  },[])
 
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
