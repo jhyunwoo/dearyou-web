@@ -3,13 +3,18 @@ import Image from "next/image";
 
 export default function ProductCard(props) {
   return (
-    <Link href={
-      props.autonomy ? 
-      `/autonomy/${props.data.id}` : 
-      `/products/${props.data.id}`}>
+    <Link
+      href={
+        props.autonomy
+          ? `/autonomy/${props.data.id}`
+          : `/products/${props.data.id}`
+      }
+    >
       <div
         className={`flex rounded-lg p-2  w-full ${
-          (props.data?.soldDate || props.data?.rejectedReason) ? "bg-slate-100" : "bg-white"
+          props.data?.soldDate || props.data?.rejectedReason
+            ? "bg-slate-100"
+            : "bg-white"
         }`}
       >
         <Image
@@ -27,9 +32,19 @@ export default function ProductCard(props) {
               {props.data?.expand?.seller?.name}
             </div>
             <div>{props.data?.expand?.seller?.studentId}</div>
-            <div className="text-red-500">{props.data?.soldDate ? "나눔 완료" : ""}</div>
-            <div className="text-red-500">{!props.data?.isConfirmed && props.data?.rejectedReason ? "반려됨" : ""}</div>
-            <div className="text-amber-500">{!props.data?.isConfirmed && !props.data?.rejectedReason ? "승인 대기 중" : ""}</div>
+            <div className="text-slate-700">
+              {props.data?.soldDate ? "나눔 완료" : ""}
+            </div>
+            <div className="text-red-500">
+              {!props.data?.isConfirmed && props.data?.rejectedReason
+                ? "반려됨"
+                : ""}
+            </div>
+            <div className="text-amber-500">
+              {!props.data?.isConfirmed && !props.data?.rejectedReason
+                ? "승인 대기 중"
+                : ""}
+            </div>
           </div>
         </div>
       </div>
