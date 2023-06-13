@@ -59,13 +59,13 @@ export default function Profile() {
             href={"/profile/my-products"}
             className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
           >
-            내 상품
+            내가 등록한 물품
           </Link>
           <Link
             href={"/profile/my-reviews"}
             className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
           >
-            거래 후기
+            나눔 후기
           </Link>
         </div>
         <Link

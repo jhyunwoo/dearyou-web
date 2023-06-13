@@ -185,7 +185,7 @@ export default function ProductDetail({ productId }) {
         }`}
         disabled={productInfo.soldDate ? true : false}
         >
-          판매자와 채팅
+          '{productInfo.expand.seller.name}'님에게 채팅 문의
         </button>
       </div>
     )
@@ -281,11 +281,11 @@ export default function ProductDetail({ productId }) {
                     productInfo.rejectedReason ?
                       (
                       <div className="text-red-500">
-                        상품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
+                        물품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
                       </div>
                       ) : (
                       <div className="text-amber-500">
-                        상품 등록 승인 대기 중입니다.
+                        물품 등록 승인 대기 중입니다.
                       </div>
                       )
                   )}
