@@ -183,7 +183,7 @@ export default function ProductDetail({ productId }) {
           }`}
           disabled={productInfo.soldDate ? true : false}
         >
-          '{productInfo.expand.seller.name}'님에게 채팅 문의
+          &apos;{productInfo.expand.seller.name}&apos;님에게 채팅 문의
         </button>
       </div>
     )
