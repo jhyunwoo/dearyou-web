@@ -47,7 +47,7 @@ export default function MyReviews() {
       setSeller(sellerInfo);
     }
     getSellerInfo();
-  }, []);
+  }, [sellerId]);
 
   return (
     <ProtectedPage>

@@ -11,7 +11,7 @@ import Loading from "@/components/Loading";
 export default function Autonomy() {
   const [products, setProducts] = useState([]);
 
-  const [isLoading, setIsLoading]=useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetch = useCallback(async () => {
     try {
@@ -22,23 +22,23 @@ export default function Autonomy() {
       });
       setProducts(data);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }, []);
 
-  useEffect( () => {
-    async function effect(){
-      setIsLoading(true)
-    await fetch();
-    setIsLoading(false)
+  useEffect(() => {
+    async function effect() {
+      setIsLoading(true);
+      await fetch();
+      setIsLoading(false);
     }
-    effect()
-  }, []);
+    effect();
+  }, [fetch]);
 
   return (
     <ProtectedPage>
       <AutonomyPage>
-        {isLoading?<Loading/>:""}
+        {isLoading ? <Loading /> : ""}
         <div
           href={"/autonomy"}
           className="flex bg-amber-500 text-white p-3 items-center"

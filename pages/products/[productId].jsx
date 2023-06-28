@@ -53,7 +53,7 @@ export default function ProductDetail({ productId }) {
 
     getProductInfo();
     getUserWish();
-  }, []);
+  }, [productId]);
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
   const currentUser = usePbAuth().user;
@@ -156,34 +156,32 @@ export default function ProductDetail({ productId }) {
 
   function CloseProductButton(){
     return (
-    <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
-      <button
-        onClick={() =>
-          router.push(`/products/review/${productInfo.id}`)
-        }
-        className={`p-2 px-6 rounded-full ${
-          productInfo?.soldDate
-            ? "bg-gray-400"
-            : "bg-blue-400 hover:bg-blue-500 transition duration-200"
-        }`}
-        disabled={productInfo.soldDate ? true : false}
-      >
-        나눔 완료
-      </button>
-    </div>
-    )
+      <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+        <button
+          onClick={() => router.push(`/products/review/${productInfo.id}`)}
+          className={`p-2 px-6 rounded-full ${
+            productInfo?.soldDate
+              ? "bg-gray-400"
+              : "bg-blue-400 hover:bg-blue-500 transition duration-200"
+          }`}
+          disabled={productInfo.soldDate ? true : false}
+        >
+          나눔 완료
+        </button>
+      </div>
+    );
   }
-  function GoToChatButton(){
+  function GoToChatButton() {
     return (
       <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
         <button
           onClick={goToChat}
           className={`p-2 px-6 rounded-full ${
             productInfo?.soldDate
-          ? "bg-gray-400"
-          : "bg-amber-400 hover:bg-amber-500 transition duration-200"
-        }`}
-        disabled={productInfo.soldDate ? true : false}
+              ? "bg-gray-400"
+              : "bg-amber-400 hover:bg-amber-500 transition duration-200"
+          }`}
+          disabled={productInfo.soldDate ? true : false}
         >
           '{productInfo.expand.seller.name}'님에게 채팅 문의
         </button>
@@ -205,7 +203,7 @@ export default function ProductDetail({ productId }) {
           물품 숨기기
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -214,7 +212,10 @@ export default function ProductDetail({ productId }) {
         <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (
             <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
-              <ProductImageView productInfo={productInfo} productId={productId}/>
+              <ProductImageView
+                productInfo={productInfo}
+                productId={productId}
+              />
               <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
                 <div className="p-4 sm:p-2 flex flex-col ">
                   <div className=" pb-2 border-b-2 flex flex-col ">
@@ -231,8 +232,9 @@ export default function ProductDetail({ productId }) {
                             {productInfo.expand.seller.studentId}
                           </div>
 
-                          {(currentUser?.id === productInfo?.expand?.seller?.id
-                          && !productInfo?.rejectedReason) ? (
+                          {currentUser?.id ===
+                            productInfo?.expand?.seller?.id &&
+                          !productInfo?.rejectedReason ? (
                             <Link href={`/products/update/${productId}`}>
                               <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
                             </Link>
@@ -245,32 +247,34 @@ export default function ProductDetail({ productId }) {
                         {getUploadedTime(productInfo.created)}에 등록
                       </div>
                       <div className="ml-auto font-bold text-slate-500">
-                        {productInfo.isConfirmed ? (
-                          productInfo.soldDate
-                          ? `${getUploadedTime(productInfo.soldDate)}에 나눔 완료`
-                          : "나눔 중") : (
-                          productInfo.rejectedReason
-                          ? '반려됨'
-                          : '승인 대기 중'
-                          )}
+                        {productInfo.isConfirmed
+                          ? productInfo.soldDate
+                            ? `${getUploadedTime(
+                                productInfo.soldDate,
+                              )}에 나눔 완료`
+                            : "나눔 중"
+                          : productInfo.rejectedReason
+                          ? "반려됨"
+                          : "승인 대기 중"}
                       </div>
                       <div className="font-medium text-lg my-2">
                         {productInfo.explain}
                       </div>
                       <div>종류: {productInfo.type}</div>
                     </div>
-                    {productInfo.isConfirmed ? 
-                    <button onClick={controlWish}>
-                      {userWish?.includes(productId) ? (
-                        <HeartIcon className="w-8 h-8 text-red-500" />
-                      ) : (
-                        <HeartIcon className="w-8 h-8 text-red-100" />
-                      )}
-                    </button> : null}
+                    {productInfo.isConfirmed ? (
+                      <button onClick={controlWish}>
+                        {userWish?.includes(productId) ? (
+                          <HeartIcon className="w-8 h-8 text-red-500" />
+                        ) : (
+                          <HeartIcon className="w-8 h-8 text-red-100" />
+                        )}
+                      </button>
+                    ) : null}
                   </div>
                   {productInfo.isConfirmed ? (
                     currentUser?.id === productInfo?.expand?.seller?.id ? (
-                      <CloseProductButton/>
+                      <CloseProductButton />
                     ) : (
                       <div>
                       <GoToChatButton/>

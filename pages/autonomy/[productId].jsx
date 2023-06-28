@@ -41,7 +41,7 @@ export default function ProductDetail({ productId }) {
 
   useEffect(() => {
     async function getProductInfo() {
-      try{
+      try {
         const record = await pb.collection("products").getOne(productId, {
           expand: "seller, confirmedBy",
         });
@@ -50,13 +50,13 @@ export default function ProductDetail({ productId }) {
         } else {
           setProductInfo(false);
         }
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     }
 
     getProductInfo();
-  }, []);
+  }, [productId]);
 
   // 승인 버튼
   async function handleConfirm() {
@@ -155,8 +155,8 @@ export default function ProductDetail({ productId }) {
                 <div className="px-4 sm:p-2 flex flex-col text-center">
                   {productInfo.rejectedReason ? (
                     <div className="font-bold text-red-500">
-                      앞선 검토에서 "{productInfo.rejectedReason}" 사유로 등록이
-                      거절된 물건입니다.
+                      앞선 검토에서 &quot;{productInfo.rejectedReason}&quot;
+                      사유로 등록이 거절된 물건입니다.
                     </div>
                   ) : null}
                   <div className="pb-2 font-bold ">
