@@ -29,7 +29,7 @@ export default function ProductDetail({ productId }) {
   const [addWish, setAddWish] = useState(false);
   const [imageScroll, setImageScroll] = useState(1);
   const imageRef = useRef();
-  const autonomy = pb.authStore.model.autonomy;
+  const autonomy = pb.authStore?.model?.autonomy;
 
   const router = useRouter();
 
@@ -188,7 +188,7 @@ export default function ProductDetail({ productId }) {
       </div>
     )
   }
-  // (자율위원 전용) 상품 숨기기 버튼
+  // (자율위원 전용) 물품 숨기기 버튼
   function HideProductButton(){
     if (!autonomy) return null;
 
@@ -284,13 +284,13 @@ export default function ProductDetail({ productId }) {
                     ) : (
                     productInfo.rejectedReason ?
                       (
-                      <div className="text-red-500">
+                    <div className="text-red-500">
                         물품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
-                      </div>
-                      ) : (
-                      <div className="text-amber-500">
+                    </div>
+                  ) : (
+                    <div className="text-amber-500">
                         물품 등록 승인 대기 중입니다.
-                      </div>
+                    </div>
                       )
                   )}
                   <div className="w-full h-16 sm:h-0"></div>
