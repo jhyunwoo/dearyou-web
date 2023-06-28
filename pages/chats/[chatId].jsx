@@ -1,19 +1,12 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { useInView } from "react-intersection-observer";
+import { useState, useEffect, useRef } from "react";
 import { usePbAuth } from "../../contexts/AuthWrapper";
-import Link from "next/link";
-import Image from "next/image";
 import pb from "@/lib/pocketbase";
 import {
-  ArrowLeftIcon,
   PhotoIcon,
   PaperAirplaneIcon,
-  CheckIcon,
-  ArrowDownIcon,
 } from "@heroicons/react/24/outline";
-import getUploadedTime from "@/lib/getUploadedTime";
 import ChatHistory from "@/components/ChatHistory";
 
 export default function Chat() {
@@ -32,12 +25,69 @@ export default function Chat() {
   // 로딩 중 상태 여부 저장하는 state
   const [isLoading, setIsLoading] = useState(false);
 
+  // ref
   const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
 
-  async function handleRead() {
-    setIsLoading(true);
+  
+  /* ********************************** */
+  /*  초기 데이터 로딩&실시간 로딩 처리   */
+  /* ********************************** */
+  
+  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
+  useEffect(() => {
+    if (!router.isReady) return;
+    // pb에서 Chat Record 실시간으로 가져오도록 subscribe
+    subChatRecord();
+  }, [router.isReady]);
 
+  /* 채팅 관련 정보 subscribe (useEffect로 처음에 호출) */
+  async function subChatRecord() {
+    setIsLoading(true);
+    await pb.collection("chats").subscribe(chatId, getChatRecord);
+    const record = await getChatRecord();
+    await pb.collection("chats_read").subscribe(record?.read, () => {
+      getReadRecord(record?.read);
+    });
+    getReadRecord(record?.read);
+
+    // UserMe, UserOther 저장
+    const buyer = record?.expand.buyer;
+    const seller = record?.expand.seller;
+    setUserMe(buyer?.id === user?.id ? buyer : seller);
+    setUserOther(buyer?.id === user.id ? seller : buyer);
+    setIsLoading(false);
+    return;
+  }
+  
+  /* 'Chats' 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  async function getChatRecord() {
+    if (!chatId) return;
+    let record = null
+    try{
+      record = await pb
+        .collection("chats")
+        .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+      setChatRecord(record);
+    }
+    catch { }
+    return record;
+  }
+
+  /* 'Chats_read' 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  async function getReadRecord(id) {
+    let record = null;
+    try{
+      record = await pb.collection("chats_read").getOne(id);
+    }
+    catch{ }
+
+    setReadRecord(record);
+    return record;
+  }
+
+  /* chatRecord state가 바뀔 때 읽음 상태를 알맞게 조절 */
+  async function handleRead() {
     let record = chatRecord.expand.read;
     if (record.unreaduser === userMe?.id && record.unreadcount > 0) {
       record.unreadcount = 0;
@@ -47,59 +97,19 @@ export default function Chat() {
         .update(chatRecord.expand.read.id, record);
     }
     setReadRecord(record);
-    setIsLoading(false);
   }
-
   useEffect(() => {
     if (!chatRecord) return;
     handleRead();
   }, [chatRecord]);
 
-  /* 'Chats' 콜렉션에서 Record 가져오는 function (subscribe로 호출) */
-  async function getChatRecord() {
-    setIsLoading(true);
 
-    if (!chatId) return;
-    let record = await pb
-      .collection("chats")
-      .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+  /* ********************************** */
+  /*      새로운 채팅 업로드 처리         */
+  /* ********************************** */
 
-    setChatRecord(record);
-    setIsLoading(false);
-    return record;
-  }
-
-  async function getReadRecord(id) {
-    setIsLoading(true);
-
-    let record = await pb.collection("chats_read").getOne(id);
-
-    setReadRecord(record);
-    setIsLoading(false);
-    return record;
-  }
-
-  /* 채팅 관련 정보 subscribe하는 function (useEffect로 처음에 호출) */
-  async function subChatRecord() {
-    setIsLoading(true);
-    await pb.collection("chats").subscribe(chatId, getChatRecord);
-    const record = await getChatRecord();
-    await pb.collection("chats_read").subscribe(record.read, () => {
-      getReadRecord(record.read);
-    });
-
-    // UserMe, UserOther 저장
-    const buyer = record.expand.buyer;
-    const seller = record.expand.seller;
-    setUserMe(buyer?.id === user?.id ? buyer : seller);
-    setUserOther(buyer.id === user.id ? seller : buyer);
-    setIsLoading(false);
-    return;
-  }
-
-
+  /* 새로운 채팅 업로드 -> chats, chats_read 콜렉션 update */
   async function uploadNewChat(msgData) {
-    setIsLoading(true);
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
@@ -116,14 +126,11 @@ export default function Chat() {
       console.error("Message Upload Failed");
     }
     clearDraft();
-    setIsLoading(false);
     return;
   }
 
+  /* 메시지 보내기 버튼 눌렀을 때 처리 */
   async function handleChatInput() {
-    // 메시지 보내기 버튼 눌렀을 때 처리
-    setIsLoading(true);
-
     if (chatInput.current.value.length === 0) {
       alert("메시지를 입력하세요.");
       return;
@@ -134,35 +141,22 @@ export default function Chat() {
     msgData.append("owner", pb.authStore.model.id);
 
     uploadNewChat(msgData);
-
-    setIsLoading(false);
   }
 
+  /* 이미지 보내기 버튼 눌렀을 때 처리 */
   async function handleImageInput() {
-    //이미지 보내기 버튼 눌렀을 때 처리
-    setIsLoading(true);
-
     const msgData = new FormData();
     msgData.append("text", chatInput.current.value);
     msgData.append("owner", pb.authStore.model.id);
     msgData.append("image", imgRef.current.files[0]);
 
     uploadNewChat(msgData);
-
-    setIsLoading(false);
   }
 
-  function saveDraft() {
-    localStorage.setItem(
-      `${user.id}-${chatRecord.id}`,
-      chatInput.current.value,
-    );
-  }
-  function clearDraft() {
-    localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
-  }
+  /* 채팅 입력 바 컴포넌트 */
+  const saveDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  const clearDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
   function ChatInput() {
-    //채팅 입력 컴포넌트
     return (
       <div className="fixed bottom-0 right-0 left-0 p-2 bg-white w-full">
         <div className="text-center flex w-full">
@@ -205,24 +199,16 @@ export default function Chat() {
     );
   }
 
-  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
-  useEffect(() => {
-    if (!router.isReady) return;
-    subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
-  }, [router.isReady]);
-
-  /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
-  useEffect(() => {
-    if (!userOther) return;
-    getChatRecord();
-  }, [userOther]);
-
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
     return (
       <ProtectedPage>
         <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
-          <div className="text-base">잘못된 채팅입니다.</div>
+          <div className="text-base">
+            {isLoading ? 
+              "정보를 불러오는 중입니다..." : 
+              "존재하지 않는 채팅입니다."}
+            </div>
         </div>
       </ProtectedPage>
     );

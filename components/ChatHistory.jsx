@@ -1,15 +1,10 @@
 import ProtectedPage from "@/components/ProtectedPage";
-import { useRouter } from "next/router";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
-import { usePbAuth } from "../contexts/AuthWrapper";
 import Link from "next/link";
 import Image from "next/image";
-import pb from "@/lib/pocketbase";
 import {
   ArrowLeftIcon,
-  PhotoIcon,
-  PaperAirplaneIcon,
   CheckIcon,
   ArrowDownIcon,
 } from "@heroicons/react/24/outline";
@@ -17,17 +12,19 @@ import getUploadedTime from "@/lib/getUploadedTime";
 
 // 채팅 창(메시지 목록) 컴퓨넌트
 export default function ChatHistory({chatRecord, readRecord, userMe, userOther}){
+    // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
+    const [msgRef, msgInView] = useInView();
+    const [showDown, setShowDown] = useState(false);
+
+    //ref
     const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
     const lastMsgRef = useRef(); // 마지막 메시지 ref -> y좌표 가져오기
-    //채팅 창 컴포넌트
+    
     const messages = chatRecord?.expand["messages"];
     const lastread = readRecord?.lastread;
     let lastreadidx = -1;
     let lastunread = true;
 
-    // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
-    const [msgRef, msgInView] = useInView();
-    const [showDown, setShowDown] = useState(false);
 
     // 새로고침 시 스크롤 위치를 최하단으로 설정
     useEffect(() => {
