@@ -60,7 +60,7 @@ export default function Chat() {
     return;
   }
   
-  /* 'Chats' 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  /* Chats 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
   async function getChatRecord() {
     if (!chatId) return;
     let record = null
@@ -74,7 +74,7 @@ export default function Chat() {
     return record;
   }
 
-  /* 'Chats_read' 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  /* Chats_read 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
   async function getReadRecord(id) {
     let record = null;
     try{
