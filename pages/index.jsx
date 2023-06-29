@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
 import ProductGrid from "@/components/ProductGrid";
@@ -42,9 +42,16 @@ export default function Home() {
       <BottomBar />
       <Link
         href={"/products/create-product"}
-        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-400 transition duration-200 shadow-lg shadow-amber-500 hover:shadow-amber-400"
+        className="fixed right-6 bottom-36 bg-amber-400 p-2 rounded-full hover:bg-amber-300 transition duration-200 shadow-md shadow-amber-400 hover:shadow-amber-300"
       >
         <PlusIcon className="w-8 h-8 text-white" />
+      </Link>
+      
+      <Link
+        href="/search"
+        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-400 transition duration-200 shadow-md shadow-amber-500 hover:shadow-amber-400"
+      >
+        <MagnifyingGlassIcon className="w-8 h-8 text-white" />
       </Link>
       <HeadBar title="드려유" />
       <Layout>

@@ -4,12 +4,15 @@ import Layout from "@/components/Layout";
 import ProtectedPage from "@/components/ProtectedPage";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Profile() {
   const { user, signOut } = usePbAuth();
 
+  // 개발자 권한 (로그 열람 권한)
+  const permission = pb.authStore.model?.logPermission;
   return (
     <ProtectedPage>
       <BottomBar />
@@ -67,6 +70,16 @@ export default function Profile() {
           >
             나눔 후기
           </Link>
+          {
+            permission ? (
+            <Link
+              href={"/logs"}
+              className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            >
+              <Cog6ToothIcon className="w-6 h-6 stroke-slate-600 mr-1"/>개발자 페이지
+            </Link>
+            ) : null
+          }
         </div>
         <Link
           href={"/credits"}

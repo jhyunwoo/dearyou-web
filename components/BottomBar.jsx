@@ -62,12 +62,6 @@ export default function BottomBar() {
         <HomeIcon className="w-8 h-8  " />
       </Link>
       <Link
-        href="/search"
-        className="text-amber-600 hover:bg-amber-500 hover:shadow-md hover:text-white p-2 rounded-2xl transition duration-200"
-      >
-        <MagnifyingGlassIcon className="w-8 h-8  " />
-      </Link>
-      <Link
         href={"/chats"}
         className="relative text-amber-600 hover:bg-amber-500 hover:shadow-md hover:text-white p-2 rounded-2xl transition duration-200"
       >
