@@ -109,6 +109,10 @@ export default function Chat() {
   /*      새로운 채팅 업로드 처리         */
   /* ********************************** */
 
+  /* localStorage에 작성 중이던 내용 저장&불러오기 */
+  const saveDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  const clearDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
+
   /* 새로운 채팅 업로드 -> chats, chats_read 콜렉션 update */
   async function uploadNewChat(msgData) {
     try {
@@ -155,8 +159,6 @@ export default function Chat() {
   }
 
   /* 채팅 입력 바 컴포넌트 */
-  const saveDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
-  const clearDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
   function ChatInput() {
     return (
       <div className="fixed bottom-0 right-0 left-0 p-2 bg-white w-full">
@@ -199,44 +201,6 @@ export default function Chat() {
       </div>
     );
   }
-
-  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
-  useEffect(() => {
-    if (!router.isReady) return;
-    subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady]);
-
-  /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
-  useEffect(() => {
-    if (!userOther) return;
-    getChatRecord();
-
-    const history = historyRef.current;
-    history.scrollTop = history.scrollHeight;
-    localStorage.setItem("chatScroll", history.scrollTop);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOther]);
-
-  /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
-  useLayoutEffect(() => {
-    try {
-      const history = historyRef.current;
-      const lastMsg = lastMsgRef.current;
-      const height = parseInt(localStorage.getItem("chatScroll"));
-
-      if (
-        height + history.clientHeight + lastMsg.clientHeight + 5 <
-        history.scrollHeight
-      ) {
-        //사용자가 채팅창 상단을 보고 있는 경우
-        history.scrollTop = height;
-      } else {
-        history.scrollTop = history.scrollHeight;
-        localStorage.setItem("chatScroll", history.scrollTop);
-      }
-    } catch {}
-  }, [chatRecord, readRecord, isLoading]);
 
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우

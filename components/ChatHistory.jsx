@@ -82,6 +82,10 @@ export default function ChatHistory({chatRecord, readRecord, userMe, userOther})
       }
     }, [msgInView]);
 
+
+
+    
+
     
     // 상품 페이지로 이동하는 버튼 컴포넌트
     function ProductLink(props) {
@@ -126,17 +130,17 @@ export default function ChatHistory({chatRecord, readRecord, userMe, userOther})
     }
 
     // 읽음, 안읽음 표시 컴포넌트
-    function ReadMark({itemKey, offset}){
+    function ReadMark({itemKey}){
         return (
             <div>
                 {itemKey === lastreadidx ? (
-                    <div className={`absolute bottom-0 left-[-${offset}px] flex`}>
+                    <div className={`absolute bottom-0 left-[-30px] flex`}>
                         <CheckIcon className="stroke-slate-400 w-4 h-4" />
                         <div className="text-slate-400 text-xs">읽음</div>
                     </div>
                 ) : null}
                 {itemKey === messages.length - 1 && lastunread ? (
-                    <div className={`absolute bottom-0 left-[-${offset}px] flex`}>
+                    <div className={`absolute bottom-0 left-[-30px] flex`}>
                         <div className="text-slate-400 text-xs">안읽음</div>
                     </div>
                 ) : null}
@@ -186,19 +190,19 @@ export default function ChatHistory({chatRecord, readRecord, userMe, userOther})
                     (<div>
                         <Image
                             src={`https://dearyouapi.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-                            width={300}
-                            height={300}
+                            width={280}
+                            height={280}
                             alt={data.id}
                             className="mx-3 relative rounded-lg shadow-lg"
                         />
-                        <ReadMark itemKey={key} offset={35}/>
+                        <ReadMark itemKey={key}/>
                     </div>) : 
                     (<div className="flex">
                         <div className={data?.expand["owner"]?.id === userMe?.id 
                             ? "relative ml-auto" : "mr-auto"}>
                             <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl break-words max-w-[230px]">
                                 {data?.text}
-                                <ReadMark itemKey={key} offset={30}/>
+                                <ReadMark itemKey={key}/>
                             </div>
                         </div>
                     </div>)
