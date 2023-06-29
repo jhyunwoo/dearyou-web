@@ -10,6 +10,7 @@ import {
   CheckIcon,
   ArrowDownIcon,
 } from "@heroicons/react/24/outline";
+import DeveloperPage from "@/components/DeveloperPage";
 
 export default function Chat() {
   const { user } = usePbAuth();
@@ -88,6 +89,7 @@ export default function Chat() {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
     return (
       <ProtectedPage>
+        <DeveloperPage>
         <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
           <div className="text-base">
             {isLoading ? 
@@ -95,11 +97,13 @@ export default function Chat() {
               "존재하지 않는 채팅입니다."}
             </div>
         </div>
+        </DeveloperPage>
       </ProtectedPage>
     );
   } else {
     return (
       <ProtectedPage>
+        <DeveloperPage>
         <div className="w-full min-h-screen bg-slate-50">
           <ChatHistory 
             parseTime={false}
@@ -131,6 +135,7 @@ export default function Chat() {
                 </div>
             </h3>
         </div>
+        </DeveloperPage>
       </ProtectedPage>
     );
   }

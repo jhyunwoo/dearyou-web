@@ -83,9 +83,6 @@ export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, 
     }, [msgInView]);
 
 
-
-    
-
     
     // 상품 페이지로 이동하는 버튼 컴포넌트
     function ProductLink(props) {
@@ -172,9 +169,12 @@ export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, 
                 key={key}
               >
                 <div className={`mx-4 flex items-center mt-2`}>
-                  <div className={`text-slate-700 font-semibold`}>
+                  <Link className={`text-slate-700 font-semibold`}
+                    href={
+                      data?.expand["owner"]?.id === userMe?.id ?
+                      `/profile/` : `/profile/${userOther?.id}`}>
                     {data?.expand["owner"]?.name}
-                  </div>
+                  </Link>
                   <div className=" text-gray-400 text-sm mx-1 font-light">
                     {parseTime ? getUploadedTime(data?.created) : data?.created}
                   </div>
@@ -228,7 +228,11 @@ export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, 
           <Link href={"/chats"}>
             <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
           </Link>
-          <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
+          <Link 
+            href={`/profile/${userOther?.id}`}
+            className="text-xl font-semibold ml-4">
+              {userOther?.name}
+          </Link>
         </div>
         <div className="w-full h-16"></div>
       </div>
