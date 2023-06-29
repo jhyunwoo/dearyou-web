@@ -9,16 +9,19 @@ import Image from "next/image";
 import Link from "next/link";
 import ProtectedPage from "@/components/ProtectedPage";
 
-export default function ChatLogPage() {
+export default function LogPage() {
   return (
     <ProtectedPage>
         <DeveloperPage>
         <BottomBar />
-        <HeadBar title="채팅 로그 조회" />
+        <HeadBar title="개발자 페이지" />
         <Layout>
-            <div className="rounded-lg border-2 m-4">
-                aa
-            </div>
+            <Link
+                href={"/devpage/chats-log"}
+                className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            >
+                채팅 로그 조회
+            </Link>
         </Layout>
         </DeveloperPage>
     </ProtectedPage>

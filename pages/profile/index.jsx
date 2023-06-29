@@ -73,7 +73,7 @@ export default function Profile() {
           {
             permission ? (
             <Link
-              href={"/logs"}
+              href={"/devpage"}
               className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
             >
               <Cog6ToothIcon className="w-6 h-6 stroke-slate-600 mr-1"/>개발자 페이지

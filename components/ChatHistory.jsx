@@ -11,7 +11,7 @@ import {
 import getUploadedTime from "@/lib/getUploadedTime";
 
 // 채팅 창(메시지 목록) 컴퓨넌트
-export default function ChatHistory({chatRecord, readRecord, userMe, userOther}){
+export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, userOther}){
     // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
     const [msgRef, msgInView] = useInView();
     const [showDown, setShowDown] = useState(false);
@@ -131,6 +131,7 @@ export default function ChatHistory({chatRecord, readRecord, userMe, userOther})
 
     // 읽음, 안읽음 표시 컴포넌트
     function ReadMark({itemKey}){
+        if (!parseTime) return;
         return (
             <div>
                 {itemKey === lastreadidx ? (
@@ -175,7 +176,7 @@ export default function ChatHistory({chatRecord, readRecord, userMe, userOther})
                     {data?.expand["owner"]?.name}
                   </div>
                   <div className=" text-gray-400 text-sm mx-1 font-light">
-                    {getUploadedTime(data?.created)}
+                    {parseTime ? getUploadedTime(data?.created) : data?.created}
                   </div>
                 </div>
 

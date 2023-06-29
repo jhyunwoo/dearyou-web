@@ -220,6 +220,7 @@ export default function Chat() {
       <ProtectedPage>
         <div className="w-full min-h-screen bg-slate-50">
           <ChatHistory 
+            parseTime={true}
             chatRecord={chatRecord} 
             readRecord={readRecord} 
             userMe={userMe}
