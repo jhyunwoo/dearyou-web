@@ -70,7 +70,7 @@ export default function SignIn() {
     //   console.error(err);
     // });
     setIsLoading(false);
-  }, [router, setUserData]);
+  }, []);
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
