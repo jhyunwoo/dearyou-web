@@ -7,6 +7,7 @@ export default function Document() {
       <body className={`scrollbar-hide`}>
         <Main />
         <NextScript />
+
         {process.env.NODE_ENV !== "development" && (
           <script
             dangerouslySetInnerHTML={{

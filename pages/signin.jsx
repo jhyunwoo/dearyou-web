@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import pb from "../lib/pocketbase";
 import { usePbAuth } from "../contexts/AuthWrapper";
 import Loading from "@/components/Loading";
+import Image from "next/image";
 
 export default function SignIn() {
-  const { setUserData, kakaoSignIn } = usePbAuth();
+  const { setUserData, kakaoSignIn, appleSignIn } = usePbAuth();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -68,15 +69,35 @@ export default function SignIn() {
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
-      <div className="bg-white max-w-xl shadow-xl p-8 py-16 flex flex-col w-5/6 space-y-2">
+      <div className="bg-white max-w-xl shadow-xl p-8 py-16 flex flex-col w-5/6 space-y-2 ">
         <div className="text-3xl font-bold mx-auto m-4">로그인</div>
         <button
           onClick={kakaoSignIn}
-          className="bg-yellow-400 shadow-lg p-2 px-4 rounded-lg flex hover:bg-yellow-300 transition duration-200"
+          className="bg-[#ffe812] shadow-lg  p-2 px-4 rounded-lg  transition duration-200 flex justify-center items-center"
         >
-          <div className="font-semibold text-base m-auto text-white">
+          <Image
+            src={"/kakao-logo.png"}
+            className=""
+            width={25}
+            height={25}
+            alt={"logo"}
+          />
+          <div className="ml-4 font-semibold text-base text-white">
             카카오로 로그인
           </div>
+        </button>
+        <button
+          onClick={appleSignIn}
+          className="bg-black mt-4 text-white shadow-lg p-2 px-4 rounded-lg flex justify-center items-center"
+        >
+          <Image
+            src={"/apple_logo.png"}
+            className=""
+            width={20}
+            height={20}
+            alt={"logo"}
+          />
+          <div className="font-semibold text-base ml-4">애플로 로그인</div>
         </button>
       </div>
     </div>
