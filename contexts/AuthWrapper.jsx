@@ -73,6 +73,7 @@ const AuthWrapper = ({ children }) => {
     localStorage.setItem("provider", JSON.stringify(kakaoAuthProvider));
     const redirectUrl = `${location.origin}/signin`;
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
+    console.log(url);
     router.push(url);
   };
 
