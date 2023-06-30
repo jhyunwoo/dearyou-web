@@ -35,6 +35,10 @@ export default function SignIn() {
         code,
         localAuthProvider.codeVerifier,
         redirectUrl,
+        {
+          emailVisibility: false,
+        },
+        { $autoCancel: false },
       )
       .then(async (response) => {
         const user = await pb.collection("users").getOne(response.record.id);
