@@ -72,7 +72,7 @@ export default function CreateProduct() {
     <ProtectedPage>
       {isLoading ? <Loading /> : ""}
       <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
-        <div className="text-xl font-bold">상품 등록</div>
+        <div className="text-xl font-bold">물품 등록</div>
         <div className="sm:flex sm:justify-center sm:items-start">
           <div className="bg-slate-50 sm:w-1/2  p-4 flex flex-col">
             <div className="">

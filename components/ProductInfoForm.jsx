@@ -12,9 +12,9 @@ export default function ProductInfoForm(props){
       } = useForm();
 
     return (
-        <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
+        <div className="">
             <form onSubmit={handleSubmit(props.onSubmit)} className="flex flex-col">
-              <div className="text-lg font-semibold">제품명</div>
+              <div className="text-lg font-semibold">물품명</div>
               <input
                 {...register("name", { required: true })}
                 className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"

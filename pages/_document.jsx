@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="kr">
       <Head />
-      <body className="scrollbar-hide">
+      <body className={`scrollbar-hide`}>
         <Main />
         <NextScript />
         {process.env.NODE_ENV !== "development" && (
