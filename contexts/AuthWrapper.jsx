@@ -71,7 +71,7 @@ const AuthWrapper = ({ children }) => {
   const kakaoSignIn = () => {
     signOut();
     localStorage.setItem("provider", JSON.stringify(kakaoAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
+    const redirectUrl = "https://dearyou.moveto.kr/signin";
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
     console.log(redirectUrl);
     // router.push(url);
