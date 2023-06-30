@@ -53,7 +53,8 @@ const AuthWrapper = ({ children }) => {
   const appleSignIn = () => {
     signOut();
     localStorage.setItem("provider", JSON.stringify(appleAuthProvider));
-    const redirectUrl = `${location.origin}/signin`;
+    // const redirectUrl = `${location.origin}/signin`;
+    const redirectUrl = "https://dearyouapi.moveto.kr/api/oauth2-redirect";
     const url = appleAuthProvider?.authUrl + redirectUrl;
     console.log(url);
 
@@ -72,8 +73,7 @@ const AuthWrapper = ({ children }) => {
   const kakaoSignIn = () => {
     signOut();
     localStorage.setItem("provider", JSON.stringify(kakaoAuthProvider));
-    // const redirectUrl = `${location.origin}/signin`;
-    const redirectUrl = "https://dearyouapi.moveto.kr/api/oauth2-redirect";
+    const redirectUrl = `${location.origin}/signin`;
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
 
     router.push(url);
