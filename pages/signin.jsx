@@ -41,25 +41,25 @@ export default function SignIn() {
         const user = await pb.collection("users").getOne(response.record.id);
 
         // skip profile updation if user already exists or user data from OAuth providers haven't changed
-        if (
-          user.name &&
-          user.avatarUrl &&
-          user.name === response.meta?.name &&
-          user.avatarUrl === response.meta?.avatarUrl
-        ) {
-          storeUserAndRedirect(user);
-        } else
-          pb.collection("users")
-            .update(response.record.id, {
-              name: response.meta?.name,
-              avatarUrl: response.meta?.avatarUrl,
-            })
-            .then((res) => {
-              storeUserAndRedirect(res);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+        // if (
+        //   user.name &&
+        //   user.avatarUrl &&
+        //   user.name === response.meta?.name &&
+        //   user.avatarUrl === response.meta?.avatarUrl
+        // ) {
+        //   storeUserAndRedirect(user);
+        // } else
+        //   pb.collection("users")
+        //     .update(response.record.id, {
+        //       name: response.meta?.name,
+        //       avatarUrl: response.meta?.avatarUrl,
+        //     })
+        //     .then((res) => {
+        //       storeUserAndRedirect(res);
+        //     })
+        //     .catch((err) => {
+        //       console.error(err);
+        //     });
       })
       .catch((err) => {
         console.error(err);
