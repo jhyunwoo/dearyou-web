@@ -55,7 +55,6 @@ const AuthWrapper = ({ children }) => {
     localStorage.setItem("provider", JSON.stringify(appleAuthProvider));
     const redirectUrl = `${location.origin}/signin`;
     const url = appleAuthProvider?.authUrl + redirectUrl;
-    console.log(url);
 
     router.push(url);
   };
@@ -75,7 +74,6 @@ const AuthWrapper = ({ children }) => {
     // const redirectUrl = `${location.origin}/signin`;
     const redirectUrl = "https://dearyouapi.moveto.kr/api/oauth2-redirect";
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
-
     router.push(url);
   };
 
