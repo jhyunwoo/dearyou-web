@@ -38,31 +38,33 @@ export default function SignIn() {
       )
       .then(async (response) => {
         const user = await pb.collection("users").getOne(response.record.id);
-
-        // skip profile updation if user already exists or user data from OAuth providers haven't changed
-        if (
-          user.name &&
-          user.avatarUrl &&
-          user.name === response.meta?.name &&
-          user.avatarUrl === response.meta?.avatarUrl
-        ) {
-          storeUserAndRedirect(user);
-        } else storeUserAndRedirect(user);
-        // pb.collection("users")
-        //   .update(response.record.id, {
-        //     name: response.meta?.name,
-        //     avatarUrl: response.meta?.avatarUrl,
-        //   })
-        //   .then((res) => {
-        //     storeUserAndRedirect(res);
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
-      })
-      .catch((err) => {
-        console.error(err);
+        storeUserAndRedirect(user);
       });
+
+    // skip profile updation if user already exists or user data from OAuth providers haven't changed
+    // if (
+    //   user.name &&
+    //   user.avatarUrl &&
+    //   user.name === response.meta?.name &&
+    //   user.avatarUrl === response.meta?.avatarUrl
+    // ) {
+    //   storeUserAndRedirect(user);
+    // } else storeUserAndRedirect(user);
+    // pb.collection("users")
+    //   .update(response.record.id, {
+    //     name: response.meta?.name,
+    //     avatarUrl: response.meta?.avatarUrl,
+    //   })
+    //   .then((res) => {
+    //     storeUserAndRedirect(res);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+    // })
+    // .catch((err) => {
+    //   console.error(err);
+    // });
     setIsLoading(false);
   }, [router, setUserData]);
   return (
