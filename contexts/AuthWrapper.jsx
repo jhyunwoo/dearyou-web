@@ -75,7 +75,7 @@ const AuthWrapper = ({ children }) => {
     const redirectUrl = "https://dearyouapi.moveto.kr/api/oauth2-redirect";
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
     console.log(redirectUrl);
-    router.push(url);
+    // router.push(url);
   };
 
   const signOut = () => {
