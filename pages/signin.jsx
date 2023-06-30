@@ -31,7 +31,7 @@ export default function SignIn() {
       return;
     setIsLoading(true);
     pb.collection("users")
-      .authWithOAuth2(
+      .authWithOAuth2Code(
         localAuthProvider.name,
         code,
         localAuthProvider.codeVerifier,
