@@ -74,7 +74,7 @@ const AuthWrapper = ({ children }) => {
     const redirectUrl = `${location.origin}/signin`;
     const url = kakaoAuthProvider?.authUrl + redirectUrl;
     console.log(redirectUrl);
-    router.push(url);
+    // router.push(url);
   };
 
   const signOut = () => {

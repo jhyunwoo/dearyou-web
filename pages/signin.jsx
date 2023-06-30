@@ -10,17 +10,16 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  /** 사용자 데이터를 userData에 저장하고 홈 페이지로 리다이렉트 */
-  const storeUserAndRedirect = (user) => {
-    setUserData(user);
-    router.replace("/");
-  };
-
   useEffect(() => {
     const localAuthProvider = JSON.parse(localStorage.getItem("provider"));
     const params = new URL(location.href).searchParams;
     const redirectUrl = `${location.origin}/signin`;
     const code = params.get("code");
+
+    const storeUserAndRedirect = (user) => {
+      setUserData(user);
+      router.replace("/");
+    };
 
     // 리다이렉트 되지 않으면 로그인 취소
     if (
@@ -65,7 +64,7 @@ export default function SignIn() {
         console.error(err);
       });
     setIsLoading(false);
-  }, []);
+  }, [router, setUserData]);
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
