@@ -70,6 +70,14 @@ export default function UpdateProduct({ productId }) {
     router.replace("/");
   }
 
+  async function onDeleteProduct() {
+    if(window.confirm("물품을 정말 삭제할까요? (취소할 수 없습니다!)")){
+      await pb.collection("products").delete(productId);
+      alert("물품이 삭제되었습니다.");
+      router.replace("/");
+    }
+  }
+
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
       <ProtectedPage>
@@ -83,12 +91,31 @@ export default function UpdateProduct({ productId }) {
                 productId={productId}
               />
             </div>
-            <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
+            <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
+              { !productInfo.soldDate ? 
+              (<div>
+                <ProductInfoForm productInfo={productInfo} onSubmit={onSubmit} />
+                <button
+                    className="w-full bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
+                    onClick={onDeleteProduct}
+                  >
+                    물품 삭제
+                </button>
+              </div>) :
+              (<div className="p-4 text-center text-slate-500">
+                거래가 완료된 물건이므로 수정하거나 삭제할 수 없습니다.
+              </div>)
+              }
+            </div>
           </div>
         ) : null}
       </ProtectedPage>
     );
   } else {
-    return <div>Unauthorized</div>;
+    return (
+      <div className="p-4 text-center text-slate-500">
+        수정할 권한이 없습니다.
+      </div>
+    );
   }
 }

@@ -1,19 +1,13 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { useInView } from "react-intersection-observer";
 import { usePbAuth } from "../../contexts/AuthWrapper";
-import Link from "next/link";
-import Image from "next/image";
 import pb from "@/lib/pocketbase";
 import {
-  ArrowLeftIcon,
   PhotoIcon,
   PaperAirplaneIcon,
-  CheckIcon,
-  ArrowDownIcon,
 } from "@heroicons/react/24/outline";
-import getUploadedTime from "@/lib/getUploadedTime";
+import ChatHistory from "@/components/ChatHistory";
 
 export default function Chat() {
   const { user } = usePbAuth();
@@ -31,14 +25,69 @@ export default function Chat() {
   // 로딩 중 상태 여부 저장하는 state
   const [isLoading, setIsLoading] = useState(false);
 
+  // ref
   const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
-  const historyRef = useRef(); // 채팅 내역 컨테이너를 ref
-  const lastMsgRef = useRef(); // 마지막 메시지 ref -> y좌표 가져오기
 
-  async function handleRead() {
+  
+  /* ********************************** */
+  /*  초기 데이터 로딩&실시간 로딩 처리   */
+  /* ********************************** */
+  
+  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
+  useEffect(() => {
+    if (!router.isReady) return;
+    // pb에서 Chat Record 실시간으로 가져오도록 subscribe
+    subChatRecord();
+  }, [router.isReady]);
+
+  /* 채팅 관련 정보 subscribe (useEffect로 처음에 호출) */
+  async function subChatRecord() {
     setIsLoading(true);
+    await pb.collection("chats").subscribe(chatId, getChatRecord);
+    const record = await getChatRecord();
+    await pb.collection("chats_read").subscribe(record?.read, () => {
+      getReadRecord(record?.read);
+    });
+    getReadRecord(record?.read);
 
+    // UserMe, UserOther 저장
+    const buyer = record?.expand.buyer;
+    const seller = record?.expand.seller;
+    setUserMe(buyer?.id === user?.id ? buyer : seller);
+    setUserOther(buyer?.id === user.id ? seller : buyer);
+    setIsLoading(false);
+    return;
+  }
+  
+  /* Chats 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  async function getChatRecord() {
+    if (!chatId) return;
+    let record = null
+    try{
+      record = await pb
+        .collection("chats")
+        .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+      setChatRecord(record);
+    }
+    catch { }
+    return record;
+  }
+
+  /* Chats_read 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
+  async function getReadRecord(id) {
+    let record = null;
+    try{
+      record = await pb.collection("chats_read").getOne(id);
+    }
+    catch{ }
+
+    setReadRecord(record);
+    return record;
+  }
+
+  /* chatRecord state가 바뀔 때 읽음 상태를 알맞게 조절 */
+  async function handleRead() {
     let record = chatRecord.expand.read;
     if (record.unreaduser === userMe?.id && record.unreadcount > 0) {
       record.unreadcount = 0;
@@ -48,230 +97,24 @@ export default function Chat() {
         .update(chatRecord.expand.read.id, record);
     }
     setReadRecord(record);
-    setIsLoading(false);
   }
-
   useEffect(() => {
     if (!chatRecord) return;
     handleRead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRecord]);
 
-  /* 'Chats' 콜렉션에서 Record 가져오는 function (subscribe로 호출) */
-  async function getChatRecord() {
-    setIsLoading(true);
 
-    if (!chatId) return;
-    let record = await pb
-      .collection("chats")
-      .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+  /* ********************************** */
+  /*      새로운 채팅 업로드 처리         */
+  /* ********************************** */
 
-    setChatRecord(record);
-    setIsLoading(false);
-    return record;
-  }
+  /* localStorage에 작성 중이던 내용 저장&불러오기 */
+  const saveDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
+  const clearDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
 
-  async function getReadRecord(id) {
-    setIsLoading(true);
-
-    let record = await pb.collection("chats_read").getOne(id);
-
-    setReadRecord(record);
-    setIsLoading(false);
-    return record;
-  }
-
-  /* 채팅 관련 정보 subscribe하는 function (useEffect로 처음에 호출) */
-  async function subChatRecord() {
-    setIsLoading(true);
-    await pb.collection("chats").subscribe(chatId, getChatRecord);
-    const record = await getChatRecord();
-    await pb.collection("chats_read").subscribe(record.read, () => {
-      getReadRecord(record.read);
-    });
-
-    // UserMe, UserOther 저장
-    const buyer = record.expand.buyer;
-    const seller = record.expand.seller;
-    setUserMe(buyer?.id === user?.id ? buyer : seller);
-    setUserOther(buyer.id === user.id ? seller : buyer);
-    setIsLoading(false);
-    return;
-  }
-
-  /** 상품 페이지로 이동하는 버튼 컴포넌트 */
-  function ProductLink(props) {
-    return (
-      <div className="mx-3">
-        <Link href={`/products/${props.link}`}>
-          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
-            <Image
-              src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
-              width={255}
-              height={255}
-              alt="product image"
-              className="p-2 rounded-xl"
-            />
-            <div className="pb-2 font-bold">상품 정보로 이동</div>
-          </div>
-        </Link>
-      </div>
-    );
-  }
-
-  function ReviewLink(props) {
-    return (
-      <div className="mx-3">
-        <Link
-          href={`/products/buyer-review/${props.link}?sellerId=${userOther?.id}`}
-        >
-          <div className="text-center rounded-2xl shadow-lg bg-amber-100 hover:bg-amber-200 transition duration-200">
-            <Image
-              src={`https://dearyouapi.moveto.kr/api/files/products/${props.link}/${props.thumb}`}
-              width={255}
-              height={255}
-              alt="product image"
-              className="p-2 rounded-xl"
-            />
-            <div className="pb-2 font-bold">리뷰 남기러 가기</div>
-          </div>
-        </Link>
-      </div>
-    );
-  }
-
-  function ChatHistory() {
-    //채팅 창 컴포넌트
-    const messages = chatRecord?.expand["messages"];
-    const lastread = readRecord?.lastread;
-    let lastreadidx = -1;
-    let lastunread = true;
-
-    // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
-    const [msgRef, msgInView] = useInView();
-    const [showDown, setShowDown] = useState(false);
-
-    useEffect(() => {
-      if (isLoading) return;
-
-      const history = historyRef.current;
-      const height = parseInt(localStorage.getItem("chatScroll"));
-      if (msgInView) {
-        setShowDown(false);
-      } else if (height + history.clientHeight + 2 < history.scrollHeight) {
-        setShowDown(true);
-      }
-    }, [msgInView]);
-
-    for (let i = 0; i < messages.length; i++) {
-      if (
-        messages[i].expand["owner"]?.id === user.id &&
-        messages[i].created < lastread
-      ) {
-        lastreadidx = i;
-        if (i == messages.length - 1) {
-          lastunread = false;
-        }
-      } else if (messages[i].expand["owner"]?.id !== user.id) {
-        lastreadidx = -1;
-      }
-    }
-
-    return (
-      <div className="h-screen flex flex-col">
-        <div
-          className="flex flex-col h-full pt-12 overflow-y-auto border-y-2 scrollbar-hide"
-          ref={historyRef}
-          onScroll={() => {
-            localStorage.setItem("chatScroll", historyRef.current.scrollTop);
-          }}
-        >
-          {messages?.map((data, key) => (
-            <div
-              className={
-                data?.expand["owner"]?.id === user.id
-                  ? "flex ml-6"
-                  : "flex mr-6"
-              }
-              key={key}
-            >
-              <div
-                className={
-                  data?.expand["owner"]?.id === user.id
-                    ? "relative ml-auto"
-                    : "mr-auto"
-                }
-                key={key}
-              >
-                {key === lastreadidx ? (
-                  <div className="absolute bottom-0 left-[-30px] flex">
-                    <CheckIcon className="stroke-slate-400 w-4 h-4" />
-                    <div className="text-slate-400 text-xs">읽음</div>
-                  </div>
-                ) : null}
-                {key === messages.length - 1 && lastunread ? (
-                  <div className="absolute bottom-0 left-[-30px] flex">
-                    <div className="text-slate-400 text-xs">안읽음</div>
-                  </div>
-                ) : null}
-
-                <div className="ml-4 flex items-center mt-4">
-                  <div className="text-slate-700 font-semibold">
-                    {data?.expand["owner"]?.name}
-                  </div>
-                  <div className=" text-gray-400 text-sm mx-1 font-light">
-                    {getUploadedTime(data?.created)}
-                  </div>
-                </div>
-
-                {data?.pdlink && !data?.text?.includes("리뷰") ? (
-                  <ProductLink link={data?.pdlink} thumb={data?.pdthumblink} />
-                ) : null}
-                {data?.pdlink && data?.text?.includes("리뷰") ? (
-                  <ReviewLink link={data?.pdlink} thumb={data?.pdthumblink} />
-                ) : null}
-                {data.image.length > 0 ? (
-                  <Image
-                    src={`https://dearyouapi.moveto.kr/api/files/messages/${data.id}/${data.image}`}
-                    width={300}
-                    height={300}
-                    alt={data.id}
-                    className=" rounded-lg shadow-lg"
-                  />
-                ) : (
-                  <div className="mx-3 my-1 px-3 py-2 bg-white shadow-lg rounded-xl break-words max-w-[230px]">
-                    <div>{data?.text}</div>
-                  </div>
-                )}
-              </div>
-              <div ref={lastMsgRef} />
-            </div>
-          ))}
-          <div ref={msgRef} className="p-1" />
-        </div>
-
-        {showDown ? (
-          <ArrowDownIcon
-            onClick={() => {
-              lastMsgRef.current.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="absolute p-2 w-10 h-10 bg-amber-200 self-center bottom-20 rounded-full stroke-white"
-          />
-        ) : null}
-
-        <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
-          <Link href={"/chats"}>
-            <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
-          </Link>
-          <h3 className="text-xl font-semibold ml-4">{userOther?.name}</h3>
-        </div>
-        <div className="w-full h-16"></div>
-      </div>
-    );
-  }
-
+  /* 새로운 채팅 업로드 -> chats, chats_read 콜렉션 update */
   async function uploadNewChat(msgData) {
-    setIsLoading(true);
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
@@ -288,14 +131,11 @@ export default function Chat() {
       console.error("Message Upload Failed");
     }
     clearDraft();
-    setIsLoading(false);
     return;
   }
 
+  /* 메시지 보내기 버튼 눌렀을 때 처리 */
   async function handleChatInput() {
-    // 메시지 보내기 버튼 눌렀을 때 처리
-    setIsLoading(true);
-
     if (chatInput.current.value.length === 0) {
       alert("메시지를 입력하세요.");
       return;
@@ -306,35 +146,20 @@ export default function Chat() {
     msgData.append("owner", pb.authStore.model.id);
 
     uploadNewChat(msgData);
-
-    setIsLoading(false);
   }
 
+  /* 이미지 보내기 버튼 눌렀을 때 처리 */
   async function handleImageInput() {
-    //이미지 보내기 버튼 눌렀을 때 처리
-    setIsLoading(true);
-
     const msgData = new FormData();
     msgData.append("text", chatInput.current.value);
     msgData.append("owner", pb.authStore.model.id);
     msgData.append("image", imgRef.current.files[0]);
 
     uploadNewChat(msgData);
-
-    setIsLoading(false);
   }
 
-  function saveDraft() {
-    localStorage.setItem(
-      `${user.id}-${chatRecord.id}`,
-      chatInput.current.value,
-    );
-  }
-  function clearDraft() {
-    localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
-  }
+  /* 채팅 입력 바 컴포넌트 */
   function ChatInput() {
-    //채팅 입력 컴포넌트
     return (
       <div className="fixed bottom-0 right-0 left-0 p-2 bg-white w-full">
         <div className="text-center flex w-full">
@@ -377,50 +202,16 @@ export default function Chat() {
     );
   }
 
-  /** 처음 페이지 로딩할 때 subChatRecord 호출 */
-  useEffect(() => {
-    if (!router.isReady) return;
-    subChatRecord(); // pb에서 Chat Record 실시간으로 가져오도록 subscribe
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady]);
-
-  /** subChatRecord 호출 후 처음으로 Chat, ChatRead 데이터 가져오기 */
-  useEffect(() => {
-    if (!userOther) return;
-    getChatRecord();
-
-    const history = historyRef.current;
-    history.scrollTop = history.scrollHeight;
-    localStorage.setItem("chatScroll", history.scrollTop);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userOther]);
-
-  /** 페이지를 새로고침하거나 새 메시지가 오면 아래로 자동 스크롤 */
-  useLayoutEffect(() => {
-    try {
-      const history = historyRef.current;
-      const lastMsg = lastMsgRef.current;
-      const height = parseInt(localStorage.getItem("chatScroll"));
-
-      if (
-        height + history.clientHeight + lastMsg.clientHeight + 5 <
-        history.scrollHeight
-      ) {
-        //사용자가 채팅창 상단을 보고 있는 경우
-        history.scrollTop = height;
-      } else {
-        history.scrollTop = history.scrollHeight;
-        localStorage.setItem("chatScroll", history.scrollTop);
-      }
-    } catch {}
-  }, [chatRecord, readRecord, isLoading]);
-
   if (chatRecord == null) {
     // 접속할 수 없는 or 존재하지 않는 chatId일 경우
     return (
       <ProtectedPage>
         <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
-          <div className="text-base">잘못된 채팅입니다.</div>
+          <div className="text-base">
+            {isLoading ? 
+              "정보를 불러오는 중입니다..." : 
+              "존재하지 않는 채팅입니다."}
+            </div>
         </div>
       </ProtectedPage>
     );
@@ -428,7 +219,12 @@ export default function Chat() {
     return (
       <ProtectedPage>
         <div className="w-full min-h-screen bg-slate-50">
-          <ChatHistory />
+          <ChatHistory 
+            parseTime={true}
+            chatRecord={chatRecord} 
+            readRecord={readRecord} 
+            userMe={userMe}
+            userOther={userOther} />
           <ChatInput />
         </div>
       </ProtectedPage>
