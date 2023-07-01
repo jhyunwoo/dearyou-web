@@ -7,6 +7,7 @@ import pb from "@/lib/pocketbase";
 import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
+import FloattingBar from "@/components/FloattingBar";
 
 export default function Profile() {
   const { user, signOut } = usePbAuth();
@@ -16,6 +17,7 @@ export default function Profile() {
   return (
     <ProtectedPage>
       <BottomBar />
+      <FloattingBar/>
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
@@ -42,8 +44,8 @@ export default function Profile() {
             </div>
           </div>
           </div>
-          
-          
+
+
           <div className="mt-4">
             <div className="text-xl font-bold">{user?.name}</div>
             <div>{user?.studentId}</div>

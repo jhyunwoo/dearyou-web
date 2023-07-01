@@ -9,6 +9,7 @@ import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
 import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
+import FloattingBar from "@/components/FloattingBar";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -40,19 +41,8 @@ export default function Home() {
   return (
     <ProtectedPage>
       <BottomBar />
-      <Link
-        href={"/products/create-product"}
-        className="fixed right-6 bottom-36 bg-amber-400 p-2 rounded-full hover:bg-amber-300 transition duration-200 shadow-md shadow-amber-400 hover:shadow-amber-300"
-      >
-        <PlusIcon className="w-8 h-8 text-white" />
-      </Link>
-      
-      <Link
-        href="/search"
-        className="fixed right-6 bottom-20 bg-amber-500 p-2 rounded-full hover:bg-amber-400 transition duration-200 shadow-md shadow-amber-500 hover:shadow-amber-400"
-      >
-        <MagnifyingGlassIcon className="w-8 h-8 text-white" />
-      </Link>
+        <FloattingBar/>
+
       <HeadBar title="드려유" />
       <Layout>
         <ProductGrid>
