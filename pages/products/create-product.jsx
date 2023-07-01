@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import ProtectedPage from "@/components/ProtectedPage";
 import Loading from "@/components/Loading";
 import ProductInfoForm from "@/components/ProductInfoForm";
+import BottomBar from "@/components/BottomBar";
 
 export default function CreateProduct() {
   const imgRef = useRef();
@@ -63,13 +64,14 @@ export default function CreateProduct() {
           .create(formData, { $autoCancel: true });
       } catch {}
 
-      router.replace("/");
+      await router.replace("/");
     }
     setIsLoading(false);
   }
 
   return (
     <ProtectedPage>
+      <BottomBar/>
       {isLoading ? <Loading /> : ""}
       <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
         <div className="text-xl font-bold">물품 등록</div>
