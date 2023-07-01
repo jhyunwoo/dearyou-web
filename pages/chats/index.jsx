@@ -8,6 +8,7 @@ import BottomBar from "@/components/BottomBar";
 import Image from "next/image";
 import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
+import FloattingBar from "@/components/FloattingBar";
 
 export default function Chats() {
   const { user } = usePbAuth();
@@ -59,6 +60,7 @@ export default function Chats() {
   return (
     <ProtectedPage>
       <BottomBar />
+      <FloattingBar/>
       <HeadBar title="채팅" />
       <Layout>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
