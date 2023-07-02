@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
 import ProductGrid from "@/components/ProductGrid";
@@ -41,7 +39,7 @@ export default function Home() {
   return (
     <ProtectedPage>
       <BottomBar />
-        <FloattingBar/>
+      <FloattingBar />
 
       <HeadBar title="드려유" />
       <Layout>
