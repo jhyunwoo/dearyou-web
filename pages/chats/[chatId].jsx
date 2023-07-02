@@ -16,7 +16,6 @@ export default function Chat() {
 
   // pb에서 실시간 업데이트하는 chat 관련 데이터 저장하는 state
   const [chatRecord, setChatRecord] = useState(null);
-  const [readRecord, setReadRecord] = useState(null);
 
   // pb에서 받아온 chat 관련 데이터 저장하는 state
   const [userMe, setUserMe] = useState(); // 나 ID, 이름 저장
@@ -46,10 +45,6 @@ export default function Chat() {
     setIsLoading(true);
     await pb.collection("chats").subscribe(chatId, getChatRecord);
     const record = await getChatRecord();
-    await pb.collection("chats_read").subscribe(record?.read, () => {
-      getReadRecord(record?.read);
-    });
-    getReadRecord(record?.read);
 
     // UserMe, UserOther 저장
     const buyer = record?.expand.buyer;
@@ -67,36 +62,28 @@ export default function Chat() {
     try{
       record = await pb
         .collection("chats")
-        .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+        .getOne(chatId, { expand: "seller,buyer,messages,messages.owner" });
       setChatRecord(record);
     }
     catch { }
     return record;
   }
 
-  /* Chats_read 콜렉션에서 데이터 가져옴 (subscribe로 호출) */
-  async function getReadRecord(id) {
-    let record = null;
-    try{
-      record = await pb.collection("chats_read").getOne(id);
-    }
-    catch{ }
-
-    setReadRecord(record);
-    return record;
-  }
-
   /* chatRecord state가 바뀔 때 읽음 상태를 알맞게 조절 */
   async function handleRead() {
-    let record = chatRecord.expand.read;
+    let record = chatRecord;
     if (record.unreaduser === userMe?.id && record.unreadcount > 0) {
       record.unreadcount = 0;
       record.lastread = new Date();
-      await pb
-        .collection("chats_read")
-        .update(chatRecord.expand.read.id, record);
+      try{
+        await pb
+          .collection("chats")
+          .update(chatRecord.id, record);
+      }
+      catch{
+        console.log("handle read failed");
+      }
     }
-    setReadRecord(record);
   }
   useEffect(() => {
     if (!chatRecord) return;
@@ -113,20 +100,18 @@ export default function Chat() {
   const saveDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, chatInput.current.value);
   const clearDraft = () => localStorage.setItem(`${user.id}-${chatRecord.id}`, "");
 
-  /* 새로운 채팅 업로드 -> chats, chats_read 콜렉션 update */
+  /* 새로운 채팅 업로드 -> chats 콜렉션 update */
   async function uploadNewChat(msgData) {
     try {
       const msgRelation = await pb.collection("messages").create(msgData);
 
-      let newChatRecord = chatRecord;
-      let newReadRecord = readRecord;
+      let newRecord = chatRecord;
 
-      newReadRecord.unreaduser = userOther.id;
-      newReadRecord.unreadcount += 1;
-      newChatRecord.messages.push(msgRelation.id);
+      newRecord.unreaduser = userOther.id;
+      newRecord.unreadcount += 1;
+      newRecord.messages.push(msgRelation.id);
 
-      await pb.collection("chats_read").update(readRecord.id, newReadRecord);
-      await pb.collection("chats").update(chatRecord.id, newChatRecord);
+      await pb.collection("chats").update(chatRecord.id, newRecord);
     } catch {
       console.error("Message Upload Failed");
     }
@@ -221,8 +206,7 @@ export default function Chat() {
         <div className="w-full min-h-screen bg-slate-50">
           <ChatHistory 
             parseTime={true}
-            chatRecord={chatRecord} 
-            readRecord={readRecord} 
+            chatRecord={chatRecord}
             userMe={userMe}
             userOther={userOther} />
           <ChatInput />
