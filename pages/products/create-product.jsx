@@ -121,6 +121,7 @@ export default function CreateProduct() {
             </div>
           </div>
           <ProductInfoForm onSubmit={onSubmit} />
+          <div className="w-full h-16"/>
         </div>
       </div>
     </ProtectedPage>
