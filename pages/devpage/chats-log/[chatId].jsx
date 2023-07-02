@@ -19,7 +19,6 @@ export default function Chat() {
 
   // pb에서 가져온 chat 관련 데이터 저장하는 state
   const [chatRecord, setChatRecord] = useState(null);
-  const [readRecord, setReadRecord] = useState(null);
 
   // pb에서 받아온 chat 관련 데이터 저장하는 state
   const [userMe, setUserMe] = useState(); // 나 ID, 이름 저장
@@ -48,7 +47,6 @@ export default function Chat() {
   async function getInitChatRecord() {
     setIsLoading(true);
     const record = await getChatRecord();
-    getReadRecord(record?.read);
 
     // UserMe, UserOther 저장
     const buyer = record?.expand.buyer;
@@ -70,18 +68,6 @@ export default function Chat() {
       setChatRecord(record);
     }
     catch { }
-    return record;
-  }
-
-  /* Chats_read 콜렉션에서 데이터 가져옴 (useEffect로 호출) */
-  async function getReadRecord(id) {
-    let record = null;
-    try{
-      record = await pb.collection("chats_read").getOne(id);
-    }
-    catch{ }
-
-    setReadRecord(record);
     return record;
   }
 
@@ -107,8 +93,7 @@ export default function Chat() {
         <div className="w-full min-h-screen bg-slate-50">
           <ChatHistory 
             parseTime={false}
-            chatRecord={chatRecord} 
-            readRecord={readRecord} 
+            chatRecord={chatRecord}
             userMe={userMe}
             userOther={userOther} />
         <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
