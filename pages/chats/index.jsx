@@ -18,7 +18,7 @@ export default function Chats() {
   /** 최근에 메시지 온 순으로 채팅 정렬해 chatsList 스테이트에 저장 */
   async function getSortedChats() {
     const resultList = await pb.collection("chats").getFullList({
-      expand: "seller,buyer,messages,read",
+      expand: "seller,buyer,messages",
       filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
     });
 
@@ -43,10 +43,10 @@ export default function Chats() {
   }
 
   function Unreads(props) {
-    const read = props.data.expand.read;
-    return read.unreaduser === user.id && read.unreadcount > 0 ? (
+    const record = props.data;
+    return record.unreaduser === user.id && record.unreadcount > 0 ? (
       <span className="ml-2 px-1 rounded-2xl bg-red-400 text-white">
-        {read.unreadcount}
+        {record.unreadcount}
       </span>
     ) : null;
   }
