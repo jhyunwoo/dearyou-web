@@ -23,8 +23,8 @@ export default function BottomBar() {
       });
 
       for (let i = 0; i < resultList.length; i++) {
-        let read = resultList[i].expand.read;
-        if (read.unreaduser == user.id && read.unreadcount > 0) {
+        let record = resultList[i];
+        if (record.unreaduser == user.id && record.unreadcount > 0) {
           setUnreadChat(true);
           break;
         }

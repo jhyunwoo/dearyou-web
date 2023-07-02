@@ -11,7 +11,7 @@ import {
 import getUploadedTime from "@/lib/getUploadedTime";
 
 // 채팅 창(메시지 목록) 컴퓨넌트
-export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, userOther}){
+export default function ChatHistory({parseTime, chatRecord, userMe, userOther}){
     // 하단 메시지 inView -> 사용자가 채팅창 하단을 보고 있는지 판별
     const [msgRef, msgInView] = useInView();
     const [showDown, setShowDown] = useState(false);
@@ -21,7 +21,7 @@ export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, 
     const lastMsgRef = useRef(); // 마지막 메시지 ref (y좌표 가져오는 용도)
     
     const messages = chatRecord?.expand["messages"];
-    const lastread = readRecord?.lastread;
+    const lastread = chatRecord?.lastread;
     let lastreadidx = -1;
     let lastunread = true;
 
@@ -69,7 +69,7 @@ export default function ChatHistory({parseTime, chatRecord, readRecord, userMe, 
             localStorage.setItem("chatScroll", history.scrollTop);
         }
         } catch {}
-    }, [chatRecord, readRecord]);
+    }, [chatRecord]);
 
     // 하단 메시지가 보이지 않으면 아래로 이동 버튼 표시
     useEffect(() => {
