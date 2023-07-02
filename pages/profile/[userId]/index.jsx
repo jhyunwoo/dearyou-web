@@ -1,14 +1,17 @@
 import BottomBar from "@/components/BottomBar";
 import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
+import ProductCard from "@/components/ProductCard";
+import ProductGrid from "@/components/ProductGrid";
 import ProtectedPage from "@/components/ProtectedPage";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
-import { FireIcon } from "@heroicons/react/24/outline";
+import { FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function Profile() {
   const router = useRouter();
@@ -25,6 +28,34 @@ export default function Profile() {
     if(!router.isReady) return;
     getUserRecord();
   }, [router.isReady])
+
+
+  // user가 등록한 물품 조회
+  const [products, setProducts] = useState([]);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const page = useRef(1);
+  const [ref, inView] = useInView();
+
+  const fetch = useCallback(async () => {
+    try {
+      const data = await pb.collection("products").getList(page.current, 40, {
+        expand: "seller",
+        sort: "-created",
+        filter: `isConfirmed=True&&seller.id="${userId}"`,
+      });
+      setProducts((prevPosts) => [...prevPosts, ...data.items]);
+      setHasNextPage(data.items.length === 40);
+      if (data.items.length) {
+        page.current += 1;
+      }
+    } catch (err) {}
+  }, []);
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetch();
+    }
+  }, [fetch, hasNextPage, inView]);
+
 
   return (
     <ProtectedPage>
@@ -59,12 +90,34 @@ export default function Profile() {
 
 
           <div className="mt-4">
-            <div className="text-xl font-bold">{user?.name}</div>
-            <div>{user?.studentId}</div>
-            <div>{user?.email}</div>
+            <div className="flex items-center">
+              <div>
+                <div className="text-xl font-bold">{user?.name}</div>
+                <div>{user?.studentId}</div>
+              </div>
+              <Link 
+                href={`/profile/${userId}/report`}
+                className="ml-auto mr-2 ">
+                <MegaphoneIcon className="w-8 h-8 stroke-red-400"/>
+              </Link>
+            </div>
           </div>
+
         </div>
+        <div className="p-4 font-bold">
+          {user?.name}님이 등록한 물건들
+        </div>
+          <ProductGrid>
+            {products.map((data, key) => (
+              <ProductCard data={data} key={key} />
+            ))}
+            <div
+              ref={ref}
+              className="h-6 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+            />
+          </ProductGrid>
       </Layout>
+          
     </ProtectedPage>
   );
 }
