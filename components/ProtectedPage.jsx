@@ -13,7 +13,7 @@ export default function ProtectedPage(props) {
         <div className="">
           <Image
             className="mx-auto my-4"
-            src="./favicon.ico"
+            src="/favicon.ico"
             width={100}
             height={100}
             alt="logo"
