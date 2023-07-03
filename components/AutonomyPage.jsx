@@ -1,7 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
 import pb from "@/lib/pocketbase";
-import { usePbAuth } from "../contexts/AuthWrapper";
 
 /** 자율위원 전용 페이지 -> 권한 확인 */
 export default function AutonomyPage(props) {
