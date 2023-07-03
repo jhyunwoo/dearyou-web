@@ -1,12 +1,13 @@
 {
-  "name": "dearu-web",
+  "name": "dearyou-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "server":"cd pocketbase && ./pocketbase serve"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.17",
