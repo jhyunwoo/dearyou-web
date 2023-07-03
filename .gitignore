@@ -33,3 +33,10 @@ yarn-error.log*
 
 # Webstorm files
 /.idea/
+
+/pocketbase
+pocketbase
+/pocketbase/
+/pocketbase/**
+pocketbase/**
+pocketbase/
