@@ -91,7 +91,7 @@ export default function SignIn() {
             카카오로 로그인
           </div>
         </button>
-        <button
+        {/* <button
           onClick={appleSignIn}
           className="bg-black mt-4 text-white shadow-lg p-2 px-4 rounded-lg flex justify-center items-center"
         >
@@ -103,7 +103,7 @@ export default function SignIn() {
             alt={"logo"}
           />
           <div className="font-semibold text-base ml-4">애플로 로그인</div>
-        </button>
+        </button> */}
       </div>
     </div>
   );
