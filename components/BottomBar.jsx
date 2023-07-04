@@ -36,7 +36,6 @@ export default function BottomBar() {
 
   useEffect(() => {
     getChat();
-    pb.collection("chats").subscribe("*", getChat);
     setAutonomy(pb.authStore.model.autonomy);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

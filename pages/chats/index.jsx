@@ -23,8 +23,8 @@ export default function ChatList() {
             <BottomBar />
             <HeadBar title={"채팅"} />
             <ProtectedPage>
-                <div >
-                    {chats.map((data, key) => <section key={key} className="grid grid-cols-1 gap-2">
+                <div className="flex flex-col">
+                    {chats.map((data, key) => <section key={key} className="grid grid-cols-1 gap-4">
                         <Link href={`/chats/${data.id}`} className="bg-white p-4 rounded-lg">{user.id !== data.expand.user1.id ? data.expand.user1.name : data.expand.user2.name}</Link>
                     </section>)}
                 </div>
