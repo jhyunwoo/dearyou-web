@@ -59,7 +59,7 @@ export default function Profile() {
                 로그아웃
               </button>
               <Link
-                className="bg-orange-400 hover:bg-orange-500 transition duration-200 text-white p-1 px-4 rounded-full"
+                className=" transition duration-200 text-orange-600 p-1 px-4 rounded-full"
                 href={"/profile/add-info"}
               >
                 사용자 정보 변경
