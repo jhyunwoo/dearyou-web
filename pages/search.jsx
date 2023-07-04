@@ -65,8 +65,8 @@ export default function Search() {
           </div>
           <button
             onClick={() => {
-              setOpenOnly(!openOnly);
               doSearch(searchWord, !openOnly);
+              setOpenOnly(!openOnly);
             }}
           >
             <EyeSlashIcon className={`w-8 h-8 mx-2 ${openOnly ? "stroke-orange-400" : "stroke-slate-400"}`}/>

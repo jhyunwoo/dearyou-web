@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import ProtectedPage from "@/components/ProtectedPage";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import FloattingBar from "@/components/FloattingBar";
@@ -47,9 +47,16 @@ export default function Profile() {
 
 
           <div className="mt-4">
-            <div className="text-xl font-bold">{user?.name}</div>
-            <div>{user?.studentId}</div>
-            <div>{user?.email}</div>
+            <div className="flex items-center text-xl font-bold">
+              {pb.authStore.model?.name}
+              {pb.authStore.model?.logPermission ? 
+                <Cog6ToothIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : 
+                pb.authStore.model?.autonomy ? 
+                <CheckBadgeIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : null
+              }
+            </div>
+            <div>{pb.authStore.model?.studentId}</div>
+            <div>{pb.authStore.model?.email}</div>
 
             <div className=" flex flex-col my-4 justify-center items-center">
               <button

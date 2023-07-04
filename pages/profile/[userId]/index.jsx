@@ -6,7 +6,7 @@ import ProductGrid from "@/components/ProductGrid";
 import ProtectedPage from "@/components/ProtectedPage";
 import { usePbAuth } from "@/contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
-import { FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, Cog6ToothIcon, FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -92,14 +92,23 @@ export default function Profile() {
           <div className="mt-4">
             <div className="flex items-center">
               <div>
-                <div className="text-xl font-bold">{user?.name}</div>
+                <div className="flex items-center text-xl font-bold">
+                  {user?.name}
+                  {user?.logPermission ? 
+                    <Cog6ToothIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : 
+                    user?.autonomy ? 
+                    <CheckBadgeIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : null
+                  }
+                </div>
                 <div>{user?.studentId}</div>
               </div>
-              <Link 
-                href={`/profile/${userId}/report`}
-                className="ml-auto mr-2 ">
-                <MegaphoneIcon className="w-8 h-8 stroke-red-400"/>
-              </Link>
+              <div className="flex ml-auto mr-2">
+                <Link 
+                  href={`/profile/${userId}/report`}
+                  className="ml-auto mr-2 ">
+                  <MegaphoneIcon className="w-8 h-8 stroke-red-400"/>
+                </Link>
+              </div>
             </div>
           </div>
 

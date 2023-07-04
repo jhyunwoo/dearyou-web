@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
 import AutonomyPage from "@/components/AutonomyPage";
@@ -10,17 +10,21 @@ import Loading from "@/components/Loading";
 
 export default function Autonomy() {
   const [products, setProducts] = useState([]);
+  const [showHidden, setShowHidden] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
+  async function getProducts(showhidden){
+    const data = await pb.collection("products").getFullList({
+      expand: "seller",
+      sort: "-created",
+      filter: `isConfirmed=False${showhidden ? `&&rejectedReason=null` : ""}`,
+    });
+    setProducts(data);
+  }
   const fetch = useCallback(async () => {
     try {
-      const data = await pb.collection("products").getFullList({
-        expand: "seller",
-        sort: "-created",
-        filter: "isConfirmed=False",
-      });
-      setProducts(data);
+      getProducts(showHidden);
     } catch (err) {
       console.log(err);
     }
@@ -56,8 +60,21 @@ export default function Autonomy() {
           </div>
         </div>
         <div className="p-2">
-          <div className="font-bold text-base text-center pb-2">
-            {products?.length}개의 물품이 검토를 기다리고 있어요!
+          <div className="flex pb-2 items-center">
+            <div className="ml-2 font-bold text-base pb-2">
+              {products?.length}개의 물품이 검토를 기다리고 있어요!
+            </div>
+            <div className="ml-auto text-slate-500">
+            반려된 물건 숨기기
+            </div>
+            <button
+              onClick={() => {
+                getProducts(!showHidden);
+                setShowHidden(!showHidden);
+              }}
+            >
+              <EyeSlashIcon className={`w-8 h-8 mx-2 ${showHidden ? "stroke-orange-400" : "stroke-slate-400"}`}/>
+            </button> 
           </div>
           <ProductGrid>
             {products?.map((data, key) => (
