@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import getUploadedTime from "@/lib/getUploadedTime";
@@ -188,11 +188,12 @@ export default function ProductDetail({ productId }) {
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-6 rounded-full ${
-          "bg-red-400 hover:bg-red-500 transition duration-200"
+          className={`p-2 px-4 rounded-full ${
+          "flex items-center bg-red-400 hover:bg-red-500 transition duration-200"
         }`}
         onClick={onProductHide}
         >
+          <CheckBadgeIcon className="w-6 h-6 mr-2"/>
           물품 숨기기
         </button>
       </div>
@@ -237,8 +238,8 @@ export default function ProductDetail({ productId }) {
                       <div className="ml-auto text-xl font-bold text-slate">
                           {productInfo.isConfirmed
                           ? productInfo.soldDate
-                            ? <span className="text-slate-500">나눔 완료</span>
-                            : <span className="text-amber-500">나눔 중</span>
+                            ? <span className="text-amber-500">나눔 완료</span>
+                            : <span className="text-amber-400">나눔 중</span>
                           : productInfo.rejectedReason
                           ? <span className="text-red-500">반려됨</span>
                           : <span className="text-amber-500">승인 대기 중</span>}
@@ -247,6 +248,10 @@ export default function ProductDetail({ productId }) {
                         {productInfo.explain}
                       </div>
                       <div className="flex items-center">
+                        <div className="">종류: {productInfo.type}</div>
+                        <div className="mr-2 ml-auto text-sm text-slate-500">
+                          {getUploadedTime(productInfo.created)} 등록
+                        </div>
                           {productInfo.isConfirmed ? (
                               <button onClick={controlWish}>
                                 {userWish?.includes(productId) ? (
@@ -255,11 +260,7 @@ export default function ProductDetail({ productId }) {
                                   <HeartIcon className="w-8 h-8 fill-red-100" />
                                 )}
                               </button>
-                            ) : null}
-                        <div className="ml-2">종류: {productInfo.type}</div>
-                        <div className="ml-auto text-slate-500">
-                          {getUploadedTime(productInfo.created)} 등록
-                        </div>
+                            ) : null} 
                       </div>
                       
                     </div>
