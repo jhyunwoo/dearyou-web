@@ -97,7 +97,7 @@ export default function ChatHistory({parseTime, chatRecord, userMe, userOther}){
                 alt="product image"
                 className="p-2 rounded-xl"
                 />
-                <div className="pb-2 font-bold">상품 정보로 이동</div>
+                <div className="pb-2 font-bold">물품 정보로 이동</div>
             </div>
             </Link>
         </div>
@@ -119,7 +119,7 @@ export default function ChatHistory({parseTime, chatRecord, userMe, userOther}){
                 alt="product image"
                 className="p-2 rounded-xl"
                 />
-                <div className="pb-2 font-bold">리뷰 남기러 가기</div>
+                <div className="pb-2 font-bold">나눔 후기 남기러 가기</div>
             </div>
             </Link>
         </div>

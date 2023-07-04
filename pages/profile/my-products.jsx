@@ -24,7 +24,7 @@ export default function MyProducts() {
   return (
     <ProtectedPage>
       <BottomBar />
-      <HeadBar title="내 상품" />
+      <HeadBar title="내 물품" />
       <Layout>
         <ProductGrid>
           {products?.length === 0 ? (
