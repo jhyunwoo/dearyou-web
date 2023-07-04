@@ -86,6 +86,12 @@ export default function Profile() {
           >
             나눔 후기
           </Link>
+          <Link
+            href={"https://open.kakao.com/o/sGLY1utf"}
+            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+          >
+            드려유 고객센터
+          </Link>
           {
             permission ? (
             <Link
