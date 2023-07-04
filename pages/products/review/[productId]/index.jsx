@@ -73,7 +73,7 @@ export default function MyReviews() {
 
       // 메시지 데이터 create
       const defaultMessage = {
-        text: `리뷰를 남겨주세요.`,
+        text: `후기를 남겨주세요.`,
         pdlink: closeProduct.id,
         pdthumblink: closeProduct.photos[0],
         owner: pb.authStore.model.id,
@@ -136,11 +136,11 @@ export default function MyReviews() {
 
   return (
     <ProtectedPage>
-      <HeadBar title="거래 후기 남기기" />
+      <HeadBar title="나눔 후기 남기기" />
       <BottomBar />
       <Layout>
         <div>
-          <div className="text-lg font-semibold my-2">거래한 사람</div>
+          <div className="text-lg font-semibold my-2">나눔(거래)한 사람</div>
           <div className="grid grid-cols-1 gap-2 max-h-48 overflow-auto scrollbar-hide">
             {chatedUsers?.map((data, key) => (
               <button
@@ -158,7 +158,7 @@ export default function MyReviews() {
           </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
-          <div className="text-lg font-semibold my-2">거래 만족도</div>
+          <div className="text-lg font-semibold my-2">만족도</div>
           <div className="flex w-full justify-around space-x-1">
             <Star idx={1}/>
             <Star idx={2}/>
