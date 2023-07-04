@@ -87,34 +87,27 @@ export default function ProductDetail({ productId }) {
   async function goToChat() {
     const checkChat = await pb.collection("chats").getFullList({
       // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
-              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
-      expand: "read",
+      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller?.id}")||
+              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller?.id}")`
     });
 
     let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
     if (checkChat.length > 0) {
       // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-      const newChatRead = await pb
-        .collection("chats_read")
-        .update(checkChat[0].read, {
-          unreaduser: productInfo.expand.seller.id,
-          unreadcount: checkChat[0].expand.read.unreadcount + 1,
+      newChat = await pb
+        .collection("chats")
+        .update(checkChat[0].id, {
+          unreaduser: productInfo.expand.seller?.id,
+          unreadcount: checkChat[0]?.unreadcount + 1,
         });
-      newChat = checkChat[0];
     } else {
       // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
-      let newChatRead = await pb.collection("chats_read").create({
-        unreaduser: productInfo.expand.seller.id,
+      newChat = await pb.collection("chats").create({
+        seller: productInfo.expand.seller?.id,
+        buyer: pb.authStore.model.id,
+        unreaduser: productInfo.expand.seller?.id,
         unreadcount: 1,
       });
-      newChat = await pb.collection("chats").create({
-        seller: productInfo.expand.seller.id,
-        buyer: pb.authStore.model.id,
-        read: newChatRead.id,
-      });
-      newChatRead.chat = newChat.id;
-      await pb.collection("chats_read").update(newChatRead.id, newChatRead);
     }
 
     // 메시지 데이터 create
@@ -183,7 +176,7 @@ export default function ProductDetail({ productId }) {
           }`}
           disabled={productInfo.soldDate ? true : false}
         >
-          &apos;{productInfo.expand.seller.name}&apos;님에게 채팅 문의
+          &apos;{productInfo.expand.seller?.name}&apos;님에게 채팅 문의
         </button>
       </div>
     )
@@ -226,10 +219,10 @@ export default function ProductDetail({ productId }) {
                       <div className="flex">
                         <div className="flex flex-col items-end mr-2">
                           <div className="text-sm">
-                            {productInfo.expand.seller.name}
+                            {productInfo.expand.seller?.name}
                           </div>
                           <div className="text-sm">
-                            {productInfo.expand.seller.studentId}
+                            {productInfo.expand.seller?.studentId}
                           </div>
 
                           {currentUser?.id ===
