@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import Image from "next/image";
 import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import getUploadedTime from "@/lib/getUploadedTime";
@@ -87,34 +87,27 @@ export default function ProductDetail({ productId }) {
   async function goToChat() {
     const checkChat = await pb.collection("chats").getFullList({
       // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller.id}")||
-              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller.id}")`,
-      expand: "read",
+      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller?.id}")||
+              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller?.id}")`
     });
 
     let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
     if (checkChat.length > 0) {
       // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-      const newChatRead = await pb
-        .collection("chats_read")
-        .update(checkChat[0].read, {
-          unreaduser: productInfo.expand.seller.id,
-          unreadcount: checkChat[0].expand.read.unreadcount + 1,
+      newChat = await pb
+        .collection("chats")
+        .update(checkChat[0].id, {
+          unreaduser: productInfo.expand.seller?.id,
+          unreadcount: checkChat[0]?.unreadcount + 1,
         });
-      newChat = checkChat[0];
     } else {
       // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
-      let newChatRead = await pb.collection("chats_read").create({
-        unreaduser: productInfo.expand.seller.id,
+      newChat = await pb.collection("chats").create({
+        seller: productInfo.expand.seller?.id,
+        buyer: pb.authStore.model.id,
+        unreaduser: productInfo.expand.seller?.id,
         unreadcount: 1,
       });
-      newChat = await pb.collection("chats").create({
-        seller: productInfo.expand.seller.id,
-        buyer: pb.authStore.model.id,
-        read: newChatRead.id,
-      });
-      newChatRead.chat = newChat.id;
-      await pb.collection("chats_read").update(newChatRead.id, newChatRead);
     }
 
     // 메시지 데이터 create
@@ -183,7 +176,7 @@ export default function ProductDetail({ productId }) {
           }`}
           disabled={productInfo.soldDate ? true : false}
         >
-          &apos;{productInfo.expand.seller.name}&apos;님에게 채팅 문의
+          &apos;{productInfo.expand.seller?.name}&apos;님에게 채팅 문의
         </button>
       </div>
     )
@@ -195,11 +188,12 @@ export default function ProductDetail({ productId }) {
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-6 rounded-full ${
-          "bg-red-400 hover:bg-red-500 transition duration-200"
+          className={`p-2 px-4 rounded-full ${
+          "flex items-center bg-red-400 hover:bg-red-500 transition duration-200"
         }`}
         onClick={onProductHide}
         >
+          <CheckBadgeIcon className="w-6 h-6 mr-2"/>
           물품 숨기기
         </button>
       </div>
@@ -218,69 +212,65 @@ export default function ProductDetail({ productId }) {
               />
               <div className="sm:flex sm:flex-col sm:w-52 sm:pl-4 md:w-80 lg:w-96">
                 <div className="p-4 sm:p-2 flex flex-col ">
-                  <div className=" pb-2 border-b-2 flex flex-col ">
+                  <div className="pb-2 border-b-2 flex flex-col ">
                     <div className="flex justify-between">
                       <div className="text-xl font-bold">
                         {productInfo.name}
                       </div>
                       <div className="flex">
-                        <div className="flex flex-col items-end mr-2">
-                          <div className="text-sm">
-                            {productInfo.expand.seller.name}
-                          </div>
-                          <div className="text-sm">
-                            {productInfo.expand.seller.studentId}
-                          </div>
+                        <div className="flex items-end">
+                          <Link href={`/profile/${productInfo.expand.seller?.id}`}
+                            className="text-lg font-semibold text-black">
+                            {productInfo.expand.seller?.name} ({productInfo.expand.seller?.studentId})
+                          </Link>
 
                           {currentUser?.id ===
                             productInfo?.expand?.seller?.id &&
                           !productInfo?.rejectedReason ? (
                             <Link href={`/products/update/${productId}`}>
-                              <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
+                              <PencilSquareIcon className="ml-2 w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
                             </Link>
                           ) : null}
                         </div>
                       </div>
                     </div>
-                    <div className="mt-2 flex flex-col">
-                      <div className="ml-auto">
-                        {getUploadedTime(productInfo.created)}에 등록
-                      </div>
-                      <div className="ml-auto font-bold text-slate-500">
-                        {productInfo.isConfirmed
+                    <div className="flex flex-col">
+                      <div className="ml-auto text-xl font-bold text-slate">
+                          {productInfo.isConfirmed
                           ? productInfo.soldDate
-                            ? `${getUploadedTime(
-                                productInfo.soldDate,
-                              )}에 나눔 완료`
-                            : "나눔 중"
+                            ? <span className="text-amber-500">나눔 완료</span>
+                            : <span className="text-amber-400">나눔 중</span>
                           : productInfo.rejectedReason
-                          ? "반려됨"
-                          : "승인 대기 중"}
+                          ? <span className="text-red-500">반려됨</span>
+                          : <span className="text-amber-500">승인 대기 중</span>}
                       </div>
-                      <div className="font-medium text-lg my-2">
+                      <div className="text-lg mt-4 mb-2 border-b-2">
                         {productInfo.explain}
                       </div>
-                      <div>종류: {productInfo.type}</div>
+                      <div className="flex items-center">
+                        <div className="">종류: {productInfo.type}</div>
+                        <div className="mr-2 ml-auto text-sm text-slate-500">
+                          {getUploadedTime(productInfo.created)} 등록
+                        </div>
+                          {productInfo.isConfirmed ? (
+                              <button onClick={controlWish}>
+                                {userWish?.includes(productId) ? (
+                                  <HeartIcon className="w-8 h-8 fill-red-500" />
+                                ) : (
+                                  <HeartIcon className="w-8 h-8 fill-red-100" />
+                                )}
+                              </button>
+                            ) : null} 
+                      </div>
+                      
                     </div>
-                    {productInfo.isConfirmed ? (
-                      <button onClick={controlWish}>
-                        {userWish?.includes(productId) ? (
-                          <HeartIcon className="w-8 h-8 text-red-500" />
-                        ) : (
-                          <HeartIcon className="w-8 h-8 text-red-100" />
-                        )}
-                      </button>
-                    ) : null}
                   </div>
                   {productInfo.isConfirmed ? (
-                    currentUser?.id === productInfo?.expand?.seller?.id ? (
-                      <CloseProductButton />
-                    ) : (
-                      <div>
-                      <GoToChatButton/>
+                    <div>
+                      {currentUser?.id === productInfo?.expand?.seller?.id ?
+                        <CloseProductButton /> : <GoToChatButton />}
                       <HideProductButton/>
-                      </div>
-                    )
+                    </div>
                     ) : (
                     productInfo.rejectedReason ?
                       (

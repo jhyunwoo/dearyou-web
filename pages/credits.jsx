@@ -18,7 +18,7 @@ export default function Profile() {
         <div className="mx-auto text-center">
             <div className="min-h-screen">
             <Image 
-                src={'/favicon.ico'}
+                src={'/favicon.png'}
                 width={64}
                 height={64}
                 className="mt-10 rounded-2xl mx-auto"
