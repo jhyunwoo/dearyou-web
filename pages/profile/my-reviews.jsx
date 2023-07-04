@@ -8,9 +8,11 @@ import pb from "@/lib/pocketbase";
 export default function MyReviews() {
   const [reviewsTo, setReviewsTo] = useState([]);
   const [reviewsFrom, setReviewsFrom] = useState([]);
+  const [isLoading, setIsLoading] = useState([]);
 
   useEffect(() => {
     async function getMyReviews() {
+      setIsLoading(true);
       let reviews = await pb.collection("reviews").getFullList({
         filter: `to.id="${pb.authStore.model?.id}"`,
         expand: "from",
@@ -21,6 +23,7 @@ export default function MyReviews() {
         expand: "to",
       });
       setReviewsTo(reviews);
+      setIsLoading(false);
     }
     getMyReviews();
   }, []);
