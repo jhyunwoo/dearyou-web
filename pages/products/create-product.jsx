@@ -53,6 +53,7 @@ export default function CreateProduct() {
       showImages.map(async (data) => {
         const file = refImages[data.id];
         formData.append("photos", file);
+        console.log(file)
       });
       formData.append("seller", pb.authStore.model.id);
       formData.append("name", data.name);
@@ -62,7 +63,7 @@ export default function CreateProduct() {
         let result = await pb
           .collection("products")
           .create(formData, { $autoCancel: true });
-      } catch {}
+      } catch { }
 
       await router.replace("/");
     }
@@ -71,7 +72,7 @@ export default function CreateProduct() {
 
   return (
     <ProtectedPage>
-      <BottomBar/>
+      <BottomBar />
       {isLoading ? <Loading /> : ""}
       <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
         <div className="text-xl font-bold">물품 등록</div>
@@ -121,7 +122,7 @@ export default function CreateProduct() {
             </div>
           </div>
           <ProductInfoForm onSubmit={onSubmit} />
-          <div className="w-full h-16"/>
+          <div className="w-full h-16" />
         </div>
       </div>
     </ProtectedPage>
