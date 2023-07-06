@@ -2,20 +2,22 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import pb from "@/lib/pocketbase"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
-  const [user, setUser] = useState(null)
+  const [userInfo, setUserInfo] = useState(null)
+  const { user } = usePbAuth()
 
   useEffect(() => {
     /** 사용자 정보 */
     async function checkUser() {
       if (pb?.authStore?.model?.id) {
-        const userInfo = await pb
+        const userData = await pb
           .collection("users")
           .getOne(pb.authStore.model.id)
-        setUser(userInfo)
+        setUserInfo(userData)
       }
     }
     checkUser()
@@ -42,13 +44,16 @@ export default function ProtectedPage(props) {
         </div>
       </div>
     )
-  } else if (user?.isBanned) {
+  } else if (userInfo && userInfo?.isBanned) {
     return (
       <div>
         <div>Banned</div>
       </div>
     )
-  } else if (user?.studentId === 0 || user?.studentId == null) {
+  } else if (
+    userInfo &&
+    (userInfo?.studentId === 0 || userInfo?.studentId == null)
+  ) {
     /** 학번 정보가 없을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
