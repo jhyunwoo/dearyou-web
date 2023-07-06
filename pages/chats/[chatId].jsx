@@ -83,7 +83,6 @@ export default function Chat({ chatId }) {
       const updateChat = await pb.collection("chats").update(chatId, {
         messages: result.id,
       })
-      console.log(result)
     } catch (e) {
       console.log(e)
     }
@@ -100,7 +99,6 @@ export default function Chat({ chatId }) {
           expand: "sender, product",
         })
       if (page.current === 1) {
-        console.log(messageList)
         setMessages(messageList.items.reverse())
       } else {
         let reversedMessage = [...messageList.items].reverse()
@@ -128,12 +126,10 @@ export default function Chat({ chatId }) {
     /** 실시간 채팅을 위한 realtime 설정 */
     async function subscribeChat() {
       if (chatId) {
-        console.log("subscribed")
         pb.collection("chats").subscribe(chatId, async function (e) {
           const newMessage = await pb
             .collection("messages")
             .getOne(e?.record?.messages)
-          console.log(newMessage)
           setMessages((prev) => [...prev, newMessage])
         })
       }
@@ -163,14 +159,12 @@ export default function Chat({ chatId }) {
         const readMessage = await pb
           .collection("messages")
           .update(lastMessage[0].id, { isRead: true })
-        console.log(readMessage)
       }
     }
     /** 채팅 입력 후 스크롤 아래로 내리기 */
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
     readMessage()
   }, [messages])
-  console.log(messages)
 
   return (
     <ProtectedPage>

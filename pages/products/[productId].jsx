@@ -24,9 +24,6 @@ export const getServerSideProps = async (context) => {
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("")
   const [userWish, setUserWish] = useState([])
-  const [addWish, setAddWish] = useState(false)
-  const [imageScroll, setImageScroll] = useState(1)
-  const imageRef = useRef()
   const autonomy = pb.authStore?.model?.autonomy
 
   const router = useRouter()
@@ -52,7 +49,6 @@ export default function ProductDetail({ productId }) {
     getProductInfo()
     getUserWish()
   }, [productId])
-  console.log(productInfo)
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
   const currentUser = usePbAuth().user
@@ -90,7 +86,6 @@ export default function ProductDetail({ productId }) {
               (user2.id="${pb.authStore.model.id}"&&user1.id="${productInfo.expand.seller.id}")`,
       expand: "messages",
     })
-    console.log(checkChat)
 
     if (checkChat.length > 0) {
       const createMessage = await pb.collection("messages").create({
@@ -109,7 +104,6 @@ export default function ProductDetail({ productId }) {
       const createNewChat = await pb
         .collection("chats")
         .create({ user1: pb.authStore.model.id, user2: productInfo.seller })
-      console.log(createNewChat)
       const createMessage = await pb.collection("messages").create({
         chat: createNewChat.id,
         sender: pb.authStore.model.id,
