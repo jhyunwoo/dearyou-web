@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import pb from "@/lib/pocketbase";
+import { StarIcon } from "@heroicons/react/24/outline";
 
 export default function MyReviews() {
   const router = useRouter();
@@ -42,42 +43,37 @@ export default function MyReviews() {
       const productInfo = await pb
         .collection("products")
         .getOne(productId, { expand: "seller, buyer" });
+
       const checkChat = await pb.collection("chats").getFullList({
         // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
         filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.buyer.id}")||
                 (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.buyer.id}")`,
-        expand: "read",
       });
 
       let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
 
       if (checkChat.length > 0) {
         // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-        const newChatRead = await pb
-          .collection("chats_read")
-          .update(checkChat[0].read, {
-            unreaduser: productInfo.expand.seller.id,
-            unreadcount: checkChat[0].expand.read.unreadcount + 1,
+        newChat = await pb
+          .collection("chats")
+          .update(checkChat[0].id, {
+            unreaduser: selectedUser?.id,
+            unreadcount: checkChat[0].unreadcount + 1,
           });
-        newChat = checkChat[0];
       } else {
         // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
-        let newChatRead = await pb.collection("chats_read").create({
-          unreaduser: productInfo.expand.seller.id,
+        newChat = await pb.collection("chats").create({
+          seller: productInfo.expand.seller?.id,
+          buyer: pb.authStore.model.id,
+          unreaduser: selectedUser.id,
           unreadcount: 1,
         });
-        newChat = await pb.collection("chats").create({
-          seller: productInfo.expand.seller.id,
-          buyer: pb.authStore.model.id,
-          read: newChatRead.id,
-        });
         newChatRead.chat = newChat.id;
-        await pb.collection("chats_read").update(newChatRead.id, newChatRead);
       }
 
       // 메시지 데이터 create
       const defaultMessage = {
-        text: `리뷰를 남겨주세요.`,
+        text: `후기를 남겨주세요.`,
         pdlink: closeProduct.id,
         pdthumblink: closeProduct.photos[0],
         owner: pb.authStore.model.id,
@@ -124,13 +120,27 @@ export default function MyReviews() {
     getChatedUsers();
   }, []);
 
+  function Star({idx}){
+    return (
+      <StarIcon
+      type="button"
+      onClick={() => setRating(idx)}
+      className={`p-1 px-4 w-full rounded-lg h-20 ${
+        rating >= idx
+          ? "stroke-amber-500 fill-amber-500"
+          : "stroke-amber-500"
+      }  transition duration-200`}
+    />
+    )
+  }
+
   return (
     <ProtectedPage>
-      <HeadBar title="거래 후기 남기기" />
+      <HeadBar title="나눔 후기 남기기" />
       <BottomBar />
       <Layout>
         <div>
-          <div className="text-lg font-semibold my-2">거래한 사람</div>
+          <div className="text-lg font-semibold my-2">나눔(거래)한 사람</div>
           <div className="grid grid-cols-1 gap-2 max-h-48 overflow-auto scrollbar-hide">
             {chatedUsers?.map((data, key) => (
               <button
@@ -148,63 +158,13 @@ export default function MyReviews() {
           </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
-          <div className="text-lg font-semibold my-2">거래 만족도</div>
+          <div className="text-lg font-semibold my-2">만족도</div>
           <div className="flex w-full justify-around space-x-1">
-            <button
-              type="button"
-              onClick={() => setRating(1)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 1
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              1
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(2)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 2
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              2
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(3)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 3
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              3
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(4)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 4
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              4
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(5)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 5
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              5
-            </button>
+            <Star idx={1}/>
+            <Star idx={2}/>
+            <Star idx={3}/>
+            <Star idx={4}/>
+            <Star idx={5}/>
           </div>
           <div className="mt-4 text-lg font-semibold my-2">후기</div>
           <textarea

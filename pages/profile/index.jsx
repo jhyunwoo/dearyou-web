@@ -56,7 +56,7 @@ export default function Profile() {
                 로그아웃
               </button>
               <Link
-                className="bg-orange-400 hover:bg-orange-500 transition duration-200 text-white p-1 px-4 rounded-full"
+                className=" transition duration-200 text-orange-600 p-1 px-4 rounded-full"
                 href={"/profile/add-info"}
               >
                 사용자 정보 변경
@@ -83,7 +83,18 @@ export default function Profile() {
           >
             나눔 후기
           </Link>
+<<<<<<< HEAD
           {permission ? (
+=======
+          <Link
+            href={"https://open.kakao.com/o/sGLY1utf"}
+            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+          >
+            드려유 고객센터
+          </Link>
+          {
+            permission ? (
+>>>>>>> develop
             <Link
               href={"/devpage"}
               className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"

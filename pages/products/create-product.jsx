@@ -65,6 +65,7 @@ export default function CreateProduct() {
           .create(formData, { $autoCancel: true });
       } catch {}
 
+      alert("물건이 등록되었습니다. 자율위원의 승인을 받으면 다른 사용자에게 물건이 보입니다.")
       await router.replace("/");
     }
     setIsLoading(false);

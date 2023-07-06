@@ -5,6 +5,7 @@ import BottomBar from "@/components/BottomBar";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { StarIcon } from "@heroicons/react/24/outline";
 import pb from "@/lib/pocketbase";
 
 export default function MyReviews() {
@@ -49,10 +50,26 @@ export default function MyReviews() {
     getSellerInfo();
   }, [sellerId]);
 
+  function Star({idx}){
+    return (
+      <StarIcon
+      type="button"
+      onClick={() => setRating(idx)}
+      className={`p-1 px-4 w-full rounded-lg h-20 ${
+        rating >= idx
+          ? "stroke-amber-500 fill-amber-500"
+          : "stroke-amber-500"
+      }  transition duration-200`}
+    />
+    )
+  }
+
   return (
     <ProtectedPage>
-      <HeadBar title="거래 후기 남기기" />
-      <BottomBar />
+      {sellerId === pb.authStore.model?.id ?
+         <Layout>
+          이미 후기를 남기셨습니다.
+         </Layout> : 
       <Layout>
         <div>
           <div className="text-lg font-semibold my-2">
@@ -62,61 +79,11 @@ export default function MyReviews() {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
           <div className="text-lg font-semibold my-2">거래 만족도</div>
           <div className="flex w-full justify-around space-x-1">
-            <button
-              type="button"
-              onClick={() => setRating(1)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 1
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              1
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(2)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 2
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              2
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(3)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 3
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              3
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(4)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 4
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              4
-            </button>
-            <button
-              type="button"
-              onClick={() => setRating(5)}
-              className={`p-1 px-4 w-full rounded-lg ${
-                rating === 5
-                  ? "bg-amber-500 text-white"
-                  : "bg-amber-50 hover:bg-amber-300 hover:text-white"
-              }  transition duration-200`}
-            >
-              5
-            </button>
+            <Star idx={1}/>
+            <Star idx={2}/>
+            <Star idx={3}/>
+            <Star idx={4}/>
+            <Star idx={5}/>
           </div>
           <div className="mt-4 text-lg font-semibold my-2">후기</div>
           <textarea
@@ -134,6 +101,9 @@ export default function MyReviews() {
           </button>
         </form>
       </Layout>
+      }
+      <HeadBar title="나눔 후기 남기기" />
+      <BottomBar />
     </ProtectedPage>
   );
 }

@@ -45,7 +45,7 @@ export default function Autonomy() {
         >
           <CheckBadgeIcon className="w-12 h-12" />
           <div className="pl-2">
-            <div className="font-bold text-xl">상품 승인 관리 페이지</div>
+            <div className="font-bold text-xl">물품 승인 관리 페이지</div>
             <div className="font-bold">
               자율위원{" "}
               <span className="text-amber-200">
@@ -57,7 +57,7 @@ export default function Autonomy() {
         </div>
         <div className="p-2">
           <div className="font-bold text-base text-center pb-2">
-            {products?.length}개의 상품이 검토를 기다리고 있어요!
+            {products?.length}개의 물품이 검토를 기다리고 있어요!
           </div>
           <ProductGrid>
             {products?.map((data, key) => (
