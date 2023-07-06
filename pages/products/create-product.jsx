@@ -1,74 +1,75 @@
-import { useState, useRef } from "react";
-import pb from "@/lib/pocketbase";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import ProtectedPage from "@/components/ProtectedPage";
-import Loading from "@/components/Loading";
-import ProductInfoForm from "@/components/ProductInfoForm";
-import BottomBar from "@/components/BottomBar";
+import { useState, useRef } from "react"
+import pb from "@/lib/pocketbase"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import ProtectedPage from "@/components/ProtectedPage"
+import Loading from "@/components/Loading"
+import ProductInfoForm from "@/components/ProductInfoForm"
+import BottomBar from "@/components/BottomBar"
 
 export default function CreateProduct() {
-  const imgRef = useRef();
-  const [showImages, setShowImages] = useState([]);
-  const [refImages, setRefImages] = useState([]);
+  const imgRef = useRef()
+  const [showImages, setShowImages] = useState([])
+  const [refImages, setRefImages] = useState([])
 
-  const router = useRouter();
+  const router = useRouter()
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
-  const typeOptions = ["교과서", "문제집/인강교재", "기타"];
+  const typeOptions = ["교과서", "문제집/인강교재", "기타"]
 
   // 이미지 상대경로 저장
   const handleAddImages = (event) => {
-    const imageLists = event.target.files;
-    let imageUrlLists = [...showImages];
+    const imageLists = event.target.files
+    let imageUrlLists = [...showImages]
 
     if (showImages.length + imageLists.length > 10) {
-      alert("이미지는 최대 10개까지 업로드할 수 있습니다!");
-      return;
+      alert("이미지는 최대 10개까지 업로드할 수 있습니다!")
+      return
     }
 
     for (let i = 0; i < imageLists.length; i++) {
-      const currentImageUrl = URL.createObjectURL(imageLists[i]);
-      imageUrlLists.push({ id: i + refImages.length, file: currentImageUrl });
+      const currentImageUrl = URL.createObjectURL(imageLists[i])
+      imageUrlLists.push({ id: i + refImages.length, file: currentImageUrl })
     }
 
-    setShowImages(imageUrlLists);
-    setRefImages([...refImages, ...imgRef.current.files]);
+    setShowImages(imageUrlLists)
+    setRefImages([...refImages, ...imgRef.current.files])
     // imgRef에서 새로 들어온 이미지들을 refImage state에 저장함
-  };
+  }
 
   // X버튼 클릭 시 이미지 삭제
   const handleDeleteImage = (id) => {
-    setShowImages(showImages.filter((_, index) => index !== id));
-  };
+    setShowImages(showImages.filter((_, index) => index !== id))
+  }
 
   async function onSubmit(data) {
     if (showImages.length < 1) {
-      alert("이미지를 업로드해주세요");
-      return;
+      alert("이미지를 업로드해주세요")
+      return
     } else {
-      setIsLoading(true);
-      const formData = new FormData();
+      setIsLoading(true)
+      const formData = new FormData()
       showImages.map(async (data) => {
-        const file = refImages[data.id];
-        formData.append("photos", file);
-        console.log(file);
-      });
-      formData.append("seller", pb.authStore.model.id);
-      formData.append("name", data.name);
-      formData.append("explain", data.explain);
-      formData.append("type", data.type);
+        const file = refImages[data.id]
+        formData.append("photos", file)
+      })
+      formData.append("seller", pb.authStore.model.id)
+      formData.append("name", data.name)
+      formData.append("explain", data.explain)
+      formData.append("type", data.type)
       try {
         let result = await pb
           .collection("products")
-          .create(formData, { $autoCancel: true });
+          .create(formData, { $autoCancel: true })
       } catch {}
 
-      alert("물건이 등록되었습니다. 자율위원의 승인을 받으면 다른 사용자에게 물건이 보입니다.")
-      await router.replace("/");
+      alert(
+        "물건이 등록되었습니다. 자율위원의 승인을 받으면 다른 사용자에게 물건이 보입니다.",
+      )
+      await router.replace("/")
     }
-    setIsLoading(false);
+    setIsLoading(false)
   }
 
   return (
@@ -127,5 +128,5 @@ export default function CreateProduct() {
         </div>
       </div>
     </ProtectedPage>
-  );
+  )
 }

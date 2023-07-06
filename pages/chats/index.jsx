@@ -30,7 +30,6 @@ export default function ChatList() {
   }, [updateChats])
   useEffect(() => {
     async function subscribeChat() {
-      console.log("subscribed")
       pb.collection("chats").subscribe("*", async function (e) {
         setUpdateChats((prev) => prev + 1)
       })
