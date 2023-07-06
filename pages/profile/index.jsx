@@ -1,50 +1,47 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import pb from "@/lib/pocketbase";
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import FloattingBar from "@/components/FloattingBar";
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import pb from "@/lib/pocketbase"
+import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function Profile() {
-  const { user, signOut } = usePbAuth();
+  const { user, signOut } = usePbAuth()
 
   // 개발자 권한 (로그 열람 권한)
-  const permission = pb.authStore.model?.logPermission;
+  const permission = pb.authStore.model?.logPermission
   return (
     <ProtectedPage>
       <BottomBar />
-      <FloattingBar/>
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
-          {pb?.authStore?.model?.avatar ? (
-            <Image
-              width={100}
-              height={100}
-              alt={"user avatar"}
-              className="rounded-full w-24 h-24"
-              src={`https://dearyouapi.moveto.kr/api/files/users/${pb.authStore.model.id}/${pb.authStore.model.avatar}?thumb=100x100`}
-            />
-          ) : (
-            <div className="w-24 h-24 bg-slate-400 rounded-full"></div>
-          )}
-          <div className="ml-auto text-center">
-            <div className="relative w-28 font-bold">
-              품격 온도
-              <FireIcon className="mx-auto w-20 h-20 stroke-amber-200"/>
-              <div className="absolute w-full bottom-3">
-                <div className="mx-auto text-4xl font-bold text-amber-500">
-                  {pb?.authStore?.model?.dignity}ºC
+            {pb?.authStore?.model?.avatar ? (
+              <Image
+                width={100}
+                height={100}
+                alt={"user avatar"}
+                className="rounded-full w-24 h-24"
+                src={`https://dearyouapi.moveto.kr/api/files/users/${pb.authStore.model.id}/${pb.authStore.model.avatar}?thumb=100x100`}
+              />
+            ) : (
+              <div className="w-24 h-24 bg-slate-400 rounded-full"></div>
+            )}
+            <div className="ml-auto text-center">
+              <div className="relative w-28 font-bold">
+                품격 온도
+                <FireIcon className="mx-auto w-20 h-20 stroke-amber-200" />
+                <div className="absolute w-full bottom-3">
+                  <div className="mx-auto text-4xl font-bold text-amber-500">
+                    {pb?.authStore?.model?.dignity}ºC
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          </div>
-
 
           <div className="mt-4">
             <div className="text-xl font-bold">{user?.name}</div>
@@ -86,6 +83,9 @@ export default function Profile() {
           >
             나눔 후기
           </Link>
+<<<<<<< HEAD
+          {permission ? (
+=======
           <Link
             href={"https://open.kakao.com/o/sGLY1utf"}
             className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
@@ -94,14 +94,15 @@ export default function Profile() {
           </Link>
           {
             permission ? (
+>>>>>>> develop
             <Link
               href={"/devpage"}
               className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
             >
-              <Cog6ToothIcon className="w-6 h-6 stroke-slate-600 mr-1"/>개발자 페이지
+              <Cog6ToothIcon className="w-6 h-6 stroke-slate-600 mr-1" />
+              개발자 페이지
             </Link>
-            ) : null
-          }
+          ) : null}
         </div>
         <Link
           href={"/credits"}
@@ -118,6 +119,5 @@ export default function Profile() {
       </Layout>
       <HeadBar title="프로필" />
     </ProtectedPage>
-  );
+  )
 }
-

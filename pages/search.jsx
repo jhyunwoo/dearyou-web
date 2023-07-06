@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ProtectedPage from "@/components/ProtectedPage";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import pb from "@/lib/pocketbase";
 import BottomBar from "@/components/BottomBar";
 
@@ -16,9 +16,9 @@ export default function Search() {
   const [openOnly, setOpenOnly] = useState(true);
   const searchInput = useRef("");
 
-  async function doSearch(word, isOpenOnly){
+  async function doSearch(word, isOpenOnly) {
     if (word.length === 0) return;
-    
+
     const searchResult = await pb.collection("products").getFullList({
       filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
       ${isOpenOnly ? `&&soldDate=null` : ""}`,
@@ -60,19 +60,20 @@ export default function Search() {
           </form>
         </div>
         <div className="flex pb-2 items-center">
-          <div className="ml-auto text-slate-500">
-          나눔 완료된 물건 숨기기
-          </div>
+          <div className="ml-auto text-slate-500">나눔 완료된 물건 숨기기</div>
           <button
             onClick={() => {
               setOpenOnly(!openOnly);
               doSearch(searchWord, !openOnly);
             }}
           >
-            <EyeSlashIcon className={`w-8 h-8 mx-2 ${openOnly ? "stroke-orange-400" : "stroke-slate-400"}`}/>
-          </button> 
+            <EyeSlashIcon
+              className={`w-8 h-8 mx-2 ${
+                openOnly ? "stroke-orange-400" : "stroke-slate-400"
+              }`}
+            />
+          </button>
         </div>
-        
       </div>
     );
   }
@@ -113,16 +114,16 @@ export default function Search() {
                         {data?.expand?.seller?.name}
                       </div>
                       <div>{data?.expand?.seller?.studentId}</div>
-                      <div className="text-orange-500">{data?.soldDate ? "나눔 완료" : ""}</div>
+                      <div className="text-orange-500">
+                        {data?.soldDate ? "나눔 완료" : ""}
+                      </div>
                     </div>
                   </div>
                 </div>
               </Link>
             ))}
           </ProductGrid>
-          <div
-            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
-          />
+          <div className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4" />
         </div>
       );
     }

@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+export default function report() {
+  return <div>report page</div>;
+}
+=======
 import BottomBar from "@/components/BottomBar";
 import HeadBar from "@/components/HeadBar";
 import Layout from "@/components/Layout";
@@ -114,3 +119,4 @@ export default function Report() {
   );
 }
 
+>>>>>>> develop
