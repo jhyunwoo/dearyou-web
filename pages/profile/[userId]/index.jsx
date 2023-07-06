@@ -26,8 +26,7 @@ export default function Profile() {
   useEffect(() => {
     if (!router.isReady) return;
     getUserRecord();
-  }, [router.isReady])
-
+  }, [router.isReady]);
 
   // user가 등록한 물품 조회
   const [products, setProducts] = useState([]);
@@ -47,14 +46,13 @@ export default function Profile() {
       if (data.items.length) {
         page.current += 1;
       }
-    } catch (err) { }
+    } catch (err) {}
   }, []);
   useEffect(() => {
     if (inView && hasNextPage) {
       fetch();
     }
   }, [fetch, hasNextPage, inView]);
-
 
   return (
     <ProtectedPage>
@@ -87,7 +85,6 @@ export default function Profile() {
             </div>
           </div>
 
-
           <div className="mt-4">
             <div className="flex items-center">
               <div>
@@ -96,16 +93,14 @@ export default function Profile() {
               </div>
               <Link
                 href={`/profile/${userId}/report`}
-                className="ml-auto mr-2 ">
+                className="ml-auto mr-2 "
+              >
                 <MegaphoneIcon className="w-8 h-8 stroke-red-400" />
               </Link>
             </div>
           </div>
-
         </div>
-        <div className="p-4 font-bold">
-          {user?.name}님이 등록한 물건들
-        </div>
+        <div className="p-4 font-bold">{user?.name}님이 등록한 물건들</div>
         <ProductGrid>
           {products.map((data, key) => (
             <ProductCard data={data} key={key} />
@@ -116,8 +111,6 @@ export default function Profile() {
           />
         </ProductGrid>
       </Layout>
-
     </ProtectedPage>
   );
 }
-

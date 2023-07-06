@@ -53,7 +53,7 @@ export default function CreateProduct() {
       showImages.map(async (data) => {
         const file = refImages[data.id];
         formData.append("photos", file);
-        console.log(file)
+        console.log(file);
       });
       formData.append("seller", pb.authStore.model.id);
       formData.append("name", data.name);
@@ -63,7 +63,7 @@ export default function CreateProduct() {
         let result = await pb
           .collection("products")
           .create(formData, { $autoCancel: true });
-      } catch { }
+      } catch {}
 
       await router.replace("/");
     }

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
-import Image from "next/image";
 import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
@@ -136,13 +135,14 @@ export default function ProductDetail({ productId }) {
     router.push(`/chats/${newChat.id}`);
   }
 
-  async function onProductHide(){
+  async function onProductHide() {
     if (!autonomy) return null;
 
-    if(window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
+    if (
+      window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
 숨긴 물품은 승인 페이지에서 다시 승인할 수 있습니다.
-꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)){
-      
+꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)
+    ) {
       let newInfo = productInfo;
       newInfo.rejectedReason = "임시로 숨김 처리되었습니다.";
       newInfo.isConfirmed = false;
@@ -154,7 +154,7 @@ export default function ProductDetail({ productId }) {
     }
   }
 
-  function CloseProductButton(){
+  function CloseProductButton() {
     return (
       <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
         <button
@@ -186,19 +186,17 @@ export default function ProductDetail({ productId }) {
           &apos;{productInfo.expand.seller.name}&apos;님에게 채팅 문의
         </button>
       </div>
-    )
+    );
   }
   // (자율위원 전용) 물품 숨기기 버튼
-  function HideProductButton(){
+  function HideProductButton() {
     if (!autonomy) return null;
 
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-6 rounded-full ${
-          "bg-red-400 hover:bg-red-500 transition duration-200"
-        }`}
-        onClick={onProductHide}
+          className={`p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
+          onClick={onProductHide}
         >
           물품 숨기기
         </button>
@@ -277,21 +275,19 @@ export default function ProductDetail({ productId }) {
                       <CloseProductButton />
                     ) : (
                       <div>
-                      <GoToChatButton/>
-                      <HideProductButton/>
+                        <GoToChatButton />
+                        <HideProductButton />
                       </div>
                     )
-                    ) : (
-                    productInfo.rejectedReason ?
-                      (
+                  ) : productInfo.rejectedReason ? (
                     <div className="text-red-500">
-                        물품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
+                      물품 등록 신청이 반려되었습니다. (사유:{" "}
+                      {productInfo.rejectedReason})
                     </div>
                   ) : (
                     <div className="text-amber-500">
-                        물품 등록 승인 대기 중입니다.
+                      물품 등록 승인 대기 중입니다.
                     </div>
-                      )
                   )}
                   <div className="w-full h-16 sm:h-0"></div>
                 </div>

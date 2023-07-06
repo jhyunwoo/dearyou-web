@@ -1,15 +1,11 @@
 import ProtectedPage from "@/components/ProtectedPage";
 import { useRouter } from "next/router";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePbAuth } from "../../../contexts/AuthWrapper";
 import pb from "@/lib/pocketbase";
 import ChatHistory from "@/components/ChatHistory";
 import Link from "next/link";
-import {
-  ArrowLeftIcon,
-  CheckIcon,
-  ArrowDownIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import DeveloperPage from "@/components/DeveloperPage";
 
 export default function Chat() {
@@ -31,11 +27,10 @@ export default function Chat() {
   const chatInput = useRef(); // 채팅 텍스트 input을 ref
   const imgRef = useRef(); // 이미지 input을 ref
 
-  
   /* ********************************** */
   /*  초기 데이터 로딩&실시간 로딩 처리   */
   /* ********************************** */
-  
+
   /** 처음 페이지 로딩할 때 subChatRecord 호출 */
   useEffect(() => {
     if (!router.isReady) return;
@@ -56,18 +51,17 @@ export default function Chat() {
     setIsLoading(false);
     return;
   }
-  
+
   /* Chats 콜렉션에서 데이터 가져옴 (useEffect로 호출) */
   async function getChatRecord() {
     if (!chatId) return;
-    let record = null
-    try{
-      record = await pb
-        .collection("chats")
-        .getOne(chatId, { expand: "seller,buyer,messages,messages.owner,read" });
+    let record = null;
+    try {
+      record = await pb.collection("chats").getOne(chatId, {
+        expand: "seller,buyer,messages,messages.owner,read",
+      });
       setChatRecord(record);
-    }
-    catch { }
+    } catch {}
     return record;
   }
 
@@ -76,13 +70,13 @@ export default function Chat() {
     return (
       <ProtectedPage>
         <DeveloperPage>
-        <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
-          <div className="text-base">
-            {isLoading ? 
-              "정보를 불러오는 중입니다..." : 
-              "존재하지 않는 채팅입니다."}
+          <div className="w-full min-h-screen bg-slate-50 flex justify-center items-center">
+            <div className="text-base">
+              {isLoading
+                ? "정보를 불러오는 중입니다..."
+                : "존재하지 않는 채팅입니다."}
             </div>
-        </div>
+          </div>
         </DeveloperPage>
       </ProtectedPage>
     );
@@ -90,36 +84,40 @@ export default function Chat() {
     return (
       <ProtectedPage>
         <DeveloperPage>
-        <div className="w-full min-h-screen bg-slate-50">
-          <ChatHistory 
-            parseTime={false}
-            chatRecord={chatRecord}
-            userMe={userMe}
-            userOther={userOther} />
-        <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
-          <Link href={"/devpage/chats-log"}>
-            <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
-          </Link>
-          <h3 className="text-xl font-semibold ml-4 text-blue-500">
-            채팅 로그 조회 중
-          </h3>
-        </div>
-        
-        </div>
-        
-        <div className="flex items-center fixed bottom-2 right-0 left-0">
+          <div className="w-full min-h-screen bg-slate-50">
+            <ChatHistory
+              parseTime={false}
+              chatRecord={chatRecord}
+              userMe={userMe}
+              userOther={userOther}
+            />
+            <div className="flex p-2 px-4 items-center fixed top-0 right-0 left-0 bg-white">
+              <Link href={"/devpage/chats-log"}>
+                <ArrowLeftIcon className=" w-8 h-8 bg-amber-400 text-white p-2 rounded-full" />
+              </Link>
+              <h3 className="text-xl font-semibold ml-4 text-blue-500">
+                채팅 로그 조회 중
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex items-center fixed bottom-2 right-0 left-0">
             <h3 className="font-semibold flex w-screen">
-                <div className="mx-auto text-center">
-                    <div>◀ {userOther.name}({userOther.studentId})</div>
-                    <div className="text-xs">id: {userOther.id}</div>
+              <div className="mx-auto text-center">
+                <div>
+                  ◀ {userOther.name}({userOther.studentId})
                 </div>
-                <div className="mx-auto">-</div>
-                <div className="mx-auto text-center">
-                    <div>{userMe.name}({userMe.studentId}) ▶</div>
-                    <div className="text-xs">id: {userOther.id}</div>
+                <div className="text-xs">id: {userOther.id}</div>
+              </div>
+              <div className="mx-auto">-</div>
+              <div className="mx-auto text-center">
+                <div>
+                  {userMe.name}({userMe.studentId}) ▶
                 </div>
+                <div className="text-xs">id: {userOther.id}</div>
+              </div>
             </h3>
-        </div>
+          </div>
         </DeveloperPage>
       </ProtectedPage>
     );
