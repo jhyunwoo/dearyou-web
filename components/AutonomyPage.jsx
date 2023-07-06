@@ -1,20 +1,16 @@
-import Image from "next/image";
-import pb from "@/lib/pocketbase";
+import Image from "next/image"
+import pb from "@/lib/pocketbase"
 
 /** 자율위원 전용 페이지 -> 권한 확인 */
 export default function AutonomyPage(props) {
-  const autonomy = pb.authStore.model.autonomy;
+  const autonomy = pb.authStore.model.autonomy
   if (!autonomy) {
     return (
       <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
         <div className="p-2 m-4 text-center">
           <Image
             className="mx-auto my-4"
-<<<<<<< HEAD
-            src="/favicon.ico"
-=======
-            src="./favicon.png"
->>>>>>> develop
+            src="/favicon.png"
             width={100}
             height={100}
             alt="logo"
@@ -26,8 +22,8 @@ export default function AutonomyPage(props) {
           </div>
         </div>
       </div>
-    );
+    )
   } else {
-    return <>{props.children}</>;
+    return <>{props.children}</>
   }
 }

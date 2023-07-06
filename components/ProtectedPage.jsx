@@ -1,11 +1,11 @@
-import Link from "next/link";
-import Image from "next/image";
-import { usePbAuth } from "../contexts/AuthWrapper";
+import Link from "next/link"
+import Image from "next/image"
+import { usePbAuth } from "../contexts/AuthWrapper"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
-  const { user } = usePbAuth();
+  const { user } = usePbAuth()
   if (!user) {
     /** 로그인이 돼있지 않을 때 */
     return (
@@ -13,11 +13,7 @@ export default function ProtectedPage(props) {
         <div className="">
           <Image
             className="mx-auto my-4"
-<<<<<<< HEAD
-            src="/favicon.ico"
-=======
             src="/favicon.png"
->>>>>>> develop
             width={100}
             height={100}
             alt="logo"
@@ -30,7 +26,7 @@ export default function ProtectedPage(props) {
           </Link>
         </div>
       </div>
-    );
+    )
   } else if (user.studentId === 0 || user.studentId == null) {
     /** 학번 정보가 없을 때 */
     return (
@@ -49,8 +45,8 @@ export default function ProtectedPage(props) {
           </div>
         </div>
       </div>
-    );
+    )
   } else {
-    return <>{props.children}</>;
+    return <>{props.children}</>
   }
 }

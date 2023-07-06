@@ -1,8 +1,8 @@
-import BottomBar from "@/components/BottomBar";
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import BottomBar from "@/components/BottomBar"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import { XMarkIcon } from "@heroicons/react/24/outline"
+import Image from "next/image"
 
 export default function Profile() {
   return (
@@ -10,21 +10,12 @@ export default function Profile() {
       <BottomBar />
       <Layout>
         <div className="mx-auto text-center">
-<<<<<<< HEAD
           <div className="min-h-screen">
             <Image
-              src={"/favicon.ico"}
+              src={"/favicon.png"}
               width={64}
               height={64}
               className="mt-10 rounded-2xl mx-auto"
-=======
-            <div className="min-h-screen">
-            <Image 
-                src={'/favicon.png'}
-                width={64}
-                height={64}
-                className="mt-10 rounded-2xl mx-auto"
->>>>>>> develop
             />
             <div className="mt-2 text-xl">드려유 (DearYou)</div>
             <div className="mt-2 text-3xl font-bold">만든 사람들</div>
@@ -102,5 +93,5 @@ export default function Profile() {
         </div>
       </Layout>
     </ProtectedPage>
-  );
+  )
 }
