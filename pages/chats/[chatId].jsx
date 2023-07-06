@@ -170,11 +170,12 @@ export default function Chat({ chatId }) {
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
     readMessage()
   }, [messages])
+  console.log(messages)
 
   return (
     <ProtectedPage>
       <div className="bg-slate-50 min-h-screen">
-        <div className="fixed top-0 right-0 left-0 p-2 bg-amber-100 flex items-center">
+        <div className="fixed top-0 right-0 left-0 p-2 bg-white shadow-md flex items-center">
           <Link href={"/chats"}>
             <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
           </Link>
@@ -197,7 +198,7 @@ export default function Chat({ chatId }) {
             <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
           )}
         </div>
-        <div className="overflow-auto pb-14 flex flex-col">
+        <div className="overflow-auto pb-14 flex flex-col space-y-2">
           {oldMessages?.map((data, key) => (
             <section
               key={key}
@@ -237,19 +238,39 @@ export default function Chat({ chatId }) {
                   : "mr-auto"
               } mb-1  mx-2 flex items-end`}
             >
-              <div className="flex flex-col">
+              <div
+                className={`flex flex-col ${
+                  pb.authStore.model.id === data?.sender
+                    ? "items-end"
+                    : "items-start"
+                }`}
+              >
                 <div className="text-xs">
                   {pb.authStore.model.id === data?.sender
                     ? pb.authStore.model.name
                     : data?.expand?.sender?.name}
                 </div>
-                <div className="bg-white p-1 px-2 rounded-md">
+                <div className="bg-white p-1 px-2 rounded-md max-w-xs">
                   {data?.product ? (
-                    <section>
-                      <Image
-                        src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.products?.id}/${data?.expand?.products?.photos[0]}`}
-                      />
-                    </section>
+                    pb.authStore.model.id === data?.sender ? (
+                      <section>
+                        <Image
+                          src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </section>
+                    ) : (
+                      <Link href={`/products/${data?.expand?.product?.id}`}>
+                        <Image
+                          src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </Link>
+                    )
                   ) : (
                     ""
                   )}
@@ -277,12 +298,12 @@ export default function Chat({ chatId }) {
           ))}
         </div>
         <div ref={messageEndRef}></div>
-        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-orange-50 ">
+        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 ">
           <form onSubmit={handleSubmit(onSubmit)} className="flex">
             <label
               htmlFor="input-file"
               onChange={onLoadImage}
-              className="bg-white ring-2 hover:ring-offset-1 hover:bg-sky-400 hover:text-white transition duration-200 ring-sky-400 rounded-xl text-slate-600  p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
+              className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl   p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
             >
               <PhotoIcon className="w-6 h-6" />
               <input

@@ -101,6 +101,9 @@ export default function ProductDetail({ productId }) {
         isRead: false,
         product: productInfo.id,
       })
+      const updateChat = await pb
+        .collection("chats")
+        .update(checkChat[0].id, { messages: createMessage.id })
       router.push(`/chats/${createMessage.chat}`)
     } else {
       const createNewChat = await pb
@@ -115,7 +118,9 @@ export default function ProductDetail({ productId }) {
         isRead: false,
         product: productInfo.id,
       })
-      console.log(createMessage)
+      const updateChat = await pb
+        .collection("chats")
+        .update(createNewChat.id, { messages: createMessage.id })
       router.push(`/chats/${createMessage.chat}`)
     }
   }

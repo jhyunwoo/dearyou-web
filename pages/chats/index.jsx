@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import Link from "next/link"
 import getUploadedTime from "@/lib/getUploadedTime"
+import cutLongText from "@/lib/cutLongText"
 
 export default function ChatList() {
   const { user } = usePbAuth()
@@ -54,7 +55,7 @@ export default function ChatList() {
                 href={`/chats/${data.id}`}
                 className="bg-white p-3 rounded-l  flex justify-between items-center"
               >
-                <div className="text-lg font-bold">
+                <div className="text-lg font-bold w-1/3">
                   {user.id !== data.expand.user1.id
                     ? data.expand.user1.name
                     : data.expand.user2.name}
@@ -62,11 +63,11 @@ export default function ChatList() {
                 <div className="flex flex-col items-end">
                   <div className="font-bold ">
                     {data?.expand?.messages?.message
-                      ? data.expand.messages.message
+                      ? cutLongText(data.expand.messages.message)
                       : "<사진>"}
                   </div>
                   <div className="text-sm">
-                    {getUploadedTime(data?.expand?.messages?.created)}
+                    {getUploadedTime(data?.updated)}
                   </div>
                 </div>
               </Link>
