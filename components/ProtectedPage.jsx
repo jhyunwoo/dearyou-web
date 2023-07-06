@@ -42,10 +42,21 @@ export default function ProtectedPage(props) {
         </div>
       </div>
     )
-  } else if (user?.isBanned) {
+  } else if (user?.isBanned && !props.allowBanned) {
     return (
-      <div>
-        <div>Banned</div>
+      <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
+        <div className="p-2 m-4 text-center">
+          <Image
+            className="mx-auto my-4"
+            src="/favicon.png"
+            width={100}
+            height={100}
+            alt="logo"
+          />
+          <div className="text-lg">계정이 정지되었습니다.</div>
+          <div className="mb-2">관리자에게 문의 바랍니다.</div>
+          <Link href="/profile" className="text-slate-500">로그아웃</Link>
+        </div>
       </div>
     )
   } else if (user?.studentId === 0 || user?.studentId == null) {

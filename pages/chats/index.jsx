@@ -38,8 +38,6 @@ export default function ChatList() {
   }, [])
   return (
     <Layout>
-      <BottomBar />
-      <HeadBar title={"채팅"} />
       <ProtectedPage>
         <div className="grid grid-cols gap-3">
           {chats.map((data, key) => (
@@ -73,6 +71,8 @@ export default function ChatList() {
             </section>
           ))}
         </div>
+        <BottomBar />
+        <HeadBar title={"채팅"} />
       </ProtectedPage>
     </Layout>
   )
