@@ -1,19 +1,19 @@
 export function Paragraph(props) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg">{props.children}</div>
-  );
+  )
 }
 
 export function Title(props) {
-  return <div className="text-lg font-semibold">{props.children}</div>;
+  return <div className="text-lg font-semibold">{props.children}</div>
 }
 
 export function List(props) {
-  return <div className="flex flex-col mt-4">{props.children}</div>;
+  return <div className="flex flex-col mt-4">{props.children}</div>
 }
 
 export function Text(props) {
-  return <div className="">{props.children}</div>;
+  return <div className="">{props.children}</div>
 }
 
 export default function Privacy() {
@@ -328,5 +328,5 @@ export default function Privacy() {
         </Text>
       </Paragraph>
     </div>
-  );
+  )
 }

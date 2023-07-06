@@ -10,6 +10,7 @@
     "server": "cd pocketbase && ./pocketbase serve"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^9.1.4",
     "@heroicons/react": "^2.0.17",
     "autoprefixer": "10.4.14",
     "eslint": "8.42.0",

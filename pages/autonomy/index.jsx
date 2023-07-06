@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-import pb from "@/lib/pocketbase";
-import ProtectedPage from "@/components/ProtectedPage";
-import BottomBar from "@/components/BottomBar";
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
-import ProductGrid from "@/components/ProductGrid";
-import ProductCard from "@/components/ProductCard";
-import AutonomyPage from "@/components/AutonomyPage";
-import Loading from "@/components/Loading";
+import { useCallback, useEffect, useState } from "react"
+import pb from "@/lib/pocketbase"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import { CheckBadgeIcon } from "@heroicons/react/24/outline"
+import ProductGrid from "@/components/ProductGrid"
+import ProductCard from "@/components/ProductCard"
+import AutonomyPage from "@/components/AutonomyPage"
+import Loading from "@/components/Loading"
 
 export default function Autonomy() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([])
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetch = useCallback(async () => {
     try {
@@ -19,21 +19,21 @@ export default function Autonomy() {
         expand: "seller",
         sort: "-created",
         filter: "isConfirmed=False",
-      });
-      setProducts(data);
+      })
+      setProducts(data)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     async function effect() {
-      setIsLoading(true);
-      await fetch();
-      setIsLoading(false);
+      setIsLoading(true)
+      await fetch()
+      setIsLoading(false)
     }
-    effect();
-  }, [fetch]);
+    effect()
+  }, [fetch])
 
   return (
     <ProtectedPage>
@@ -70,5 +70,5 @@ export default function Autonomy() {
         <BottomBar />
       </AutonomyPage>
     </ProtectedPage>
-  );
+  )
 }

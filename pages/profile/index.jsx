@@ -1,12 +1,12 @@
+import Image from "next/image"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProtectedPage from "@/components/ProtectedPage"
-import { usePbAuth } from "@/contexts/AuthWrapper"
-import pb from "@/lib/pocketbase"
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
-import Image from "next/image"
-import Link from "next/link"
 
 export default function Profile() {
   const { user, signOut } = usePbAuth()

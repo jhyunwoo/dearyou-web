@@ -1,25 +1,25 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import pb from "../lib/pocketbase";
-import { usePbAuth } from "../contexts/AuthWrapper";
-import Loading from "@/components/Loading";
-import Image from "next/image";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import Image from "next/image"
+import pb from "@/lib/pocketbase"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import Loading from "@/components/Loading"
 
 export default function SignIn() {
-  const { setUserData, kakaoSignIn, appleSignIn } = usePbAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const { setUserData, kakaoSignIn } = usePbAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
-    const localAuthProvider = JSON.parse(localStorage.getItem("provider"));
-    const params = new URL(location.href).searchParams;
-    const redirectUrl = `${location.origin}/signin`;
-    const code = params.get("code");
+    const localAuthProvider = JSON.parse(localStorage.getItem("provider"))
+    const params = new URL(location.href).searchParams
+    const redirectUrl = `${location.origin}/signin`
+    const code = params.get("code")
 
     const storeUserAndRedirect = (user) => {
-      setUserData(user);
-      router.replace("/");
-    };
+      setUserData(user)
+      router.replace("/")
+    }
 
     // 리다이렉트 되지 않으면 로그인 취소
     if (
@@ -27,8 +27,8 @@ export default function SignIn() {
       !code ||
       localAuthProvider.state !== params.get("state")
     )
-      return;
-    setIsLoading(true);
+      return
+    setIsLoading(true)
     pb.collection("users")
       .authWithOAuth2Code(
         localAuthProvider.name,
@@ -41,36 +41,12 @@ export default function SignIn() {
         { $autoCancel: false },
       )
       .then(async (response) => {
-        const user = await pb.collection("users").getOne(response.record.id);
-        storeUserAndRedirect(user);
-      });
+        const user = await pb.collection("users").getOne(response.record.id)
+        storeUserAndRedirect(user)
+      })
+    setIsLoading(false)
+  }, [])
 
-    // skip profile updation if user already exists or user data from OAuth providers haven't changed
-    // if (
-    //   user.name &&
-    //   user.avatarUrl &&
-    //   user.name === response.meta?.name &&
-    //   user.avatarUrl === response.meta?.avatarUrl
-    // ) {
-    //   storeUserAndRedirect(user);
-    // } else storeUserAndRedirect(user);
-    // pb.collection("users")
-    //   .update(response.record.id, {
-    //     name: response.meta?.name,
-    //     avatarUrl: response.meta?.avatarUrl,
-    //   })
-    //   .then((res) => {
-    //     storeUserAndRedirect(res);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // });
-    setIsLoading(false);
-  }, []);
   return (
     <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
@@ -91,20 +67,7 @@ export default function SignIn() {
             카카오로 로그인
           </div>
         </button>
-        {/* <button
-          onClick={appleSignIn}
-          className="bg-black mt-4 text-white shadow-lg p-2 px-4 rounded-lg flex justify-center items-center"
-        >
-          <Image
-            src={"/apple_logo.png"}
-            className=""
-            width={20}
-            height={20}
-            alt={"logo"}
-          />
-          <div className="font-semibold text-base ml-4">애플로 로그인</div>
-        </button> */}
       </div>
     </div>
-  );
+  )
 }

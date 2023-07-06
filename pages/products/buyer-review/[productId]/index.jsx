@@ -1,24 +1,24 @@
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import HeadBar from "@/components/HeadBar";
-import BottomBar from "@/components/BottomBar";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { StarIcon } from "@heroicons/react/24/outline";
-import pb from "@/lib/pocketbase";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import pb from "@/lib/pocketbase"
+import { useForm } from "react-hook-form"
+import { StarIcon } from "@heroicons/react/24/outline"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import HeadBar from "@/components/HeadBar"
+import BottomBar from "@/components/BottomBar"
 
 export default function MyReviews() {
-  const router = useRouter();
-  const { productId, sellerId } = router.query;
-  const [rating, setRating] = useState(0);
-  const [seller, setSeller] = useState();
+  const router = useRouter()
+  const { productId, sellerId } = router.query
+  const [rating, setRating] = useState(0)
+  const [seller, setSeller] = useState()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm()
 
   async function onSubmit(data) {
     if (rating) {
@@ -28,82 +28,82 @@ export default function MyReviews() {
         from: pb.authStore.model?.id,
         comment: data.review,
         rate: rating,
-      };
+      }
 
-      const record = await pb.collection("reviews").create(reviewData);
-      const sellerInfo = await pb.collection("users").getOne(sellerId);
+      const record = await pb.collection("reviews").create(reviewData)
+      const sellerInfo = await pb.collection("users").getOne(sellerId)
       const updateSeller = await pb
         .collection("users")
-        .update(sellerId, { dignity: sellerInfo.dignity + rating });
+        .update(sellerId, { dignity: sellerInfo.dignity + rating })
 
-      router.push("/");
+      router.push("/")
     } else {
-      alert("후기를 입력해주세요.");
+      alert("후기를 입력해주세요.")
     }
   }
 
   useEffect(() => {
     async function getSellerInfo() {
-      const sellerInfo = await pb.collection("users").getOne(sellerId);
-      setSeller(sellerInfo);
+      const sellerInfo = await pb.collection("users").getOne(sellerId)
+      setSeller(sellerInfo)
     }
-    getSellerInfo();
-  }, [sellerId]);
+    getSellerInfo()
+  }, [sellerId])
 
-  function Star({idx}){
+  function Star({ idx }) {
     return (
       <StarIcon
-      type="button"
-      onClick={() => setRating(idx)}
-      className={`p-1 px-4 w-full rounded-lg h-20 ${
-        rating >= idx
-          ? "stroke-amber-500 fill-amber-500"
-          : "stroke-amber-500"
-      }  transition duration-200`}
-    />
+        type="button"
+        onClick={() => setRating(idx)}
+        className={`p-1 px-4 w-full rounded-lg h-20 ${
+          rating >= idx ? "stroke-amber-500 fill-amber-500" : "stroke-amber-500"
+        }  transition duration-200`}
+      />
     )
   }
 
   return (
     <ProtectedPage>
-      {sellerId === pb.authStore.model?.id ?
-         <Layout>
-          이미 후기를 남기셨습니다.
-         </Layout> : 
-      <Layout>
-        <div>
-          <div className="text-lg font-semibold my-2">
-            거래한 사람: {seller?.name}
+      {sellerId === pb.authStore.model?.id ? (
+        <Layout>이미 후기를 남기셨습니다.</Layout>
+      ) : (
+        <Layout>
+          <div>
+            <div className="text-lg font-semibold my-2">
+              거래한 사람: {seller?.name}
+            </div>
           </div>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
-          <div className="text-lg font-semibold my-2">거래 만족도</div>
-          <div className="flex w-full justify-around space-x-1">
-            <Star idx={1}/>
-            <Star idx={2}/>
-            <Star idx={3}/>
-            <Star idx={4}/>
-            <Star idx={5}/>
-          </div>
-          <div className="mt-4 text-lg font-semibold my-2">후기</div>
-          <textarea
-            className="p-2 px-4 h-48 rounded-lg outline-none w-full"
-            {...register("review", {
-              required: { value: true, message: "후기를 입력해주세요." },
-            })}
-          />
-          {errors.review && <div>{errors.review.message}</div>}
-          <button
-            type="submit"
-            className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white font-semibold mt-4 text-lg"
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col mt-4"
           >
-            제출
-          </button>
-        </form>
-      </Layout>
-      }
+            <div className="text-lg font-semibold my-2">거래 만족도</div>
+            <div className="flex w-full justify-around space-x-1">
+              <Star idx={1} />
+              <Star idx={2} />
+              <Star idx={3} />
+              <Star idx={4} />
+              <Star idx={5} />
+            </div>
+            <div className="mt-4 text-lg font-semibold my-2">후기</div>
+            <textarea
+              className="p-2 px-4 h-48 rounded-lg outline-none w-full"
+              {...register("review", {
+                required: { value: true, message: "후기를 입력해주세요." },
+              })}
+            />
+            {errors.review && <div>{errors.review.message}</div>}
+            <button
+              type="submit"
+              className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white font-semibold mt-4 text-lg"
+            >
+              제출
+            </button>
+          </form>
+        </Layout>
+      )}
       <HeadBar title="나눔 후기 남기기" />
       <BottomBar />
     </ProtectedPage>
-  );
+  )
 }

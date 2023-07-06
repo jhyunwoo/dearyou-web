@@ -1,18 +1,19 @@
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import cutLongText from "@/lib/cutLongText"
+import getUploadedTime from "@/lib/getUploadedTime"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProtectedPage from "@/components/ProtectedPage"
-import pb from "@/lib/pocketbase"
-import { useEffect, useState } from "react"
-import { usePbAuth } from "@/contexts/AuthWrapper"
-import Link from "next/link"
-import getUploadedTime from "@/lib/getUploadedTime"
-import cutLongText from "@/lib/cutLongText"
 
 export default function ChatList() {
   const { user } = usePbAuth()
   const [chats, setChats] = useState([])
   const [updateChats, setUpdateChats] = useState(0)
+
   useEffect(() => {
     async function getChatList() {
       try {
@@ -28,6 +29,7 @@ export default function ChatList() {
 
     getChatList()
   }, [updateChats])
+
   useEffect(() => {
     async function subscribeChat() {
       pb.collection("chats").subscribe("*", async function (e) {
@@ -36,6 +38,7 @@ export default function ChatList() {
     }
     subscribeChat()
   }, [])
+
   return (
     <Layout>
       <BottomBar />

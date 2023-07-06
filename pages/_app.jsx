@@ -1,43 +1,43 @@
-import "@/styles/globals.css";
-import AuthWrapper from "../contexts/AuthWrapper";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import Router from "next/router";
-import Loading from "@/components/Loading";
-import * as gtag from "../lib/gtags";
-import Script from "next/script";
+import "@/styles/globals.css"
+import { useEffect, useState } from "react"
+import Head from "next/head"
+import Router from "next/router"
+import Script from "next/script"
+import * as gtag from "@/lib/gtags"
+import AuthWrapper from "@/contexts/AuthWrapper"
+import Loading from "@/components/Loading"
 
-import { IBM_Plex_Sans_KR } from "next/font/google";
+import { IBM_Plex_Sans_KR } from "next/font/google"
 const plex_sans = IBM_Plex_Sans_KR({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600"],
-});
+})
 
 export default function App({ Component, pageProps }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  gtag.useGtag();
+  gtag.useGtag()
 
   useEffect(() => {
     const start = () => {
       // NProgress.start();
-      setLoading(true);
-    };
+      setLoading(true)
+    }
     const end = () => {
       // NProgress.done();
-      setLoading(false);
-    };
+      setLoading(false)
+    }
 
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
+    Router.events.on("routeChangeStart", start)
+    Router.events.on("routeChangeComplete", end)
+    Router.events.on("routeChangeError", end)
 
     return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
-  }, []);
+      Router.events.off("routeChangeStart", start)
+      Router.events.off("routeChangeComplete", end)
+      Router.events.off("routeChangeError", end)
+    }
+  }, [])
 
   return (
     <AuthWrapper>
@@ -77,5 +77,5 @@ export default function App({ Component, pageProps }) {
       {loading ? <Loading /> : ""}
       <Component {...pageProps} />
     </AuthWrapper>
-  );
+  )
 }
