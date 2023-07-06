@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import pb from "@/lib/pocketbase";
 import ProtectedPage from "@/components/ProtectedPage";
 import BottomBar from "@/components/BottomBar";
@@ -7,37 +7,43 @@ import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
 import AutonomyPage from "@/components/AutonomyPage";
 import Loading from "@/components/Loading";
+import { useInView } from "react-intersection-observer";
 
 export default function Autonomy() {
   const [products, setProducts] = useState([]);
-  const [showHidden, setShowHidden] = useState(true);
-
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const page = useRef(1);
+  const [ref, inView] = useInView();
+  const [hideRejected, setHideRejected] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function getProducts(showhidden){
-    const data = await pb.collection("products").getFullList({
-      expand: "seller",
-      sort: "-created",
-      filter: `isConfirmed=False${showhidden ? `&&rejectedReason=null` : ""}`,
-    });
-    setProducts(data);
-  }
-  const fetch = useCallback(async () => {
+  const fetch = useCallback(async (hide) => {
     try {
-      getProducts(showHidden);
-    } catch (err) {
-      console.log(err);
-    }
+      const data = await pb.collection("products").getList(page.current, 40, {
+        expand: "seller",
+        sort: "-created",
+        filter: `isConfirmed=False${hide ? ` && rejectedReason=""` : ""}`,
+      });
+      setProducts((prevPosts) => [...prevPosts, ...data.items]);
+      setHasNextPage(data.items.length === 40);
+      if (data.items.length) {
+        page.current += 1;
+      }
+    } catch (err) {}
   }, []);
 
   useEffect(() => {
-    async function effect() {
-      setIsLoading(true);
-      await fetch();
-      setIsLoading(false);
+    if (inView && hasNextPage) {
+      fetch(hideRejected);
     }
-    effect();
-  }, [fetch]);
+  }, [fetch, hasNextPage, inView]);
+
+  useEffect(() => {
+    page.current = 1;
+    setProducts([]);
+    setHasNextPage(false);
+    setHasNextPage(true);
+  }, [hideRejected]);
 
   return (
     <ProtectedPage>
@@ -61,26 +67,26 @@ export default function Autonomy() {
         </div>
         <div className="p-2">
           <div className="flex pb-2 items-center">
-            <div className="ml-2 font-bold text-base pb-2">
-              {products?.length}개의 물품이 검토를 기다리고 있어요!
-            </div>
+            <div className="w-20"/>
             <div className="ml-auto text-slate-500">
             반려된 물건 숨기기
             </div>
             <button
               onClick={() => {
-                getProducts(!showHidden);
-                setShowHidden(!showHidden);
+                setHideRejected(!hideRejected);
               }}
             >
-              <EyeSlashIcon className={`w-8 h-8 mx-2 ${showHidden ? "stroke-orange-400" : "stroke-slate-400"}`}/>
+              <EyeSlashIcon className={`w-8 h-8 mx-2 ${hideRejected ? "stroke-orange-400" : "stroke-slate-400"}`}/>
             </button> 
           </div>
           <ProductGrid>
             {products?.map((data, key) => (
               <ProductCard data={data} key={key} autonomy={true} />
             ))}
-            <div className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4" />
+            <div
+              ref={ref}
+              className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+            />
           </ProductGrid>
         </div>
         <div className="w-full h-8"></div>

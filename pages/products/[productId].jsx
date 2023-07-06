@@ -179,7 +179,7 @@ export default function ProductDetail({ productId }) {
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
+          className={`flex p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
           onClick={onProductHide}
         >
           <CheckBadgeIcon className="w-6 h-6 mr-2" />
