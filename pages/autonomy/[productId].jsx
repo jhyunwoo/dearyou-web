@@ -3,13 +3,13 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
-import getUploadedTime from "@/lib/getUploadedTime"
-import { usePbAuth } from "@/contexts/AuthWrapper"
 import {
   CheckIcon,
   PencilSquareIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline"
+import getUploadedTime from "@/lib/getUploadedTime"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"

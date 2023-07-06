@@ -1,31 +1,31 @@
-import ProtectedPage from "@/components/ProtectedPage";
-import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
-import { usePbAuth } from "../../../contexts/AuthWrapper";
-import pb from "@/lib/pocketbase";
-import ChatHistory from "@/components/ChatHistory";
-import Link from "next/link";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import DeveloperPage from "@/components/DeveloperPage";
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/router"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import { ArrowLeftIcon } from "@heroicons/react/24/outline"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import ProtectedPage from "@/components/ProtectedPage"
+import ChatHistory from "@/components/ChatHistory"
+import DeveloperPage from "@/components/DeveloperPage"
 
 export default function Chat() {
-  const { user } = usePbAuth();
-  const router = useRouter();
-  const chatId = router.query["chatId"];
+  const { user } = usePbAuth()
+  const router = useRouter()
+  const chatId = router.query["chatId"]
 
   // pb에서 가져온 chat 관련 데이터 저장하는 state
-  const [chatRecord, setChatRecord] = useState(null);
+  const [chatRecord, setChatRecord] = useState(null)
 
   // pb에서 받아온 chat 관련 데이터 저장하는 state
-  const [userMe, setUserMe] = useState(); // 나 ID, 이름 저장
-  const [userOther, setUserOther] = useState(); // 상대방 ID, 이름 저장
+  const [userMe, setUserMe] = useState() // 나 ID, 이름 저장
+  const [userOther, setUserOther] = useState() // 상대방 ID, 이름 저장
 
   // 로딩 중 상태 여부 저장하는 state
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   // ref
-  const chatInput = useRef(); // 채팅 텍스트 input을 ref
-  const imgRef = useRef(); // 이미지 input을 ref
+  const chatInput = useRef() // 채팅 텍스트 input을 ref
+  const imgRef = useRef() // 이미지 input을 ref
 
   /* ********************************** */
   /*  초기 데이터 로딩&실시간 로딩 처리   */
@@ -33,36 +33,36 @@ export default function Chat() {
 
   /** 처음 페이지 로딩할 때 subChatRecord 호출 */
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady) return
     // pb에서 Chat Record 실시간으로 가져오도록 subscribe
-    getInitChatRecord();
-  }, [router.isReady]);
+    getInitChatRecord()
+  }, [router.isReady])
 
   /* 채팅 관련 정보 subscribe (useEffect로 처음에 호출) */
   async function getInitChatRecord() {
-    setIsLoading(true);
-    const record = await getChatRecord();
+    setIsLoading(true)
+    const record = await getChatRecord()
 
     // UserMe, UserOther 저장
-    const buyer = record?.expand.buyer;
-    const seller = record?.expand.seller;
-    setUserMe(buyer?.id === user?.id ? buyer : seller);
-    setUserOther(buyer?.id === user.id ? seller : buyer);
-    setIsLoading(false);
-    return;
+    const buyer = record?.expand.buyer
+    const seller = record?.expand.seller
+    setUserMe(buyer?.id === user?.id ? buyer : seller)
+    setUserOther(buyer?.id === user.id ? seller : buyer)
+    setIsLoading(false)
+    return
   }
 
   /* Chats 콜렉션에서 데이터 가져옴 (useEffect로 호출) */
   async function getChatRecord() {
-    if (!chatId) return;
-    let record = null;
+    if (!chatId) return
+    let record = null
     try {
       record = await pb.collection("chats").getOne(chatId, {
         expand: "seller,buyer,messages,messages.owner,read",
-      });
-      setChatRecord(record);
+      })
+      setChatRecord(record)
     } catch {}
-    return record;
+    return record
   }
 
   if (chatRecord == null) {
@@ -79,7 +79,7 @@ export default function Chat() {
           </div>
         </DeveloperPage>
       </ProtectedPage>
-    );
+    )
   } else {
     return (
       <ProtectedPage>
@@ -120,6 +120,6 @@ export default function Chat() {
           </div>
         </DeveloperPage>
       </ProtectedPage>
-    );
+    )
   }
 }

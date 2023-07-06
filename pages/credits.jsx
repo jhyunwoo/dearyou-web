@@ -1,8 +1,8 @@
-import BottomBar from "@/components/BottomBar"
-import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
-import { XMarkIcon } from "@heroicons/react/24/outline"
 import Image from "next/image"
+import Layout from "@/components/Layout"
+import { XMarkIcon } from "@heroicons/react/24/outline"
+import BottomBar from "@/components/BottomBar"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function Profile() {
   return (

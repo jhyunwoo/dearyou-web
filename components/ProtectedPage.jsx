@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useEffect, useState } from "react"
 import pb from "@/lib/pocketbase"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */

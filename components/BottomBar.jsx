@@ -1,15 +1,14 @@
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
 import {
   HomeIcon,
-  MagnifyingGlassIcon,
   ChatBubbleBottomCenterTextIcon,
   UserCircleIcon,
   CheckBadgeIcon,
 } from "@heroicons/react/24/outline"
-import { usePbAuth } from "../contexts/AuthWrapper"
-import { useState, useEffect } from "react"
-import pb from "@/lib/pocketbase"
-import Link from "next/link"
 
+/** 하단 바 */
 export default function BottomBar() {
   const [autonomy, setAutonomy] = useState(false)
 
