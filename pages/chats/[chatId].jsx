@@ -221,7 +221,7 @@ export default function Chat({ chatId }) {
                   <Image
                     alt="image"
                     className="rounded-lg"
-                    src={`http://127.0.0.1:8090/api/files/messages/${data.id}/${data.image}`}
+                    src={`https://dearyouapi.moveto.kr/api/files/messages/${data.id}/${data.image}`}
                     width={300}
                     height={300}
                   />
@@ -255,7 +255,7 @@ export default function Chat({ chatId }) {
                     pb.authStore.model.id === data?.sender ? (
                       <section>
                         <Image
-                          src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
                           width={300}
                           height={300}
                           alt={"photo"}
@@ -264,7 +264,7 @@ export default function Chat({ chatId }) {
                     ) : (
                       <Link href={`/products/${data?.expand?.product?.id}`}>
                         <Image
-                          src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
                           width={300}
                           height={300}
                           alt={"photo"}
@@ -280,7 +280,7 @@ export default function Chat({ chatId }) {
                     <Image
                       alt="image"
                       className="rounded-lg"
-                      src={`http://127.0.0.1:8090/api/files/messages/${data.id}/${data.image}`}
+                      src={`https://dearyouapi.moveto.kr/api/files/messages/${data.id}/${data.image}`}
                       width={300}
                       height={300}
                     />
