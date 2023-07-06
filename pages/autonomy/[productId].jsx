@@ -1,98 +1,104 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import pb from "@/lib/pocketbase";
-import Link from "next/link";
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import pb from "@/lib/pocketbase"
+import getUploadedTime from "@/lib/getUploadedTime"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import {
   CheckIcon,
   PencilSquareIcon,
   XCircleIcon,
-} from "@heroicons/react/24/outline";
-import { useRouter } from "next/router";
-import getUploadedTime from "@/lib/getUploadedTime";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import ProtectedPage from "@/components/ProtectedPage";
-import BottomBar from "@/components/BottomBar";
-import Layout from "@/components/Layout";
-import ProductImageView from "@/components/ProductImageView";
+} from "@heroicons/react/24/outline"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import Layout from "@/components/Layout"
+import ProductImageView from "@/components/ProductImageView"
 
+// productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
-  const { query } = context;
-  const { productId } = query;
-
+  const { query } = context
+  const { productId } = query
   return {
     props: {
       productId,
     },
-  };
-};
+  }
+}
+
+/** 반려 사유 리스트 */
+const rejectOptions = [
+  "* 반려 사유를 선택하세요 *",
+  "제목 또는 설명이 불충분해요.",
+  "올라온 사진만으로 물건의 상태를 확인하기 어려워요.",
+  "물건의 종류가 잘못 설정되었어요.",
+  "학교에서 거래되기에 부적절한 물건이에요.",
+]
 
 export default function ProductDetail({ productId }) {
-  const [productInfo, setProductInfo] = useState("");
-  const [checked, setChecked] = useState(false);
+  const router = useRouter()
+  const { register, handleSubmit } = useForm()
 
-  const router = useRouter();
-  const currentUser = usePbAuth().user;
+  // 물품 정보 저장
+  const [productInfo, setProductInfo] = useState("")
+  // 승인 되었는지 저장
+  const [checked, setChecked] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  /** 사용자 정보 */
+  const currentUser = usePbAuth().user
+
+  // 승인 버튼
+  async function handleConfirm() {
+    let newInfo = productInfo
+    newInfo.isConfirmed = true
+    newInfo.confirmedBy = currentUser.id
+    newInfo.rejectedReason = null
+
+    await pb.collection("products").update(productInfo.id, newInfo)
+    alert(`승인되었습니다.`)
+
+    router.push("/autonomy")
+  }
+
+  //거절 버튼
+  async function handleReject(data) {
+    if (data.type === "* 반려 사유를 선택하세요 *") {
+      alert("반려 사유를 아래 목록에서 선택해 주세요!")
+      return
+    }
+    let newInfo = productInfo
+    newInfo.rejectedReason = data.type
+    newInfo.confirmedBy = currentUser.id
+
+    try {
+      await pb.collection("products").update(productInfo.id, newInfo)
+    } catch (e) {
+      alert("반려 처리 오류")
+      console.log(e)
+    }
+    alert(`반려 처리되었습니다. 사유: "${data.type}"`)
+
+    await router.push("/autonomy")
+  }
 
   useEffect(() => {
+    /** 물품 정보 불러오기 expand seller, confirmedBy */
     async function getProductInfo() {
       try {
         const record = await pb.collection("products").getOne(productId, {
           expand: "seller, confirmedBy",
-        });
+        })
         if (!record.isConfirmed) {
-          setProductInfo(record);
+          setProductInfo(record)
         } else {
-          setProductInfo(false);
+          setProductInfo(false)
         }
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     }
-
-    getProductInfo();
-  }, [productId]);
-
-  // 승인 버튼
-  async function handleConfirm() {
-    let newInfo = productInfo;
-    newInfo.isConfirmed = true;
-    newInfo.confirmedBy = currentUser.id;
-    newInfo.rejectedReason = null;
-
-    await pb.collection("products").update(productInfo.id, newInfo);
-    alert(`승인되었습니다.`);
-
-    router.push("/autonomy");
-  }
-
-  const rejectOptions = [
-    "* 반려 사유를 선택하세요 *",
-    "제목 또는 설명이 불충분해요.",
-    "올라온 사진만으로 물건의 상태를 확인하기 어려워요.",
-    "물건의 종류가 잘못 설정되었어요.",
-    "학교에서 거래되기에 부적절한 물건이에요.",
-  ];
-  //거절 버튼
-  async function handleReject(data) {
-    if (data.type === "* 반려 사유를 선택하세요 *") {
-      alert("반려 사유를 아래 목록에서 선택해 주세요!");
-      return;
-    }
-    let newInfo = productInfo;
-    newInfo.rejectedReason = data.type;
-    newInfo.confirmedBy = currentUser.id;
-
-    await pb.collection("products").update(productInfo.id, newInfo);
-    alert(`반려 처리되었습니다. 사유: "${data.type}"`);
-
-    router.push("/autonomy");
-  }
+    getProductInfo()
+  }, [productId])
 
   return (
     <ProtectedPage>
@@ -169,7 +175,7 @@ export default function ProductDetail({ productId }) {
                       type="checkbox"
                       id="check"
                       onChange={({ target: { checked } }) => {
-                        setChecked(checked);
+                        setChecked(checked)
                       }}
                     />
                     <label for="check" className="w-8 h-8">
@@ -247,5 +253,5 @@ export default function ProductDetail({ productId }) {
 
       <BottomBar />
     </ProtectedPage>
-  );
+  )
 }
