@@ -1,3 +1,4 @@
+/** title props로 페이지 이름을 받고 헤더 표시 */
 export default function HeadBar(props) {
   return (
     <div className="w-full bg-slate-50 p-3  flex justify-start fixed top-0 right-0 left-0">

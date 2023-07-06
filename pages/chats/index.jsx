@@ -1,127 +1,80 @@
-import ProtectedPage from "@/components/ProtectedPage";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { usePbAuth } from "../../contexts/AuthWrapper";
-import Link from "next/link";
-import pb from "@/lib/pocketbase";
-import BottomBar from "@/components/BottomBar";
-import Image from "next/image";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import FloattingBar from "@/components/FloattingBar";
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import pb from "@/lib/pocketbase"
+import { useEffect, useState } from "react"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import Link from "next/link"
+import getUploadedTime from "@/lib/getUploadedTime"
+import cutLongText from "@/lib/cutLongText"
 
-export default function Chats() {
-  const { user } = usePbAuth();
-  const router = useRouter();
-  const [chatsList, setChatsList] = useState([]);
-
-  /** 최근에 메시지 온 순으로 채팅 정렬해 chatsList 스테이트에 저장 */
-  async function getSortedChats() {
-    const resultList = await pb.collection("chats").getFullList({
-      expand: "seller,buyer,messages",
-      filter: `seller.id="${pb.authStore.model.id}"||buyer.id="${pb.authStore.model.id}"`,
-    });
-
-    const sortedList = resultList.sort(function (a, b) {
-      const v =
-        new Date(a.expand?.messages?.slice(-1)[0].created) -
-        new Date(b.expand?.messages?.slice(-1)[0].created);
-      if (v < 0) return 1;
-      else if (v > 0) return -1;
-      else return 0;
-    });
-
-    setChatsList(sortedList);
-  }
-
-  function generateShortText(text) {
-    if (text.length > 15) {
-      return text.substr(0, 15) + "...";
-    } else {
-      return text;
-    }
-  }
-
-  function Unreads(props) {
-    const record = props.data;
-    return record.unreaduser === user.id && record.unreadcount > 0 ? (
-      <span className="ml-2 px-1 rounded-2xl bg-red-400 text-white">
-        {record.unreadcount}
-      </span>
-    ) : null;
-  }
-
+export default function ChatList() {
+  const { user } = usePbAuth()
+  const [chats, setChats] = useState([])
+  const [updateChats, setUpdateChats] = useState(0)
   useEffect(() => {
-    if (!router.isReady) return;
-    getSortedChats();
-    pb.collection("chats").subscribe("*", getSortedChats);
-  }, [router.isReady]);
+    async function getChatList() {
+      try {
+        let list = await pb
+          .collection("chats")
+          .getFullList({ expand: "user1,user2,messages", sort: "-updated" })
 
+        setChats(list)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    getChatList()
+  }, [updateChats])
+  useEffect(() => {
+    async function subscribeChat() {
+      console.log("subscribed")
+      pb.collection("chats").subscribe("*", async function (e) {
+        setUpdateChats((prev) => prev + 1)
+      })
+    }
+    subscribeChat()
+  }, [])
   return (
-    <ProtectedPage>
+    <Layout>
       <BottomBar />
-      <FloattingBar/>
-      <HeadBar title="채팅" />
-      <Layout>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {chatsList.length === 0 ? (
-            <div className="mx-auto mt-12 sm:col-span-2 lg:col-span-3 xl:col-span-4">
-              아직 채팅이 없습니다.
-            </div>
-          ) : (
-            ""
-          )}
-          {chatsList?.map((data, key) => (
-            <Link
-              className="bg-white p-2 rounded-xl hover:bg-slate-100 transition duration-200"
-              href={"/chats/" + data?.id}
-              key={key}
-            >
-              <div className="flex ">
-                {data?.expand["buyer"]?.id === user.id ? (
-                  data.expand["seller"].avatar ? (
-                    <Image
-                      width={100}
-                      height={100}
-                      alt={"user avatar"}
-                      className="w-16 h-16 rounded-full my-auto"
-                      src={`https://dearyouapi.moveto.kr/api/files/users/${data.expand["seller"].id}/${data.expand["seller"].avatar}?thumb=100x100`}
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>
-                  )
-                ) : data.expand["buyer"].avatar ? (
-                  <Image
-                    width={100}
-                    height={100}
-                    alt={"user avatar"}
-                    className="w-16 h-16 rounded-full my-auto"
-                    src={`https://dearyouapi.moveto.kr/api/files/users/${data.expand["buyer"].id}/${data.expand["buyer"].avatar}?thumb=100x100`}
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-slate-200 my-auto"></div>
-                )}
-
-                <div className="flex flex-col ml-4 justify-center">
-                  <div className="text-base font-bold">
-                    {data?.expand["buyer"]?.id === user.id
-                      ? data?.expand["seller"]?.name
-                      : data?.expand["buyer"]?.name}
-                    <Unreads data={data} />
+      <HeadBar title={"채팅"} />
+      <ProtectedPage>
+        <div className="grid grid-cols gap-3">
+          {chats.map((data, key) => (
+            <section key={key} className="relative">
+              {!data?.expand?.messages?.isRead &&
+              data?.expand?.messages?.receiver === pb.authStore.model.id ? (
+                <div className="w-3 h-3 bg-red-300 animate-pulse rounded-full absolute -top-1 -right-1"></div>
+              ) : (
+                ""
+              )}
+              <Link
+                href={`/chats/${data.id}`}
+                className="bg-white p-3 rounded-l  flex justify-between items-center"
+              >
+                <div className="text-lg font-bold w-1/3">
+                  {user.id !== data.expand.user1.id
+                    ? data.expand.user1.name
+                    : data.expand.user2.name}
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="font-bold ">
+                    {data?.expand?.messages?.message
+                      ? cutLongText(data.expand.messages.message)
+                      : "<사진>"}
                   </div>
-                  <div className="text-sm font-medium">
-                    {data?.expand?.messages?.slice(-1)[0].text
-                      ? generateShortText(
-                          data?.expand.messages.slice(-1)[0].text,
-                        )
-                      : "사진"}
+                  <div className="text-sm">
+                    {getUploadedTime(data?.updated)}
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </section>
           ))}
         </div>
-      </Layout>
-    </ProtectedPage>
-  );
+      </ProtectedPage>
+    </Layout>
+  )
 }
