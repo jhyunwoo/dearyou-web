@@ -1,23 +1,21 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import pb from "@/lib/pocketbase";
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import FloattingBar from "@/components/FloattingBar";
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import pb from "@/lib/pocketbase"
+import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function Profile() {
-  const { user, signOut } = usePbAuth();
+  const { user, signOut } = usePbAuth()
 
   // 개발자 권한 (로그 열람 권한)
-  const permission = pb.authStore.model?.logPermission;
+  const permission = pb.authStore.model?.logPermission
   return (
     <ProtectedPage>
       <BottomBar />
-      <FloattingBar />
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
@@ -110,5 +108,5 @@ export default function Profile() {
       </Layout>
       <HeadBar title="프로필" />
     </ProtectedPage>
-  );
+  )
 }

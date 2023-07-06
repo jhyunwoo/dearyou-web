@@ -1,22 +1,51 @@
-import ProtectedPage from "@/components/ProtectedPage";
-import { useRouter } from "next/router";
-import { useEffect, useState, useRef, useCallback } from "react";
-import pb from "@/lib/pocketbase";
-import { useForm } from "react-hook-form";
-import { ArrowUpIcon, PhotoIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import ProtectedPage from "@/components/ProtectedPage"
+import { useEffect, useState, useRef, useCallback } from "react"
+import pb from "@/lib/pocketbase"
+import { useForm } from "react-hook-form"
+import {
+  ArrowLeftCircleIcon,
+  ArrowPathIcon,
+  ArrowUpIcon,
+  PhotoIcon,
+} from "@heroicons/react/24/outline"
+import Image from "next/image"
+import { useInView } from "react-intersection-observer"
+import Link from "next/link"
 
-export default function Chat() {
-  const router = useRouter();
-  const chatId = router.query["chatId"];
-  const [chatInfo, setChatInfo] = useState();
-  const [messages, setMessages] = useState([]);
-  const [files, setFiles] = useState();
+/** 주소에서 chatId 가져오기 */
+export const getServerSideProps = async (context) => {
+  const { query } = context
+  const { chatId } = query
+  return {
+    props: {
+      chatId,
+    },
+  }
+}
 
-  const { register, handleSubmit, setValue } = useForm();
+export default function Chat({ chatId }) {
+  /** 채팅 정보 저장 */
+  const [chatInfo, setChatInfo] = useState()
+  /** 초기 메세지 및 새로 받는 메세지 저장 */
+  const [messages, setMessages] = useState([])
+  /** 메제시 과거 기록 저장 */
+  const [oldMessages, setOldMessages] = useState([])
+  /** 과거 메세지를 불러올 때 더 불러올 메세지가 있는지 판단 */
+  const [hasNextPage, setHasNextPage] = useState(true)
+  /** 사용자가 맨 위로 올렸는지 판단 */
+  const [ref, inView] = useInView()
+  /** React Hook Form 설정 */
+  const { register, handleSubmit, setValue } = useForm()
+  /** 메세지 전송 후 스크롤 내리는 기준 */
+  const messageEndRef = useRef(null)
+  /** infinite scroll 후 이전 메세지로 이동하는 기준 */
+  const infiniteRef = useRef(null)
+  /** 메세지 불러오는 페이지 */
+  const page = useRef(1)
 
-  /** 채팅 입력시 message 생성 후 chat 업데이트 */
+  /** 채팅 입력 후 message 생성 */
   const onSubmit = async (data) => {
+    setValue("text", "")
     const message = {
       chat: chatId,
       sender: pb.authStore.model.id,
@@ -26,18 +55,65 @@ export default function Chat() {
           : chatInfo.user1,
       message: data.text,
       isRead: false,
-    };
-    const record = await pb.collection("messages").create(message);
-
+    }
+    const record = await pb.collection("messages").create(message)
     const update = {
       messages: record.id,
-    };
+    }
+    const updateChat = await pb.collection("chats").update(chatId, update)
+  }
 
-    const updateChat = await pb.collection("chats").update(chatId, update);
-    setValue("text", "");
-  };
-  /** 메세지 전송 후 스크롤 내리는 기준 */
-  const messageEndRef = useRef(null);
+  /** 사진 입력 후 사진 업로드 */
+  async function onLoadImage(e) {
+    const file = e.target.files
+    const formData = new FormData()
+    formData.append("image", file["0"])
+    formData.append("chat", chatId)
+    formData.append("sender", pb.authStore.model.id)
+    formData.append(
+      "receiver",
+      pb.authStore.model.id === chatInfo.user1
+        ? chatInfo.user2
+        : chatInfo.user1,
+    )
+    formData.append("isRead", false)
+
+    try {
+      const result = await pb.collection("messages").create(formData)
+      const updateChat = await pb.collection("chats").update(chatId, {
+        messages: result.id,
+      })
+      console.log(result)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  /** message를 불러오는 함수 */
+  const fetch = useCallback(async () => {
+    try {
+      let messageList = await pb
+        .collection("messages")
+        .getList(page.current, 20, {
+          filter: `chat.id="${chatId}"`,
+          sort: "-created",
+          expand: "sender, product",
+        })
+      if (page.current === 1) {
+        console.log(messageList)
+        setMessages(messageList.items.reverse())
+      } else {
+        let reversedMessage = [...messageList.items].reverse()
+        setOldMessages((prev) => [...reversedMessage, ...prev])
+      }
+      setHasNextPage(messageList.items.length === 20)
+      if (messageList.items.length) {
+        page.current += 1
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }, [])
 
   useEffect(() => {
     /** 채팅 정보 가져오기 */
@@ -45,76 +121,84 @@ export default function Chat() {
       if (chatId) {
         const info = await pb.collection("chats").getOne(chatId, {
           expand: "user1,user2",
-        });
-        setChatInfo(info);
+        })
+        setChatInfo(info)
       }
     }
     /** 실시간 채팅을 위한 realtime 설정 */
     async function subscribeChat() {
       if (chatId) {
-        console.log("subscribed");
+        console.log("subscribed")
         pb.collection("chats").subscribe(chatId, async function (e) {
           const newMessage = await pb
             .collection("messages")
-            .getOne(e?.record?.messages);
-          console.log(newMessage);
-          setMessages((prev) => [...prev, newMessage]);
-        });
+            .getOne(e?.record?.messages)
+          console.log(newMessage)
+          setMessages((prev) => [...prev, newMessage])
+        })
       }
     }
-    /** 첫 로딩시 채팅 정보 불러오기 */
-    async function getMessages() {
-      const messageList = await pb.collection("messages").getFullList({
-        filter: `chat.id="${chatId}"`,
-        sort: "-created",
-        expand: "sender",
-      });
-      setMessages(messageList.reverse());
-    }
-    getMessages();
-    subscribeChat();
-    getChatInfo();
-  }, [chatId]);
+    subscribeChat()
+    getChatInfo()
+  }, [chatId])
 
-  /** 채팅 입력 후 스크롤 아래로 내리기 */
   useEffect(() => {
-    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    /** infinite scroll 후 보던 메세지로 이동 */
+    infiniteRef?.current?.scrollIntoView()
+  }, [oldMessages])
 
-  async function onLoadImage(e) {
-    const file = e.target.files;
-    console.log(file["0"]);
-    setFiles(file);
-    const formData = new FormData();
-    formData.append("image", file["0"]);
-    formData.append("chat", chatId);
-    formData.append("sender", pb.authStore.model.id);
-    formData.append(
-      "receiver",
-      pb.authStore.model.id === chatInfo.user1
-        ? chatInfo.user1
-        : chatInfo.user2,
-    );
-    try {
-      const result = await pb.collection("messages").create(formData);
-      const updateChat = await pb.collection("chats").update(chatId, {
-        messages: result.id,
-      });
-      console.log(result);
-    } catch (e) {
-      console.log(e);
+  /** inView와 hasNextPage값이 참이면 추가 message 로드 */
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetch()
     }
-  }
+  }, [fetch, hasNextPage, inView])
+
+  useEffect(() => {
+    /** 사용자가 채팅방에 들어오면 상대방이 보낸 메세지 읽음 표시 */
+    async function readMessage() {
+      if (messages.length < 1) return
+      let lastMessage = messages.slice(-1)
+      if (lastMessage[0].receiver === pb.authStore.model.id) {
+        const readMessage = await pb
+          .collection("messages")
+          .update(lastMessage[0].id, { isRead: true })
+        console.log(readMessage)
+      }
+    }
+    /** 채팅 입력 후 스크롤 아래로 내리기 */
+    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
+    readMessage()
+  }, [messages])
 
   return (
     <ProtectedPage>
       <div className="bg-slate-50 min-h-screen">
-        <div className="fixed top-0 right-0 left-0 p-2 bg-amber-200 flex">
-          <div>Chat</div>
-          <button onClick={() => console.log(messages)}>messages</button>
+        <div className="fixed top-0 right-0 left-0 p-2 bg-amber-100 flex items-center">
+          <Link href={"/chats"}>
+            <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
+          </Link>
+          <div className="text-lg ml-2 font-bold">
+            {pb?.authStore?.model?.id === chatInfo?.user1
+              ? chatInfo?.expand?.user2?.name
+              : chatInfo?.expand?.user1?.name}
+          </div>
         </div>
-        <div className="overflow-auto py-14 pt-20 flex flex-col">
-          {messages?.map((data, key) => (
+        <div ref={ref} className="w-full pt-20 "></div>
+        <div className="bg-slate-50 flex justify-center">
+          {hasNextPage ? (
+            <div className="flex justify-center items-center flex-col items-cente p-2">
+              <ArrowPathIcon className="w-8 h-8 p-2 animate-spin text-slate-600 " />
+              <div className="text-sm">
+                로딩이 되지 않는다면 창을 내렸다 올려주세요.
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
+          )}
+        </div>
+        <div className="overflow-auto pb-14 flex flex-col">
+          {oldMessages?.map((data, key) => (
             <section
               key={key}
               className={`${
@@ -123,6 +207,7 @@ export default function Chat() {
                   : "mr-auto items-start"
               } mb-1 flex flex-col  mx-2`}
             >
+              {key === 19 ? <div ref={infiniteRef}></div> : ""}
               <div className="text-xs">
                 {pb.authStore.model.id === data?.sender
                   ? pb.authStore.model.name
@@ -141,6 +226,53 @@ export default function Chat() {
                   />
                 )}
               </div>
+            </section>
+          ))}
+          {messages?.map((data, key) => (
+            <section
+              key={key}
+              className={`${
+                pb.authStore.model.id === data?.sender
+                  ? "ml-auto flex-row-reverse"
+                  : "mr-auto"
+              } mb-1  mx-2 flex items-end`}
+            >
+              <div className="flex flex-col">
+                <div className="text-xs">
+                  {pb.authStore.model.id === data?.sender
+                    ? pb.authStore.model.name
+                    : data?.expand?.sender?.name}
+                </div>
+                <div className="bg-white p-1 px-2 rounded-md">
+                  {data?.product ? (
+                    <section>
+                      <Image
+                        src={`http://127.0.0.1:8090/api/files/products/${data?.expand?.products?.id}/${data?.expand?.products?.photos[0]}`}
+                      />
+                    </section>
+                  ) : (
+                    ""
+                  )}
+                  {data?.message ? (
+                    data.message
+                  ) : (
+                    <Image
+                      alt="image"
+                      className="rounded-lg"
+                      src={`http://127.0.0.1:8090/api/files/messages/${data.id}/${data.image}`}
+                      width={300}
+                      height={300}
+                    />
+                  )}
+                </div>
+              </div>
+              {messages.length === key + 1 ? (
+                <div className="text-xs text-slate-700">
+                  {data.isRead ? "읽음" : ""}
+                </div>
+              ) : (
+                ""
+              )}
             </section>
           ))}
         </div>
@@ -179,5 +311,5 @@ export default function Chat() {
         </div>
       </div>
     </ProtectedPage>
-  );
+  )
 }
