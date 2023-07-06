@@ -6,8 +6,7 @@ import Image from "next/image"
 
 export default function Profile() {
   return (
-    <ProtectedPage>
-      <BottomBar />
+    <div>
       <Layout>
         <div className="mx-auto text-center">
           <div className="min-h-screen">
@@ -92,6 +91,7 @@ export default function Profile() {
           <div className="w-full my-8 border-2 rounded-full border-slate-100" />
         </div>
       </Layout>
-    </ProtectedPage>
+      <BottomBar />
+    </div>
   )
 }

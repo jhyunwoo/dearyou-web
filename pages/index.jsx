@@ -38,10 +38,6 @@ export default function Home() {
 
   return (
     <ProtectedPage>
-      <BottomBar />
-      <FloattingBar />
-
-      <HeadBar title="드려유" />
       <Layout>
         <ProductGrid>
           {products.map((data, key) => (
@@ -53,6 +49,9 @@ export default function Home() {
           />
         </ProductGrid>
       </Layout>
+      <HeadBar title="드려유" />
+      <BottomBar />
+      <FloattingBar />
     </ProtectedPage>
   );
 }

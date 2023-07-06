@@ -23,8 +23,6 @@ export default function MyProducts() {
 
   return (
     <ProtectedPage>
-      <BottomBar />
-      <HeadBar title="내 물품" />
       <Layout>
         <ProductGrid>
           {products?.length === 0 ? (
@@ -45,6 +43,8 @@ export default function MyProducts() {
           ))}
         </ProductGrid>
       </Layout>
+      <HeadBar title="내 물품" />
+      <BottomBar />
     </ProtectedPage>
   );
 }

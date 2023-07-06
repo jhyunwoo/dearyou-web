@@ -26,8 +26,6 @@ export default function WishPage() {
 
   return (
     <ProtectedPage>
-      <BottomBar />
-      <HeadBar title="관심목록" />
       <Layout>
         <ProductGrid>
           {productList?.length === 0 ? (
@@ -48,6 +46,8 @@ export default function WishPage() {
           ))}
         </ProductGrid>
       </Layout>
+      <HeadBar title="관심목록" />
+      <BottomBar />
     </ProtectedPage>
   );
 }

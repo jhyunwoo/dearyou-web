@@ -71,8 +71,8 @@ export default function ChatList() {
             </section>
           ))}
         </div>
-        <BottomBar />
         <HeadBar title={"채팅"} />
+        <BottomBar />
       </ProtectedPage>
     </Layout>
   )

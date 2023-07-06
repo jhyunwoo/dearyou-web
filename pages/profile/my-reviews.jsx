@@ -30,8 +30,6 @@ export default function MyReviews() {
 
   return (
     <ProtectedPage>
-      <HeadBar title="내 나눔 후기" />
-      <BottomBar />
       <Layout>
         <div className="mt-2 w-full grid grid-cols-1 gap-2">
           <div className="text-lg">내가 받은 후기</div>
@@ -72,6 +70,8 @@ export default function MyReviews() {
           ))}
         </div>
       </Layout>
+      <HeadBar title="내 나눔 후기" />
+      <BottomBar />
     </ProtectedPage>
   );
 }

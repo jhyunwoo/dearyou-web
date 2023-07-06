@@ -136,8 +136,6 @@ export default function MyReviews() {
 
   return (
     <ProtectedPage>
-      <HeadBar title="나눔 후기 남기기" />
-      <BottomBar />
       <Layout>
         <div>
           <div className="text-lg font-semibold my-2">나눔(거래)한 사람</div>
@@ -182,6 +180,8 @@ export default function MyReviews() {
           </button>
         </form>
       </Layout>
+      <HeadBar title="나눔 후기 남기기" />
+      <BottomBar />
     </ProtectedPage>
   );
 }

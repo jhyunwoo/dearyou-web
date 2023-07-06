@@ -132,9 +132,9 @@ export default function Search() {
   return (
     <ProtectedPage>
       <Layout>
-        <HeadBar title={"검색"} />
         <SearchBar />
         <ItemList data={searched} />
+        <HeadBar title={"검색"} />
         <BottomBar />
       </Layout>
     </ProtectedPage>

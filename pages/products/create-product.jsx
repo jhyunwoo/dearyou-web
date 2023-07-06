@@ -74,7 +74,6 @@ export default function CreateProduct() {
 
   return (
     <ProtectedPage>
-      <BottomBar />
       {isLoading ? <Loading /> : ""}
       <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
         <div className="text-xl font-bold">물품 등록</div>
@@ -127,6 +126,7 @@ export default function CreateProduct() {
           <div className="w-full h-16" />
         </div>
       </div>
+      <BottomBar />
     </ProtectedPage>
   )
 }

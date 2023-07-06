@@ -16,7 +16,6 @@ export default function Profile() {
   const permission = pb.authStore.model?.logPermission
   return (
     <ProtectedPage allowBanned={true}>
-      <BottomBar />
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
@@ -124,6 +123,7 @@ export default function Profile() {
         </Link>
       </Layout>
       <HeadBar title="프로필" />
+      <BottomBar />
     </ProtectedPage>
   )
 }
