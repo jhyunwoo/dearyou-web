@@ -1,18 +1,18 @@
-import Link from "next/link";
-import Image from "next/image";
-import pb from "@/lib/pocketbase";
-import { usePbAuth } from "../contexts/AuthWrapper";
+import Link from "next/link"
+import Image from "next/image"
+import pb from "@/lib/pocketbase"
+import { usePbAuth } from "../contexts/AuthWrapper"
 
 /** 개발자 전용 페이지 -> 권한 확인 */
 export default function DeveloperPage(props) {
-  const permission = pb.authStore.model?.logPermission;
+  const permission = pb.authStore.model?.logPermission
   if (!permission) {
     return (
       <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
         <div className="p-2 m-4 text-center">
           <Image
             className="mx-auto my-4"
-            src="./favicon.png"
+            src="/favicon.png"
             width={100}
             height={100}
             alt="logo"
@@ -23,8 +23,8 @@ export default function DeveloperPage(props) {
           </div>
         </div>
       </div>
-    );
+    )
   } else {
-    return <>{props.children}</>;
+    return <>{props.children}</>
   }
 }

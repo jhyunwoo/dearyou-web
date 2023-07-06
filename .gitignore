@@ -33,3 +33,16 @@ yarn-error.log*
 
 # Webstorm files
 /.idea/
+
+<<<<<<< HEAD
+/pocketbase
+pocketbase
+/pocketbase/
+/pocketbase/**
+pocketbase/**
+pocketbase/
+
+AuthKey_22XXFTR3RC.p8
+=======
+/pocketbase
+>>>>>>> develop

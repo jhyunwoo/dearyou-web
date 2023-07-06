@@ -1,85 +1,80 @@
-import { useEffect, useRef, useState } from "react";
-import pb from "@/lib/pocketbase";
-import Image from "next/image";
-import Link from "next/link";
-import { CheckBadgeIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import { HeartIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/router";
-import getUploadedTime from "@/lib/getUploadedTime";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import ProtectedPage from "@/components/ProtectedPage";
-import BottomBar from "@/components/BottomBar";
-import Layout from "@/components/Layout";
-import ProductImageView from "@/components/ProductImageView";
+import { useEffect, useState } from "react"
+import pb from "@/lib/pocketbase"
+import Link from "next/link"
+import { PencilSquareIcon, CheckBadgeIcon } from "@heroicons/react/24/outline"
+import { HeartIcon } from "@heroicons/react/24/solid"
+import { useRouter } from "next/router"
+import getUploadedTime from "@/lib/getUploadedTime"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import Layout from "@/components/Layout"
+import ProductImageView from "@/components/ProductImageView"
 
 export const getServerSideProps = async (context) => {
-  const { query } = context;
-  const { productId } = query;
-
+  const { query } = context
+  const { productId } = query
   return {
     props: {
       productId,
     },
-  };
-};
+  }
+}
 
 export default function ProductDetail({ productId }) {
-  const [productInfo, setProductInfo] = useState("");
-  const [userWish, setUserWish] = useState([]);
-  const [addWish, setAddWish] = useState(false);
-  const [imageScroll, setImageScroll] = useState(1);
-  const imageRef = useRef();
-  const autonomy = pb.authStore?.model?.autonomy;
+  const [productInfo, setProductInfo] = useState("")
+  const [userWish, setUserWish] = useState([])
+  const autonomy = pb.authStore?.model?.autonomy
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     async function getProductInfo() {
       const record = await pb.collection("products").getOne(productId, {
         expand: "seller",
-      });
+      })
       if (record.isConfirmed || record.seller === pb.authStore.model.id) {
-        setProductInfo(record);
+        setProductInfo(record)
       } else {
-        setProductInfo(false);
+        setProductInfo(false)
       }
     }
     async function getUserWish() {
       const userInfo = await pb
         .collection("users")
-        .getOne(pb.authStore.model.id);
-      setUserWish(userInfo.wishes);
+        .getOne(pb.authStore.model.id)
+      setUserWish(userInfo.wishes)
     }
 
-    getProductInfo();
-    getUserWish();
-  }, [productId]);
+    getProductInfo()
+    getUserWish()
+  }, [productId])
 
   //현재 사용자의 wishes에 product를 추가하는 버튼의 함수
-  const currentUser = usePbAuth().user;
+  const currentUser = usePbAuth().user
 
   async function controlWish() {
     try {
       if (userWish.includes(productId)) {
-        const originWishes = userWish;
-        const updatedWishes = originWishes.filter((wish) => wish !== productId);
-        setUserWish(updatedWishes);
+        const originWishes = userWish
+        const updatedWishes = originWishes.filter((wish) => wish !== productId)
+        setUserWish(updatedWishes)
         const updatedUser = await pb
           .collection("users")
           .update(pb.authStore.model?.id, {
             wishes: updatedWishes,
-          });
+          })
       } else {
-        setUserWish([...userWish, productId]);
-        const originWishes = userWish;
+        setUserWish([...userWish, productId])
+        const originWishes = userWish
         const updatedUser = await pb
           .collection("users")
           .update(currentUser.id, {
             wishes: [...originWishes, productId],
-          });
+          })
       }
     } catch (error) {
-      console.error("Error adding product to wishlist:", error);
+      console.error("Error adding product to wishlist:", error)
     }
   }
 
@@ -87,67 +82,63 @@ export default function ProductDetail({ productId }) {
   async function goToChat() {
     const checkChat = await pb.collection("chats").getFullList({
       // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-      filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.seller?.id}")||
-              (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.seller?.id}")`
-    });
+      filter: `(user1.id="${pb.authStore.model.id}"&&user2.id="${productInfo.expand.seller.id}")||
+              (user2.id="${pb.authStore.model.id}"&&user1.id="${productInfo.expand.seller.id}")`,
+      expand: "messages",
+    })
 
-    let newChat = null; // 새로운 채팅 콜렉션 데이터 저장
     if (checkChat.length > 0) {
-      // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-      newChat = await pb
+      const createMessage = await pb.collection("messages").create({
+        chat: checkChat[0].id,
+        sender: pb.authStore.model.id,
+        receiver: productInfo.seller,
+        message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+        isRead: false,
+        product: productInfo.id,
+      })
+      const updateChat = await pb
         .collection("chats")
-        .update(checkChat[0].id, {
-          unreaduser: productInfo.expand.seller?.id,
-          unreadcount: checkChat[0]?.unreadcount + 1,
-        });
+        .update(checkChat[0].id, { messages: createMessage.id })
+      router.push(`/chats/${createMessage.chat}`)
     } else {
-      // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
-      newChat = await pb.collection("chats").create({
-        seller: productInfo.expand.seller?.id,
-        buyer: pb.authStore.model.id,
-        unreaduser: productInfo.expand.seller?.id,
-        unreadcount: 1,
-      });
+      const createNewChat = await pb
+        .collection("chats")
+        .create({ user1: pb.authStore.model.id, user2: productInfo.seller })
+      const createMessage = await pb.collection("messages").create({
+        chat: createNewChat.id,
+        sender: pb.authStore.model.id,
+        receiver: productInfo.seller,
+        message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+        isRead: false,
+        product: productInfo.id,
+      })
+      const updateChat = await pb
+        .collection("chats")
+        .update(createNewChat.id, { messages: createMessage.id })
+      router.push(`/chats/${createMessage.chat}`)
     }
-
-    // 메시지 데이터 create
-    const defaultMessage = {
-      text: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
-      pdlink: productId,
-      pdthumblink: productInfo.photos[0],
-      owner: pb.authStore.model.id,
-    };
-
-    const createDefaultMessage = await pb
-      .collection("messages")
-      .create(defaultMessage);
-
-    // 채팅 데이터 update
-    newChat.messages.push(createDefaultMessage.id);
-    const updateChat = await pb.collection("chats").update(newChat.id, newChat);
-
-    router.push(`/chats/${newChat.id}`);
   }
 
-  async function onProductHide(){
-    if (!autonomy) return null;
+  async function onProductHide() {
+    if (!autonomy) return null
 
-    if(window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
+    if (
+      window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
 숨긴 물품은 승인 페이지에서 다시 승인할 수 있습니다.
-꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)){
-      
-      let newInfo = productInfo;
-      newInfo.rejectedReason = "임시로 숨김 처리되었습니다.";
-      newInfo.isConfirmed = false;
-      newInfo.confirmedBy = currentUser.id;
+꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)
+    ) {
+      let newInfo = productInfo
+      newInfo.rejectedReason = "임시로 숨김 처리되었습니다."
+      newInfo.isConfirmed = false
+      newInfo.confirmedBy = currentUser.id
 
-      await pb.collection("products").update(productInfo.id, newInfo);
-      alert("물품을 숨겼습니다.");
-      router.replace("/");
+      await pb.collection("products").update(productInfo.id, newInfo)
+      alert("물품을 숨겼습니다.")
+      router.replace("/")
     }
   }
 
-  function CloseProductButton(){
+  function CloseProductButton() {
     return (
       <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
         <button
@@ -162,7 +153,7 @@ export default function ProductDetail({ productId }) {
           나눔 완료
         </button>
       </div>
-    );
+    )
   }
   function GoToChatButton() {
     return (
@@ -182,22 +173,20 @@ export default function ProductDetail({ productId }) {
     )
   }
   // (자율위원 전용) 물품 숨기기 버튼
-  function HideProductButton(){
-    if (!autonomy) return null;
+  function HideProductButton() {
+    if (!autonomy) return null
 
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-4 rounded-full ${
-          "flex items-center bg-red-400 hover:bg-red-500 transition duration-200"
-        }`}
-        onClick={onProductHide}
+          className={`p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
+          onClick={onProductHide}
         >
-          <CheckBadgeIcon className="w-6 h-6 mr-2"/>
+          <CheckBadgeIcon className="w-6 h-6 mr-2" />
           물품 숨기기
         </button>
       </div>
-    );
+    )
   }
 
   return (
@@ -219,9 +208,12 @@ export default function ProductDetail({ productId }) {
                       </div>
                       <div className="flex">
                         <div className="flex items-end">
-                          <Link href={`/profile/${productInfo.expand.seller?.id}`}
-                            className="text-lg font-semibold text-black">
-                            {productInfo.expand.seller?.name} ({productInfo.expand.seller?.studentId})
+                          <Link
+                            href={`/profile/${productInfo.expand.seller?.id}`}
+                            className="text-lg font-semibold text-black"
+                          >
+                            {productInfo.expand.seller?.name} (
+                            {productInfo.expand.seller?.studentId})
                           </Link>
 
                           {currentUser?.id ===
@@ -236,13 +228,17 @@ export default function ProductDetail({ productId }) {
                     </div>
                     <div className="flex flex-col">
                       <div className="ml-auto text-xl font-bold text-slate">
-                          {productInfo.isConfirmed
-                          ? productInfo.soldDate
-                            ? <span className="text-amber-500">나눔 완료</span>
-                            : <span className="text-amber-400">나눔 중</span>
-                          : productInfo.rejectedReason
-                          ? <span className="text-red-500">반려됨</span>
-                          : <span className="text-amber-500">승인 대기 중</span>}
+                        {productInfo.isConfirmed ? (
+                          productInfo.soldDate ? (
+                            <span className="text-amber-500">나눔 완료</span>
+                          ) : (
+                            <span className="text-amber-400">나눔 중</span>
+                          )
+                        ) : productInfo.rejectedReason ? (
+                          <span className="text-red-500">반려됨</span>
+                        ) : (
+                          <span className="text-amber-500">승인 대기 중</span>
+                        )}
                       </div>
                       <div className="text-lg mt-4 mb-2 border-b-2">
                         {productInfo.explain}
@@ -252,36 +248,36 @@ export default function ProductDetail({ productId }) {
                         <div className="mr-2 ml-auto text-sm text-slate-500">
                           {getUploadedTime(productInfo.created)} 등록
                         </div>
-                          {productInfo.isConfirmed ? (
-                              <button onClick={controlWish}>
-                                {userWish?.includes(productId) ? (
-                                  <HeartIcon className="w-8 h-8 fill-red-500" />
-                                ) : (
-                                  <HeartIcon className="w-8 h-8 fill-red-100" />
-                                )}
-                              </button>
-                            ) : null} 
+                        {productInfo.isConfirmed ? (
+                          <button onClick={controlWish}>
+                            {userWish?.includes(productId) ? (
+                              <HeartIcon className="w-8 h-8 fill-red-500" />
+                            ) : (
+                              <HeartIcon className="w-8 h-8 fill-red-100" />
+                            )}
+                          </button>
+                        ) : null}
                       </div>
-                      
                     </div>
                   </div>
                   {productInfo.isConfirmed ? (
-                    <div>
-                      {currentUser?.id === productInfo?.expand?.seller?.id ?
-                        <CloseProductButton /> : <GoToChatButton />}
-                      <HideProductButton/>
-                    </div>
+                    currentUser?.id === productInfo?.expand?.seller?.id ? (
+                      <CloseProductButton />
                     ) : (
-                    productInfo.rejectedReason ?
-                      (
+                      <div>
+                        <GoToChatButton />
+                        <HideProductButton />
+                      </div>
+                    )
+                  ) : productInfo.rejectedReason ? (
                     <div className="text-red-500">
-                        물품 등록 신청이 반려되었습니다. (사유: {productInfo.rejectedReason})
+                      물품 등록 신청이 반려되었습니다. (사유:{" "}
+                      {productInfo.rejectedReason})
                     </div>
                   ) : (
                     <div className="text-amber-500">
-                        물품 등록 승인 대기 중입니다.
+                      물품 등록 승인 대기 중입니다.
                     </div>
-                      )
                   )}
                   <div className="w-full h-16 sm:h-0"></div>
                 </div>
@@ -301,5 +297,5 @@ export default function ProductDetail({ productId }) {
 
       <BottomBar />
     </ProtectedPage>
-  );
+  )
 }
