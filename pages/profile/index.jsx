@@ -48,9 +48,9 @@ export default function Profile() {
             <div className="flex items-center text-xl font-bold">
               {pb.authStore.model?.name}
               {pb.authStore.model?.logPermission ? 
-                <Cog6ToothIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : 
+                <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
                 pb.authStore.model?.autonomy ? 
-                <CheckBadgeIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : null
+                <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
               }
             </div>
             <div>{pb.authStore.model?.studentId}</div>

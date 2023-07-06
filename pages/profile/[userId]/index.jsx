@@ -56,8 +56,6 @@ export default function Profile() {
 
   return (
     <ProtectedPage>
-      <BottomBar />
-      <HeadBar title="프로필" />
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
@@ -91,9 +89,9 @@ export default function Profile() {
                 <div className="flex items-center text-xl font-bold">
                   {user?.name}
                   {user?.logPermission ? 
-                    <Cog6ToothIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : 
+                    <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
                     user?.autonomy ? 
-                    <CheckBadgeIcon className="w-7 h-7 ml-1 stroke-slate-600"/> : null
+                    <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
                   }
                 </div>
                 <div>{user?.studentId}</div>
@@ -118,6 +116,8 @@ export default function Profile() {
           />
         </ProductGrid>
       </Layout>
+      <BottomBar />
+      <HeadBar title="프로필" />
     </ProtectedPage>
   );
 }

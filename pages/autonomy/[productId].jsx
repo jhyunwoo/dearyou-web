@@ -114,44 +114,55 @@ export default function ProductDetail({ productId }) {
                 <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
                   <div className="p-4 sm:p-2 flex flex-col ">
                     <div className=" pb-2 border-b-2 flex flex-col ">
-                      <div className="flex justify-between">
-                        <div className="text-xl font-bold">
-                          {productInfo.name}
-                        </div>
-                        <div className="flex">
-                          <div className="flex flex-col items-end mr-2">
-                            <div className="text-sm">
-                              {productInfo.expand.seller.name}
-                            </div>
-                            <div className="text-sm">
-                              {productInfo.expand.seller.studentId}
-                            </div>
-
-                            {currentUser?.id ===
-                            productInfo?.expand?.seller?.id ? (
-                              <Link href={`/products/update/${productId}`}>
-                                <PencilSquareIcon className="w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
-                              </Link>
-                            ) : null}
-                          </div>
+                    <div className="flex justify-between">
+                      <div className="text-xl font-bold">
+                        {productInfo.name}
+                      </div>
+                      <div className="flex">
+                        <div className="flex items-end">
+                          <Link
+                            href={`/profile/${productInfo.expand.seller?.id}`}
+                            className="text-lg font-semibold text-black"
+                          >
+                            {productInfo.expand.seller?.name} (
+                            {productInfo.expand.seller?.studentId})
+                          </Link>
                         </div>
                       </div>
-                      <div className="mt-2 flex flex-col">
-                        <div className="ml-auto">
-                          {getUploadedTime(productInfo.created)}에 등록
-                        </div>
+                    </div>
 
-                        <div className="ml-auto font-bold text-slate-500">
-                          {productInfo.rejectedReason
-                            ? `반려됨 (검토인: ${productInfo.expand.confirmedBy?.name})`
-                            : "승인 대기 중"}
-                        </div>
-
-                        <div className="font-medium text-lg my-2">
-                          {productInfo.explain}
-                        </div>
-                        <div>종류: {productInfo.type}</div>
+                      <div className="flex flex-col">
+                      <div className="ml-auto text-xl font-bold text-slate">
+                        {productInfo.isConfirmed ? (
+                          productInfo.soldDate ? (
+                            <span className="text-amber-500">나눔 완료</span>
+                          ) : (
+                            <span className="text-amber-400">나눔 중</span>
+                          )
+                        ) : productInfo.rejectedReason ? (
+                          <span>
+                          <span className="text-red-500">
+                            반려됨{` `}
+                          </span>
+                          <span className="text-slate-500">
+                            (검토인: {productInfo.expand.confirmedBy?.name})
+                          </span>
+                          </span>
+                        ) : (
+                          <span className="text-amber-500">승인 대기 중</span>
+                        )}
                       </div>
+                      <div className="text-lg mt-4 mb-2 border-b-2">
+                        {productInfo.explain}
+                      </div>
+                      <div className="flex items-center">
+                        <div className="">종류: {productInfo.type}</div>
+                        <div className="mr-2 ml-auto text-sm text-slate-500">
+                          {getUploadedTime(productInfo.created)} 등록
+                        </div>
+                      </div>
+                    </div>
+
                     </div>
                   </div>
                 </div>
@@ -160,9 +171,9 @@ export default function ProductDetail({ productId }) {
               <div>
                 <div className="px-4 sm:p-2 flex flex-col text-center">
                   {productInfo.rejectedReason ? (
-                    <div className="font-bold text-red-500">
-                      앞선 검토에서 &quot;{productInfo.rejectedReason}&quot;
-                      사유로 등록이 거절된 물건입니다.
+                    <div className="mb-2 font-bold text-red-500">
+                      앞선 검토에서 등록이 거절되었던 물건입니다.
+                      <div>사유: &quot;{productInfo.rejectedReason}&quot;</div>
                     </div>
                   ) : null}
                   <div className="pb-2 font-bold ">
