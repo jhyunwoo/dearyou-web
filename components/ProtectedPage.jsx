@@ -9,7 +9,6 @@ export default function ProtectedPage(props) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    console.log(pb.authStore.model.id)
     /** 사용자 정보 */
     async function checkUser() {
       if (pb?.authStore?.model?.id) {

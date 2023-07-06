@@ -182,8 +182,8 @@ export default function ProductDetail({ productId }) {
                       <CheckIcon
                         className={
                           checked
-                            ? "bg-amber-500 stroke-white border-2 border-transparent rounded-xl"
-                            : "bg-white stroke-slate-100 border-2 border-slate-300 rounded-xl"
+                            ? "bg-amber-500 stroke-white border-2 border-transparent rounded-xl cursor-pointer"
+                            : "bg-white stroke-slate-100 border-2 border-slate-300 rounded-xl cursor-pointer"
                         }
                       />
                     </label>
@@ -196,16 +196,16 @@ export default function ProductDetail({ productId }) {
 
               {checked ? (
                 <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50/50">
-                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white">
+                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white max-w-md">
                     <XCircleIcon
                       onClick={() => setChecked(null)}
-                      className="absolute top-0 right-0 w-8 h-8 text-slate-600"
+                      className="absolute cursor-pointer top-0 right-0 w-8 h-8 text-slate-600"
                     />
                     <div className="text-lg font-bold text-center">
                       물건 검토
                     </div>
                     <button
-                      className="w-full bg-lime-400 hover:bg-lime-500 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
+                      className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
                       onClick={handleConfirm}
                     >
                       승인
@@ -215,7 +215,7 @@ export default function ProductDetail({ productId }) {
                       className="flex flex-col"
                     >
                       <button
-                        className="bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
+                        className="bg-red-500 hover:bg-red-600 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
                         type="submit"
                       >
                         반려
@@ -225,7 +225,7 @@ export default function ProductDetail({ productId }) {
                       </div>
                       <select
                         {...register("type", { required: true })}
-                        className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+                        className="p-2 rounded-lg outline-none ring-2 ring-amber-400 transition duration-200 my-2"
                       >
                         {rejectOptions.map((item, key) => (
                           <option key={key} value={item}>

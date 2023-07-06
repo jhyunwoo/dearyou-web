@@ -1,4 +1,4 @@
-lockfileVersion: "6.0"
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -24,8 +24,8 @@ dependencies:
     specifier: ^0.2.0
     version: 0.2.0
   pocketbase:
-    specifier: ^0.15.2
-    version: 0.15.2
+    specifier: 0.15.1
+    version: 0.15.1
   postcss:
     specifier: 8.4.24
     version: 8.4.24
@@ -2913,11 +2913,16 @@ packages:
     engines: { node: ">= 6" }
     dev: false
 
+<<<<<<< HEAD
   /pocketbase@0.15.2:
     resolution:
       {
         integrity: sha512-dGSwO2j3XqtFMANNNEVh/moRw0ItOraKC1p3J+I0y/tPEfgleCAUptMWhqHrFNS+jM5r21eSS1U48N9/OmHFzA==,
       }
+=======
+  /pocketbase@0.15.1:
+    resolution: {integrity: sha512-iOj9bCP7m/kQDhkJZiLXWYNYXwZg+MeCFwJeivM46Uj4QwqzzQPeZH195TPicnj2VwxiSkziVnDNke1Mc9VEaA==}
+>>>>>>> 5e3f5df04177007188bce26527fc22d2f8139267
     dev: false
 
   /postcss-import@15.1.0(postcss@8.4.24):
