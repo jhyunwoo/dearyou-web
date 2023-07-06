@@ -1,37 +1,37 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import DeveloperPage from "@/components/DeveloperPage";
-import pb from "@/lib/pocketbase";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import ProtectedPage from "@/components/ProtectedPage";
-import { useState, useRef } from "react";
+import { useState, useRef } from "react"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import DeveloperPage from "@/components/DeveloperPage"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function ChatLogPage() {
-  const [searched, setSearched] = useState([]);
-  const [searchWord, setSearchWord] = useState("");
-  const searchInput = useRef("");
+  const [searched, setSearched] = useState([])
+  const [searchWord, setSearchWord] = useState("")
+  const searchInput = useRef("")
 
   async function doSearch(word) {
-    if (word.length === 0) return;
+    if (word.length === 0) return
 
     const searchResult = await pb.collection("chats").getFullList({
       filter: `buyer.name~"${word}"||seller.name~"${word}"`,
       expand: "buyer,seller",
-    });
+    })
 
     // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(searchResult);
+    setSearched(searchResult)
   }
 
   async function handleSearch(event) {
-    event.preventDefault();
-    let word = searchInput?.current?.value; // 검색어
-    if (word.length === 0) return;
+    event.preventDefault()
+    let word = searchInput?.current?.value // 검색어
+    if (word.length === 0) return
 
-    setSearchWord(word);
-    await doSearch(word);
+    setSearchWord(word)
+    await doSearch(word)
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장
@@ -58,12 +58,12 @@ export default function ChatLogPage() {
         <div className="flex pb-2 items-center">
           <button
             onClick={() => {
-              doSearch(searchWord);
+              doSearch(searchWord)
             }}
           ></button>
         </div>
       </div>
-    );
+    )
   }
 
   // 검색 결과 표시하는 Ordered List
@@ -74,7 +74,7 @@ export default function ChatLogPage() {
         <h3 className="text-md text-slate-600 font-bold text-center mt-12">
           검색 결과가 없습니다.
         </h3>
-      );
+      )
     } else {
       // 검색 결과 표시하는 Ordered List
       return (
@@ -114,7 +114,7 @@ export default function ChatLogPage() {
           ))}
           <div className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4" />
         </div>
-      );
+      )
     }
   }
 
@@ -137,5 +137,5 @@ export default function ChatLogPage() {
         </Layout>
       </DeveloperPage>
     </ProtectedPage>
-  );
+  )
 }

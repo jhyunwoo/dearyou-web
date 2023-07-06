@@ -1,10 +1,10 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import DeveloperPage from "@/components/DeveloperPage";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import ProtectedPage from "@/components/ProtectedPage";
+import Link from "next/link"
+import { Cog6ToothIcon } from "@heroicons/react/24/outline"
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import DeveloperPage from "@/components/DeveloperPage"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function LogPage() {
   return (
@@ -25,5 +25,5 @@ export default function LogPage() {
         </Layout>
       </DeveloperPage>
     </ProtectedPage>
-  );
+  )
 }

@@ -1,32 +1,32 @@
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import HeadBar from "@/components/HeadBar";
-import BottomBar from "@/components/BottomBar";
-import { useEffect, useState } from "react";
-import pb from "@/lib/pocketbase";
+import { useEffect, useState } from "react"
+import pb from "@/lib/pocketbase"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import HeadBar from "@/components/HeadBar"
+import BottomBar from "@/components/BottomBar"
 
 export default function MyReviews() {
-  const [reviewsTo, setReviewsTo] = useState([]);
-  const [reviewsFrom, setReviewsFrom] = useState([]);
-  const [isLoading, setIsLoading] = useState([]);
+  const [reviewsTo, setReviewsTo] = useState([])
+  const [reviewsFrom, setReviewsFrom] = useState([])
+  const [isLoading, setIsLoading] = useState([])
 
   useEffect(() => {
     async function getMyReviews() {
-      setIsLoading(true);
+      setIsLoading(true)
       let reviews = await pb.collection("reviews").getFullList({
         filter: `to.id="${pb.authStore.model?.id}"`,
         expand: "from",
-      });
-      setReviewsFrom(reviews);
+      })
+      setReviewsFrom(reviews)
       reviews = await pb.collection("reviews").getFullList({
         filter: `from.id="${pb.authStore.model?.id}"`,
         expand: "to",
-      });
-      setReviewsTo(reviews);
-      setIsLoading(false);
+      })
+      setReviewsTo(reviews)
+      setIsLoading(false)
     }
-    getMyReviews();
-  }, []);
+    getMyReviews()
+  }, [])
 
   return (
     <ProtectedPage>
@@ -73,5 +73,5 @@ export default function MyReviews() {
         </div>
       </Layout>
     </ProtectedPage>
-  );
+  )
 }

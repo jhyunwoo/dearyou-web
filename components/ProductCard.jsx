@@ -1,6 +1,7 @@
-import Link from "next/link";
-import Image from "next/image";
+import Link from "next/link"
+import Image from "next/image"
 
+/** 제품 표시 컴포넌트 */
 export default function ProductCard(props) {
   return (
     <Link
@@ -49,5 +50,5 @@ export default function ProductCard(props) {
         </div>
       </div>
     </Link>
-  );
+  )
 }

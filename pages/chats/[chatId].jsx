@@ -1,16 +1,16 @@
-import ProtectedPage from "@/components/ProtectedPage"
 import { useEffect, useState, useRef, useCallback } from "react"
-import pb from "@/lib/pocketbase"
+import Image from "next/image"
+import Link from "next/link"
+import { useInView } from "react-intersection-observer"
 import { useForm } from "react-hook-form"
+import pb from "@/lib/pocketbase"
 import {
   ArrowLeftCircleIcon,
   ArrowPathIcon,
   ArrowUpIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline"
-import Image from "next/image"
-import { useInView } from "react-intersection-observer"
-import Link from "next/link"
+import ProtectedPage from "@/components/ProtectedPage"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {

@@ -1,28 +1,28 @@
-import ProtectedPage from "@/components/ProtectedPage";
-import pb from "@/lib/pocketbase";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import ProductGrid from "@/components/ProductGrid";
-import ProductCard from "@/components/ProductCard";
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProductGrid from "@/components/ProductGrid"
+import ProductCard from "@/components/ProductCard"
 
 export default function WishPage() {
-  const [productList, setProductList] = useState([]);
+  const [productList, setProductList] = useState([])
   useEffect(() => {
     async function getWishProducts() {
       try {
         const records = await pb
           .collection("users")
-          .getOne(pb.authStore.model?.id, { expand: "wishes.seller" });
-        setProductList(records.expand.wishes);
+          .getOne(pb.authStore.model?.id, { expand: "wishes.seller" })
+        setProductList(records.expand.wishes)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     }
-    getWishProducts();
-  }, []);
+    getWishProducts()
+  }, [])
 
   return (
     <ProtectedPage>
@@ -49,5 +49,5 @@ export default function WishPage() {
         </ProductGrid>
       </Layout>
     </ProtectedPage>
-  );
+  )
 }

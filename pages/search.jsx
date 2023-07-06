@@ -1,41 +1,41 @@
-import Link from "next/link";
-import ProtectedPage from "@/components/ProtectedPage";
-import Image from "next/image";
-import { useState, useRef } from "react";
-import pb from "@/lib/pocketbase";
-import BottomBar from "@/components/BottomBar";
+import { useState, useRef } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import pb from "@/lib/pocketbase"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
 
-import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import Layout from "@/components/Layout";
-import HeadBar from "@/components/HeadBar";
-import ProductGrid from "@/components/ProductGrid";
+import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import Layout from "@/components/Layout"
+import HeadBar from "@/components/HeadBar"
+import ProductGrid from "@/components/ProductGrid"
 
 export default function Search() {
-  const [searched, setSearched] = useState([]);
-  const [searchWord, setSearchWord] = useState("");
-  const [openOnly, setOpenOnly] = useState(true);
-  const searchInput = useRef("");
+  const [searched, setSearched] = useState([])
+  const [searchWord, setSearchWord] = useState("")
+  const [openOnly, setOpenOnly] = useState(true)
+  const searchInput = useRef("")
 
   async function doSearch(word, isOpenOnly) {
-    if (word.length === 0) return;
+    if (word.length === 0) return
 
     const searchResult = await pb.collection("products").getFullList({
       filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
       ${isOpenOnly ? `&&soldDate=null` : ""}`,
       expand: "seller",
-    });
+    })
 
     // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(searchResult);
+    setSearched(searchResult)
   }
 
   async function handleSearch(event) {
-    event.preventDefault();
-    let word = searchInput?.current?.value; // 검색어
-    if (word.length === 0) return;
+    event.preventDefault()
+    let word = searchInput?.current?.value // 검색어
+    if (word.length === 0) return
 
-    setSearchWord(word);
-    await doSearch(word, openOnly);
+    setSearchWord(word)
+    await doSearch(word, openOnly)
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장
@@ -63,8 +63,8 @@ export default function Search() {
           <div className="ml-auto text-slate-500">나눔 완료된 물건 숨기기</div>
           <button
             onClick={() => {
-              setOpenOnly(!openOnly);
-              doSearch(searchWord, !openOnly);
+              setOpenOnly(!openOnly)
+              doSearch(searchWord, !openOnly)
             }}
           >
             <EyeSlashIcon
@@ -75,7 +75,7 @@ export default function Search() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   // 검색 결과 표시하는 Ordered List
@@ -86,7 +86,7 @@ export default function Search() {
         <h3 className="text-md text-slate-600 font-bold text-center mt-12">
           검색 결과가 없습니다.
         </h3>
-      );
+      )
     } else {
       // 검색 결과 표시하는 Ordered List
       return (
@@ -125,7 +125,7 @@ export default function Search() {
           </ProductGrid>
           <div className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4" />
         </div>
-      );
+      )
     }
   }
 
@@ -138,5 +138,5 @@ export default function Search() {
         <BottomBar />
       </Layout>
     </ProtectedPage>
-  );
+  )
 }
