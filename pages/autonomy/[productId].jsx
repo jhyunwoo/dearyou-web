@@ -140,14 +140,18 @@ export default function ProductDetail({ productId }) {
                             <span className="text-amber-400">나눔 중</span>
                           )
                         ) : productInfo.rejectedReason ? (
-                          <span>
+                          <div className="flex">
                           <span className="text-red-500">
                             반려됨{` `}
                           </span>
-                          <span className="text-slate-500">
+                          
+                          <Link
+                            href={`/profile/${productInfo.expand.confirmedBy?.id}`}
+                            className="text-slate-500 ml-1"
+                          >
                             (검토인: {productInfo.expand.confirmedBy?.name})
-                          </span>
-                          </span>
+                          </Link>
+                          </div>
                         ) : (
                           <span className="text-amber-500">승인 대기 중</span>
                         )}
