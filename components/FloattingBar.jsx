@@ -7,7 +7,7 @@ export default function FloattingBar() {
     <div>
       <Link
         href={"/products/create-product"}
-        className="fixed right-4 bottom-24 bg-amber-400 p-2 rounded-full transition duration-200 shadow-md ring-2 ring-amber-400 hover:ring-offset-2 group hover:bg-white"
+        className="fixed right-4 sm:right-8 bottom-24 bg-amber-400 p-2 rounded-full transition duration-200 shadow-md ring-2 ring-amber-400 hover:ring-offset-2 group hover:bg-white"
       >
         <PlusIcon className="w-8 h-8 text-white group-hover:text-amber-400" />
         <div className="absolute -bottom-6 right-0 left-0 text-sm text-center font-semibold">
@@ -17,7 +17,7 @@ export default function FloattingBar() {
 
       <Link
         href="/search"
-        className=" fixed right-4 bottom-44 bg-white ring-2 ring-amber-600 p-2 rounded-full transition duration-200 hover:ring-offset-2 hover:bg-amber-600 group"
+        className=" fixed right-4 sm:right-8 bottom-44 bg-white ring-2 ring-amber-600 p-2 rounded-full transition duration-200 hover:ring-offset-2 hover:bg-amber-600 group"
       >
         <MagnifyingGlassIcon className="w-8 h-8 text-amber-600 group-hover:text-white transition duration-200" />
         <div className="absolute -bottom-6 right-0 left-0 text-sm text-center font-semibold">
