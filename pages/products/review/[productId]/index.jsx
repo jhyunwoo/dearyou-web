@@ -58,8 +58,12 @@ export default function MyReviews() {
         .collection("products")
         .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
       router.push("/")
+    } else if (selectedUser && !rating) {
+      alert("별점을 입력해주세요.")
+    } else if (!selectedUser && rating) {
+      alert("나눔한 사람을 선택해주세요.")
     } else {
-      alert("후기를 입력해주세요.")
+      alert("나눔한 사람과 별점을 입력해주세요.")
     }
   }
 
