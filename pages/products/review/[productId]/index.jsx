@@ -54,6 +54,9 @@ export default function MyReviews() {
         .collection("chats")
         .update(findChat[0].id, { messages: sendReviewRequest.id })
       console.log(updateChat)
+      const closeProduct = await pb
+        .collection("products")
+        .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
       router.push("/")
     } else {
       alert("후기를 입력해주세요.")
