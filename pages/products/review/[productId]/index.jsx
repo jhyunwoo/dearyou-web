@@ -7,6 +7,7 @@ import Layout from "@/components/Layout"
 import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -14,6 +15,8 @@ export default function MyReviews() {
   const [rating, setRating] = useState(0)
   const [chatedUsers, setChatedUsers] = useState([])
   const [selectedUser, setSelectedUset] = useState()
+
+  const { user } = usePbAuth()
 
   const {
     register,
@@ -30,63 +33,30 @@ export default function MyReviews() {
         comment: data.review,
         rate: rating,
       }
-
-      const record = await pb.collection("reviews").create(reviewData)
-      const buyerInfo = await pb.collection("users").getOne(selectedUser.id)
-      const updatedBuyer = await pb
-        .collection("users")
-        .update(selectedUser.id, { dignity: buyerInfo.dignity + rating })
+      const sendReview = await pb.collection("reviews").create(reviewData)
+      console.log(sendReview)
+      const findChat = await pb.collection("chats").getFullList({
+        filter: `(user1="${user.id}"&&user2="${selectedUser.id}")||user2="${user.id}"&&user1="${selectedUser.id}"`,
+      })
+      console.log(findChat)
+      const requestData = {
+        chat: findChat[0].id,
+        sender: user.id,
+        receiver: selectedUser.id,
+        message: "나눔에 대해 리뷰해주세요.",
+        isRead: false,
+        reviewProduct: productId,
+      }
+      const sendReviewRequest = await pb
+        .collection("messages")
+        .create(requestData)
+      const updateChat = await pb
+        .collection("chats")
+        .update(findChat[0].id, { messages: sendReviewRequest.id })
+      console.log(updateChat)
       const closeProduct = await pb
         .collection("products")
         .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
-
-      const productInfo = await pb
-        .collection("products")
-        .getOne(productId, { expand: "seller, buyer" })
-
-      const checkChat = await pb.collection("chats").getFullList({
-        // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-        filter: `(buyer.id="${pb.authStore.model.id}"&&seller.id="${productInfo.expand.buyer.id}")||
-                (seller.id="${pb.authStore.model.id}"&&buyer.id="${productInfo.expand.buyer.id}")`,
-      })
-
-      let newChat = null // 새로운 채팅 콜렉션 데이터 저장
-
-      if (checkChat.length > 0) {
-        // 처음 대화하는 상대가 아닐 경우 -> checkChat에서 가져오기
-        newChat = await pb.collection("chats").update(checkChat[0].id, {
-          unreaduser: selectedUser?.id,
-          unreadcount: checkChat[0].unreadcount + 1,
-        })
-      } else {
-        // 처음 대화하는 상대일 경우 -> 콜렉션 create해 가져오기
-        newChat = await pb.collection("chats").create({
-          seller: productInfo.expand.seller?.id,
-          buyer: pb.authStore.model.id,
-          unreaduser: selectedUser.id,
-          unreadcount: 1,
-        })
-        newChatRead.chat = newChat.id
-      }
-
-      // 메시지 데이터 create
-      const defaultMessage = {
-        text: `후기를 남겨주세요.`,
-        pdlink: closeProduct.id,
-        pdthumblink: closeProduct.photos[0],
-        owner: pb.authStore.model.id,
-      }
-
-      const createDefaultMessage = await pb
-        .collection("messages")
-        .create(defaultMessage)
-
-      // 채팅 데이터 update
-      newChat.messages.push(createDefaultMessage.id)
-      const updateChat = await pb
-        .collection("chats")
-        .update(newChat.id, newChat)
-
       router.push("/")
     } else {
       alert("후기를 입력해주세요.")
@@ -95,28 +65,24 @@ export default function MyReviews() {
 
   useEffect(() => {
     async function getChatedUsers() {
+      if (!user?.id) return
       let userList = []
-      const record = await pb
-        .collection("users")
-        .getOne(pb.authStore.model?.id, {
-          expand: "chats(buyer).seller, chats(seller).buyer",
-        })
-
-      if (record.expand["chats(buyer)"]) {
-        for (let i = 0; i < record.expand["chats(buyer)"].length; i++) {
-          userList.push(record.expand["chats(buyer)"][i].expand.seller)
+      const record = await pb.collection("chats").getFullList({
+        filter: `user1="${user?.id}"||user2="${user?.id}"`,
+        expand: "user1,user2",
+      })
+      record.map((data) => {
+        if (data.user1 === user?.id) {
+          userList.push(data.expand.user2)
+        } else if (data.user2 === user?.id) {
+          userList.push(data.expand.user1)
         }
-      }
-      if (record.expand["chats(seller)"]) {
-        for (let i = 0; i < record.expand["chats(seller)"].length; i++) {
-          userList.push(record.expand["chats(seller)"][i].expand.buyer)
-        }
-      }
-      userList = userList.slice(0, 10)
+      })
+      console.log(userList)
       setChatedUsers(userList)
     }
     getChatedUsers()
-  }, [])
+  }, [user?.id])
 
   function Star({ idx }) {
     return (

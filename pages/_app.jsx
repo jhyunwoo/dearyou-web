@@ -4,6 +4,7 @@ import Head from "next/head"
 import Router from "next/router"
 import Script from "next/script"
 import * as gtag from "@/lib/gtags"
+import { Analytics } from "@vercel/analytics/react"
 import AuthWrapper from "@/contexts/AuthWrapper"
 import Loading from "@/components/Loading"
 
@@ -75,6 +76,7 @@ export default function App({ Component, pageProps }) {
         }
       `}</style>
       {loading ? <Loading /> : ""}
+      <Analytics />
       <Component {...pageProps} />
     </AuthWrapper>
   )

@@ -96,7 +96,7 @@ export default function Chat({ chatId }) {
         .getList(page.current, 20, {
           filter: `chat.id="${chatId}"`,
           sort: "-created",
-          expand: "sender, product",
+          expand: "sender, product,reviewProduct",
         })
       if (page.current === 1) {
         setMessages(messageList.items.reverse())
@@ -259,6 +259,31 @@ export default function Chat({ chatId }) {
                       <Link href={`/products/${data?.expand?.product?.id}`}>
                         <Image
                           src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </Link>
+                    )
+                  ) : (
+                    ""
+                  )}
+                  {data.reviewProduct ? (
+                    pb.authStore.model.id === data?.sender ? (
+                      <section>
+                        <Image
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.reviewProduct?.id}/${data?.expand?.reviewProduct?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </section>
+                    ) : (
+                      <Link
+                        href={`/products/buyer-review/${data?.expand?.reviewProduct?.id}?sellerId=${data.sender}`}
+                      >
+                        <Image
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.reviewProduct?.id}/${data?.expand?.reviewProduct?.photos[0]}`}
                           width={300}
                           height={300}
                           alt={"photo"}
