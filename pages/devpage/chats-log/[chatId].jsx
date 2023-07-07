@@ -9,6 +9,8 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline"
 import ProtectAdmin from "@/components/ProtectAdmin"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -42,6 +44,8 @@ export default function ChatLog({ chatId }) {
   const infiniteRef = useRef(null)
   /** 메세지 불러오는 페이지 */
   const page = useRef(1)
+
+  const setModal = useSetRecoilState(modalState)
 
   /** message를 불러오는 함수 */
   const fetch = useCallback(async () => {
@@ -119,7 +123,7 @@ export default function ChatLog({ chatId }) {
         setUpdateUser((prev) => prev + 1)
         setUserInfoPopup(null)
         if (ban) {
-          alert(`${ban.name} 차단 해제`)
+          setModal(`${ban.name} 차단 해제`)
         }
       } else {
         const ban = await pb
@@ -128,7 +132,7 @@ export default function ChatLog({ chatId }) {
         setUpdateUser((prev) => prev + 1)
         setUserInfoPopup(null)
         if (ban) {
-          alert(`${ban.name} 차단 완료`)
+          setModal(`${ban.name} 차단 완료`)
         }
       }
     }

@@ -8,6 +8,8 @@ import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import { usePbAuth } from "@/contexts/AuthWrapper"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -15,6 +17,8 @@ export default function MyReviews() {
   const [rating, setRating] = useState(0)
   const [chatedUsers, setChatedUsers] = useState([])
   const [selectedUser, setSelectedUset] = useState()
+
+  const setModal = useSetRecoilState(modalState)
 
   const { user } = usePbAuth()
 
@@ -59,11 +63,11 @@ export default function MyReviews() {
         .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
       router.push("/")
     } else if (selectedUser && !rating) {
-      alert("별점을 입력해주세요.")
+      setModal("별점을 입력해주세요.")
     } else if (!selectedUser && rating) {
-      alert("나눔한 사람을 선택해주세요.")
+      setModal("나눔한 사람을 선택해주세요.")
     } else {
-      alert("나눔한 사람과 별점을 입력해주세요.")
+      setModal("나눔한 사람과 별점을 입력해주세요.")
     }
   }
 

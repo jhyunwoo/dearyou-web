@@ -3,12 +3,14 @@ import { useEffect, useState } from "react"
 import Head from "next/head"
 import Router from "next/router"
 import Script from "next/script"
+import { RecoilRoot } from "recoil"
 import * as gtag from "@/lib/gtags"
 import { Analytics } from "@vercel/analytics/react"
 import AuthWrapper from "@/contexts/AuthWrapper"
 import Loading from "@/components/Loading"
 
 import { IBM_Plex_Sans_KR } from "next/font/google"
+import Modal from "@/components/Modal"
 const plex_sans = IBM_Plex_Sans_KR({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -77,7 +79,10 @@ export default function App({ Component, pageProps }) {
       `}</style>
       {loading ? <Loading /> : ""}
       <Analytics />
-      <Component {...pageProps} />
+      <RecoilRoot>
+        <Modal />
+        <Component {...pageProps} />
+      </RecoilRoot>
     </AuthWrapper>
   )
 }

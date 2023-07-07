@@ -2,9 +2,13 @@ import { useState } from "react"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
+
+  const setModal = useSetRecoilState(modalState)
 
   const router = useRouter()
 
@@ -33,7 +37,7 @@ export default function AddInfo() {
         console.error("error")
       }
     } else {
-      alert("학번을 확인해야 합니다.")
+      setModal("학번을 확인해야 합니다.")
     }
   }
 
@@ -48,15 +52,15 @@ export default function AddInfo() {
         records.length > 0 &&
         records[0]?.studentId !== pb?.authStore?.model?.studentId
       ) {
-        alert("이미 등록된 학번입니다.")
+        setModal("이미 등록된 학번입니다.")
       } else if (Number(watch("studentId")) > 210101) {
-        alert("등록 가능한 학번입니다.")
+        setModal("등록 가능한 학번입니다.")
         setValidStudentId(true)
       } else {
-        alert("올바른 학번을 입력하세요.")
+        setModal("올바른 학번을 입력하세요.")
       }
     } else {
-      alert("학번을 입력하세요.")
+      setModal("학번을 입력하세요.")
     }
   }
 
