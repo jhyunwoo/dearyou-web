@@ -223,7 +223,7 @@ export default function Chat({ chatId }) {
             <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
           )}
         </div>
-        <div className="overflow-auto pb-14 flex flex-col space-y-2">
+        <div className="overflow-auto pb-16 flex flex-col space-y-2">
           {oldMessages?.map((data, key) => (
             <section
               key={key}
@@ -353,7 +353,7 @@ export default function Chat({ chatId }) {
             <label
               htmlFor="input-file"
               onChange={onLoadImage}
-              className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl   p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
+              className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
             >
               <PhotoIcon className="w-6 h-6" />
               <input
@@ -364,7 +364,8 @@ export default function Chat({ chatId }) {
               />
             </label>
             <input
-              className="basis-10/12 outline-none p-2 rounded-lg"
+              className="flex-auto outline-none p-2 rounded-lg mx-1"
+              placeholder="메세지를 입력해주세요."
               {...register("text", {
                 required: {
                   value: true,
@@ -373,10 +374,10 @@ export default function Chat({ chatId }) {
               })}
             />
             <button
-              className="mx-auto w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
+              className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
               type="submit"
             >
-              <ArrowUpIcon className="w-4 h-4" />
+              <ArrowUpIcon className="w-6 h-6" />
             </button>
           </form>
         </div>
