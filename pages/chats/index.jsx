@@ -58,7 +58,7 @@ export default function ChatList() {
                 className="bg-white p-3 rounded-l  flex justify-between items-center"
               >
                 <div className="text-lg font-bold w-1/3">
-                  {user.id !== data.expand.user1.id
+                  {user?.id !== data.expand.user1.id
                     ? data.expand.user1.name
                     : data.expand.user2.name}
                 </div>

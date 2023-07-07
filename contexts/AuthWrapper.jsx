@@ -28,12 +28,19 @@ const AuthWrapper = ({ children }) => {
 
     initAuth()
 
-    if (pb.authStore.model) setUserData(pb.authStore.model)
+    async function getUserData() {
+      if (pb.authStore.model) {
+        const userData = await pb
+          .collection("users")
+          .getOne(pb.authStore.model.id)
+        setUserData(userData)
+      }
+    }
+    getUserData()
   }, [])
 
   const setUserData = (pbUser) => {
-    const { id, name, email, username, studentId, avatarUrl } = pbUser
-    setUser({ id, name, email, username, studentId, avatarUrl })
+    setUser(pbUser)
   }
 
   const kakaoSignIn = () => {
