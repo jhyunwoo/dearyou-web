@@ -1,11 +1,14 @@
 import { useState, useRef } from "react"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowLeftCircleIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
-import DeveloperPage from "@/components/DeveloperPage"
+import ProtectAdmin from "@/components/ProtectAdmin"
 import ProtectedPage from "@/components/ProtectedPage"
 
 export default function ChatLogPage() {
@@ -17,8 +20,8 @@ export default function ChatLogPage() {
     if (word.length === 0) return
 
     const searchResult = await pb.collection("chats").getFullList({
-      filter: `buyer.name~"${word}"||seller.name~"${word}"`,
-      expand: "buyer,seller",
+      filter: `user1.name~"${word}"||user2.name~"${word}"`,
+      expand: "user1,user2",
     })
 
     // 화면에 표시할 정보만을 담은 'searched' state 설정
@@ -91,16 +94,16 @@ export default function ChatLogPage() {
                   <div className="font-medium text-base flex flex-col">
                     <div className="flex">
                       <div className="font-semibold">
-                        {data?.expand?.buyer?.name}
+                        {data?.expand?.user1?.name}
                         <span className="text-sm text-slate-400">
-                          ({data?.expand?.buyer?.studentId})
+                          ({data?.expand?.user1?.studentId})
                         </span>
                       </div>
                       <div className="mx-1">-</div>
                       <div className="font-semibold">
-                        {data?.expand?.seller?.name}
+                        {data?.expand?.user2?.name}
                         <span className="text-sm text-slate-400">
-                          ({data?.expand?.seller?.studentId})
+                          ({data?.expand?.user2?.studentId})
                         </span>
                       </div>
                     </div>
@@ -120,22 +123,26 @@ export default function ChatLogPage() {
 
   return (
     <ProtectedPage>
-      <DeveloperPage>
-        <BottomBar />
-        <HeadBar title="채팅 로그 조회" />
-        <Layout>
-          <div className="p-2">
-            <div className="font-semibold text-red-500">
-              이 기능은 개발자 권한을 가진 사용자만 접근이 가능함.
-            </div>
-            <div className="font-semibold text-red-500">
-              테스트 용도 혹은 불가피한 경우를 제외하고는 사용하지 말 것
-            </div>
+      <ProtectAdmin />
+      <BottomBar />
+      <div className="w-full bg-slate-50 p-3  flex items-center justify-start fixed top-0 right-0 left-0">
+        <Link href={"/devpage"}>
+          <ArrowLeftCircleIcon className="w-8 h-8" />
+        </Link>
+        <div className="font-bold text-xl ml-2">채팅 로그 조회</div>
+      </div>
+      <Layout>
+        <div className="p-2">
+          <div className="font-semibold text-red-500">
+            이 기능은 개발자 권한을 가진 사용자만 접근이 가능함.
           </div>
-          <SearchBar />
-          <ItemList data={searched} />
-        </Layout>
-      </DeveloperPage>
+          <div className="font-semibold text-red-500">
+            테스트 용도 혹은 불가피한 경우를 제외하고는 사용하지 말 것
+          </div>
+        </div>
+        <SearchBar />
+        <ItemList data={searched} />
+      </Layout>
     </ProtectedPage>
   )
 }

@@ -87,7 +87,7 @@ export default function Profile() {
           >
             드려유 고객센터
           </Link>
-          {user?.logPermission ? (
+          {user?.admin ? (
             <Link
               href={"/devpage"}
               className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"

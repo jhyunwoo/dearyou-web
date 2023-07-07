@@ -14,7 +14,7 @@ export default function FloattingBar() {
 
       <Link
         href="/search"
-        className="fixed right-20 bottom-20 bg-white ring-2 ring-amber-600 p-2 rounded-full transition duration-200 hover:ring-offset-2 hover:bg-amber-600 group"
+        className="fixed right-6 bottom-36 bg-white ring-2 ring-amber-600 p-2 rounded-full transition duration-200 hover:ring-offset-2 hover:bg-amber-600 group"
       >
         <MagnifyingGlassIcon className="w-8 h-8 text-amber-600 group-hover:text-white transition duration-200" />
       </Link>

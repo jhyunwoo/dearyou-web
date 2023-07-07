@@ -8,11 +8,9 @@ import BottomBar from "@/components/BottomBar"
 export default function MyReviews() {
   const [reviewsTo, setReviewsTo] = useState([])
   const [reviewsFrom, setReviewsFrom] = useState([])
-  const [isLoading, setIsLoading] = useState([])
 
   useEffect(() => {
     async function getMyReviews() {
-      setIsLoading(true)
       let reviews = await pb.collection("reviews").getFullList({
         filter: `to.id="${pb.authStore.model?.id}"`,
         expand: "from",
@@ -23,7 +21,6 @@ export default function MyReviews() {
         expand: "to",
       })
       setReviewsTo(reviews)
-      setIsLoading(false)
     }
     getMyReviews()
   }, [])
@@ -52,7 +49,7 @@ export default function MyReviews() {
             </div>
           ))}
         </div>
-        <div className="mt-4 w-full grid grid-cols-1 gap-2">
+        <div className="mt-4 w-full grid grid-cols-1 gap-2 pb-8">
           <div className="text-lg">내가 남긴 후기</div>
           {reviewsTo.map((data, key) => (
             <div

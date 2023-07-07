@@ -31,10 +31,9 @@ export default function MyReviews() {
       }
 
       const record = await pb.collection("reviews").create(reviewData)
-      const sellerInfo = await pb.collection("users").getOne(sellerId)
       const updateSeller = await pb
         .collection("users")
-        .update(sellerId, { dignity: sellerInfo.dignity + rating })
+        .update(seller.id, { dignity: seller.dignity + rating })
 
       router.push("/")
     } else {
