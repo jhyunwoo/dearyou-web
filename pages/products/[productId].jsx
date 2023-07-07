@@ -10,6 +10,8 @@ import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -25,6 +27,8 @@ export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("")
   const [userWish, setUserWish] = useState([])
   const autonomy = pb.authStore?.model?.autonomy
+
+  const setModal = useSetRecoilState(modalState)
 
   const router = useRouter()
 
@@ -133,7 +137,7 @@ export default function ProductDetail({ productId }) {
       newInfo.confirmedBy = currentUser.id
 
       await pb.collection("products").update(productInfo.id, newInfo)
-      alert("물품을 숨겼습니다.")
+      setModal("물품을 숨겼습니다.")
       router.replace("/")
     }
   }

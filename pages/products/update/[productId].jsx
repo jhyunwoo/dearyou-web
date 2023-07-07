@@ -6,6 +6,9 @@ import ProtectedPage from "@/components/ProtectedPage"
 import ProductImageView from "@/components/ProductImageView"
 import ProductInfoForm from "@/components/ProductInfoForm"
 import Loading from "@/components/Loading"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
+import BottomBar from "@/components/BottomBar"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -19,8 +22,11 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function UpdateProduct({ productId }) {
-  const { user, signOut } = usePbAuth()
+  const { user } = usePbAuth()
   const [productInfo, setProductInfo] = useState("")
+
+  const setModal = useSetRecoilState(modalState)
+
   const useWindowSize = () => {
     const isClient = typeof window === "object"
 
@@ -73,7 +79,7 @@ export default function UpdateProduct({ productId }) {
   async function onDeleteProduct() {
     if (window.confirm("물품을 정말 삭제할까요? (취소할 수 없습니다!)")) {
       await pb.collection("products").delete(productId)
-      alert("물품이 삭제되었습니다.")
+      setModal("물품이 삭제되었습니다.")
       router.replace("/")
     }
   }
@@ -81,6 +87,7 @@ export default function UpdateProduct({ productId }) {
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
       <ProtectedPage>
+        <BottomBar />
         {isLoading ? <Loading /> : ""}
         <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
         {productInfo ? (
