@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useInView } from "react-intersection-observer"
 import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
+import TextareaAutosize from "react-textarea-autosize"
 import {
   ArrowLeftCircleIcon,
   ArrowPathIcon,
@@ -349,7 +350,7 @@ export default function Chat({ chatId }) {
         </div>
         <div ref={messageEndRef}></div>
         <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 ">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex items-end">
             <label
               htmlFor="input-file"
               onChange={onLoadImage}
@@ -363,9 +364,8 @@ export default function Chat({ chatId }) {
                 accept="image/jpg, image/png, image/jpeg, image/webp, image/heic, image/heic-sequence, image/heif-sequence image/heif"
               />
             </label>
-            <input
-              className="flex-auto outline-none p-2 rounded-lg mx-1"
-              placeholder="메세지를 입력해주세요."
+            <TextareaAutosize
+              className="flex-auto outline-none p-2 rounded-lg mx-1 break-all"
               {...register("text", {
                 required: {
                   value: true,
