@@ -12,6 +12,7 @@
   "dependencies": {
     "@ducanh2912/next-pwa": "^9.1.4",
     "@heroicons/react": "^2.0.17",
+    "@vercel/analytics": "^1.0.1",
     "autoprefixer": "10.4.14",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
