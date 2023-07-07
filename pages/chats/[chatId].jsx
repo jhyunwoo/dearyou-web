@@ -223,7 +223,7 @@ export default function Chat({ chatId }) {
             <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
           )}
         </div>
-        <div className="overflow-auto pb-14 flex flex-col space-y-2">
+        <div className="overflow-auto pb-16 flex flex-col space-y-2">
           {oldMessages?.map((data, key) => (
             <section
               key={key}
