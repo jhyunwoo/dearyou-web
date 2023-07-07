@@ -179,10 +179,10 @@ export default function ProductDetail({ productId }) {
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
+          className={`flex items-center justify-center mt-4 ${" text-red-500 hover:text-red-600 transition duration-200"}`}
           onClick={onProductHide}
         >
-          <CheckBadgeIcon className="w-6 h-6 mr-2" />
+          <CheckBadgeIcon className="w-6 h-6 mr-1" />
           물품 숨기기
         </button>
       </div>

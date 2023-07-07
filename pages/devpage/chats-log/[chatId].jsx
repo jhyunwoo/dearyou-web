@@ -8,7 +8,7 @@ import {
   ArrowPathIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline"
-import ProtectedPage from "@/components/ProtectedPage"
+import ProtectAdmin from "@/components/ProtectAdmin"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -178,7 +178,7 @@ export default function ChatLog({ chatId }) {
   }
 
   return (
-    <ProtectedPage>
+    <ProtectAdmin>
       {userInfoPopup ? <UserInfoPopUp /> : ""}
       <div className="bg-slate-50 min-h-screen">
         <div className="fixed top-0 right-0 left-0 p-2 bg-white shadow-md flex items-center justify-between">
@@ -324,6 +324,6 @@ export default function ChatLog({ chatId }) {
           </button>
         </div>
       </div>
-    </ProtectedPage>
+    </ProtectAdmin>
   )
 }
