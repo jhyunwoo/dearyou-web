@@ -7,12 +7,16 @@ import Layout from "@/components/Layout"
 import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function MyReviews() {
   const router = useRouter()
   const { productId, sellerId } = router.query
   const [rating, setRating] = useState(0)
   const [seller, setSeller] = useState()
+
+  const setModal = useSetRecoilState(modalState)
 
   const {
     register,
@@ -37,7 +41,7 @@ export default function MyReviews() {
 
       router.push("/")
     } else {
-      alert("후기를 입력해주세요.")
+      setModal("후기를 입력해주세요.")
     }
   }
 
