@@ -32,6 +32,8 @@ export default function Chat({ chatId }) {
   const [oldMessages, setOldMessages] = useState([])
   /** 과거 메세지를 불러올 때 더 불러올 메세지가 있는지 판단 */
   const [hasNextPage, setHasNextPage] = useState(true)
+  // update message after user sended message
+  const [updateMessages, setUpdateMessages] = useState(0)
   /** 사용자가 맨 위로 올렸는지 판단 */
   const [ref, inView] = useInView()
   /** React Hook Form 설정 */
@@ -61,6 +63,7 @@ export default function Chat({ chatId }) {
       messages: record.id,
     }
     const updateChat = await pb.collection("chats").update(chatId, update)
+    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** 사진 입력 후 사진 업로드 */
@@ -86,6 +89,7 @@ export default function Chat({ chatId }) {
     } catch (e) {
       console.log(e)
     }
+    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** message를 불러오는 함수 */
@@ -152,6 +156,23 @@ export default function Chat({ chatId }) {
     /** infinite scroll 후 보던 메세지로 이동 */
     infiniteRef?.current?.scrollIntoView()
   }, [oldMessages])
+
+  useEffect(() => {
+    async function updateMessages() {
+      try {
+        let messageList = await pb.collection("messages").getList(1, 20, {
+          filter: `chat.id="${chatId}"`,
+          sort: "-created",
+          expand: "sender, product,reviewProduct",
+        })
+
+        setMessages(messageList.items.reverse())
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    updateMessages()
+  }, [chatId, updateMessages])
 
   /** inView와 hasNextPage값이 참이면 추가 message 로드 */
   useEffect(() => {
