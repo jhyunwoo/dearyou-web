@@ -222,7 +222,7 @@ export default function ChatLog({ chatId }) {
                   ? data?.expand?.receiver?.name
                   : data?.expand?.sender?.name}
               </div>
-              <div className="bg-white p-1 px-2 rounded-md">
+              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
                 {data?.message ? (
                   data.message
                 ) : (
@@ -256,7 +256,7 @@ export default function ChatLog({ chatId }) {
                     ? data?.expand?.receiver?.name
                     : data?.expand?.sender?.name}
                 </div>
-                <div className="bg-white p-1 px-2 rounded-md max-w-xs">
+                <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
                   {data?.product ? (
                     <Link href={`/products/${data?.expand?.product?.id}`}>
                       <Image
