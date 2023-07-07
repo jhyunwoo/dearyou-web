@@ -114,6 +114,15 @@ export default function Chat({ chatId }) {
   }, [])
 
   useEffect(() => {
+    async function readMessage() {
+      if (messages.length < 1) return
+      let lastMessage = messages.slice(-1)
+      if (lastMessage[0].receiver === pb.authStore.model.id) {
+        const readMessage = await pb
+          .collection("messages")
+          .update(lastMessage[0].id, { isRead: true })
+      }
+    }
     /** 채팅 정보 가져오기 */
     async function getChatInfo() {
       if (chatId) {
@@ -131,6 +140,7 @@ export default function Chat({ chatId }) {
             .collection("messages")
             .getOne(e?.record?.messages)
           setMessages((prev) => [...prev, newMessage])
+          readMessage()
         })
       }
     }
