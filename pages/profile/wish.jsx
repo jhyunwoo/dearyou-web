@@ -32,7 +32,7 @@ export default function WishPage() {
           <div>아직 등록한 관심 물품이 없습니다.</div>
           <Link
             href={"/"}
-            className="bg-orange-400 p-2 px-4 rounded-full text-white font-semibold mt-4 hover:bg-orange-500 transition duration-200"
+            className="bg-orange-400 p-2 px-4 rounded-full text-white dark:text-black font-semibold mt-4 hover:bg-orange-500 transition duration-200"
           >
             등록된 물품 보러가기
           </Link>

@@ -97,7 +97,7 @@ export default function UpdateProduct({ productId }) {
                 productId={productId}
               />
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
+            <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-lg sm:w-1/2">
               {!productInfo.soldDate ? (
                 <div>
                   <ProductInfoForm
@@ -105,7 +105,7 @@ export default function UpdateProduct({ productId }) {
                     onSubmit={onSubmit}
                   />
                   <button
-                    className="w-full bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
+                    className="w-full bg-red-400 hover:bg-red-500 transition duration-200  text-white dark:text-black p-2 px-6 rounded-full text-base font-semibold mt-4"
                     onClick={onDeleteProduct}
                   >
                     물품 삭제

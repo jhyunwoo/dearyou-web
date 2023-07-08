@@ -76,12 +76,12 @@ export default function CreateProduct() {
   }
 
   return (
-    <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 p-4">
+    <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 dark:bg-black p-4">
       <BottomBar />
       {isLoading ? <Loading /> : ""}
-      <div className="text-xl font-bold">물품 등록</div>
+      <div className="text-xl font-bold dark:text-white">물품 등록</div>
       <div className="sm:flex sm:justify-center sm:items-start">
-        <div className="bg-slate-50 sm:w-1/2  p-4 flex flex-col">
+        <div className="bg-slate-50 dark:bg-black sm:w-1/2  p-4 flex flex-col">
           <div className="">
             {showImages.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 w-full ">
@@ -95,7 +95,7 @@ export default function CreateProduct() {
                       className="rounded-sm"
                     />
                     <button
-                      className="bg-red-500 hover:bg-red-600 duration-200 transition mt-1 text-white py-1 px-2 rounded-lg"
+                      className="bg-red-500 hover:bg-red-600 duration-200 transition mt-1 text-white dark:text-black py-1 px-2 rounded-lg"
                       onClick={() => handleDeleteImage(id)}
                     >
                       삭제
@@ -111,7 +111,7 @@ export default function CreateProduct() {
             <label
               htmlFor="input-file"
               onChange={handleAddImages}
-              className="bg-white ring-2 hover:ring-offset-2 hover:bg-sky-400 hover:text-white transition duration-200 ring-sky-400 rounded-xl mx-2 text-slate-600 px-4 py-2 font-semibold"
+              className="bg-white dark:bg-gray-900 ring-2 hover:ring-offset-2 hover:bg-sky-400 hover:text-white dark:text-white dark:ring-offset-black transition duration-200 ring-sky-400 rounded-xl mx-2 text-slate-600 px-4 py-2 font-semibold"
             >
               사진 가져오기
               <input

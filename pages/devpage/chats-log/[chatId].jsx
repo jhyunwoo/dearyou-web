@@ -137,31 +137,33 @@ export default function ChatLog({ chatId }) {
       }
     }
     return (
-      <div className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-slate-50/50 flex justify-center items-center p-4">
-        <div className="bg-white p-4 rounded-lg relative w-full max-w-sm">
+      <div className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-slate-50 dark:bg-black flex justify-center items-center p-4">
+        <div className="bg-white dark:bg-gray-900 p-4 rounded-lg relative w-full max-w-sm">
           <button
             className="absolute -top-2 -right-2"
             onClick={() => setUserInfoPopup(null)}
           >
             <XCircleIcon className="w-8 h-8 text-slate-700" />
           </button>
-          <div className="text-xl font-bold mb-2">{userInfoPopup?.name}</div>
-          <div className="text-lg font-semibold">
+          <div className="text-xl font-bold mb-2 dark:text-white">
+            {userInfoPopup?.name}
+          </div>
+          <div className="text-lg font-semibold dark:text-white">
             학번: {userInfoPopup?.studentId}
           </div>
-          <div className="text-lg font-semibold">
+          <div className="text-lg font-semibold dark:text-white">
             이메일: {userInfoPopup?.email}
           </div>
-          <div className="text-lg font-semibold">
+          <div className="text-lg font-semibold dark:text-white">
             품격 온도: {userInfoPopup?.dignity}
           </div>
-          <div className="text-lg font-semibold">
+          <div className="text-lg font-semibold dark:text-white">
             자율위원: {userInfoPopup?.autonomy ? "✅" : "❌"}
           </div>
-          <div className="text-lg font-semibold">
+          <div className="text-lg font-semibold dark:text-white">
             관리자: {userInfoPopup?.admin ? "✅" : "❌"}
           </div>
-          <div className="text-lg font-semibold">
+          <div className="text-lg font-semibold dark:text-white">
             차단 여부: {userInfoPopup?.isBanned ? "✅" : "❌"}
           </div>
           <button
@@ -172,7 +174,7 @@ export default function ChatLog({ chatId }) {
               userInfoPopup?.isBanned
                 ? "bg-green-600 hover:bg-green-700"
                 : "bg-red-500 hover:bg-red-600"
-            } text-white font-semibold text-lg transition duration-200`}
+            } text-white dark:text-black font-semibold text-lg transition duration-200`}
           >
             {userInfoPopup?.isBanned ? "차단 해제" : "차단"}
           </button>
@@ -184,26 +186,28 @@ export default function ChatLog({ chatId }) {
   return (
     <ProtectAdmin>
       {userInfoPopup ? <UserInfoPopUp /> : ""}
-      <div className="bg-slate-50 min-h-screen w-screen">
-        <div className="fixed top-0 right-0 left-0 p-2 bg-white shadow-md flex items-center justify-between">
+      <div className="bg-slate-50 dark:bg-black min-h-screen w-screen">
+        <div className="fixed top-0 right-0 left-0 p-2 bg-white dark:bg-gray-900 shadow-md flex items-center justify-between">
           <Link href={"/devpage/chats-log"}>
             <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
           </Link>
-          <div className="text-md ml-2 font-bold flex justify-between">
+          <div className="text-md ml-2 font-bold flex justify-between dark:text-white">
             Chat ID: {chatInfo?.id}
           </div>
         </div>
         <div ref={ref} className="w-full pt-20"></div>
-        <div className="bg-slate-50 flex justify-center">
+        <div className="bg-slate-50 dark:bg-black flex justify-center">
           {hasNextPage ? (
             <div className="flex justify-center items-center flex-col items-cente p-2">
-              <ArrowPathIcon className="w-8 h-8 p-2 animate-spin text-slate-600 " />
+              <ArrowPathIcon className="w-8 h-8 p-2 animate-spin text-slate-600 dark:text-slate-300" />
               <div className="text-sm">
                 로딩이 되지 않는다면 창을 내렸다 올려주세요.
               </div>
             </div>
           ) : (
-            <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
+            <div className="text-sm p-2 dark:text-white">
+              더 이상 기록이 없습니다.
+            </div>
           )}
         </div>
         <div className="overflow-auto pb-24 flex flex-col space-y-2">
@@ -217,12 +221,12 @@ export default function ChatLog({ chatId }) {
               } mb-1 flex flex-col  mx-2`}
             >
               {key === 19 ? <div ref={infiniteRef}></div> : ""}
-              <div className="text-xs">
+              <div className="text-xs dark:text-white">
                 {chatInfo.user2 === data?.sender
                   ? data?.expand?.receiver?.name
                   : data?.expand?.sender?.name}
               </div>
-              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
+              <div className="bg-white dark:text-white dark:bg-gray-900 p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                 {data?.message ? (
                   data.message
                 ) : (
@@ -251,12 +255,12 @@ export default function ChatLog({ chatId }) {
                   chatInfo.user2 === data?.sender ? "items-end" : "items-start"
                 }`}
               >
-                <div className="text-xs">
+                <div className="text-xs dark:text-white">
                   {chatInfo.user2 === data?.sender
                     ? data?.expand?.receiver?.name
                     : data?.expand?.sender?.name}
                 </div>
-                <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
+                <div className="bg-white dark:text-white dark:bg-gray-900 p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                   {data?.product ? (
                     <Link href={`/products/${data?.expand?.product?.id}`}>
                       <Image
@@ -297,7 +301,7 @@ export default function ChatLog({ chatId }) {
                 </div>
               </div>
               {messages.length === key + 1 ? (
-                <div className="text-xs text-slate-700">
+                <div className="text-xs text-slate-700 dark:text-slate-200">
                   {data.isRead ? "읽음" : ""}
                 </div>
               ) : (
@@ -307,22 +311,22 @@ export default function ChatLog({ chatId }) {
           ))}
           <div ref={messageEndRef}></div>
         </div>
-        <div className="flex justify-between p-2 px-4 items-center fixed bottom-0 right-0 left-0 w-full bg-amber-50">
+        <div className="flex justify-between p-2 px-4 items-center fixed bottom-0 right-0 left-0 w-full bg-amber-50 dark:bg-slate-800">
           <button
             onClick={() => setUserInfoPopup(chatInfo?.expand?.user1)}
-            className="flex justify-center flex-col p-2 px-4 rounded-lg shadow-xl bg-white"
+            className="flex justify-center flex-col p-2 px-4 rounded-lg shadow-xl bg-white dark:bg-gray-900 hover:bg-slate-100 dark:hover:bg-gray-700 transition duration-200"
           >
-            <div>User 1</div>
-            <div className="text-lg font-semibold">
+            <div className="dark:text-white">User 1</div>
+            <div className="text-lg font-semibold dark:text-white">
               {chatInfo?.expand?.user1?.name}
             </div>
           </button>
           <button
             onClick={() => setUserInfoPopup(chatInfo?.expand?.user2)}
-            className="flex justify-center flex-col p-2 px-4 rounded-lg shadow-xl bg-white"
+            className="flex justify-center flex-col p-2 px-4 rounded-lg shadow-xl bg-white dark:bg-gray-900 hover:bg-slate-100 dark:hover:bg-gray-700 transition duration-200"
           >
-            <div>User 2</div>
-            <div className="text-lg font-semibold">
+            <div className="dark:text-white">User 2</div>
+            <div className="text-lg font-semibold dark:text-white">
               {chatInfo?.expand?.user2?.name}
             </div>
           </button>

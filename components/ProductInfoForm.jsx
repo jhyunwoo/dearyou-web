@@ -14,19 +14,19 @@ export default function ProductInfoForm(props) {
   return (
     <div className="">
       <form onSubmit={handleSubmit(props.onSubmit)} className="flex flex-col">
-        <div className="text-lg font-semibold">물품명</div>
+        <div className="text-lg font-semibold dark:text-white">물품명</div>
         <input
           {...register("name", { required: true })}
-          className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+          className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2 dark:bg-gray-800 dark:ring-offset-gray-800 dark:text-white"
           defaultValue={props.productInfo?.name}
           maxLength={50}
         />
-        <div className="text-lg font-semibold">
+        <div className="text-lg font-semibold dark:text-white">
           설명 <span className="text-gray-400 text-sm">(최대 300자)</span>
         </div>
         <textarea
           {...register("explain", { required: true })}
-          className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-300 my-2"
+          className="p-2 rounded-lg outline-none ring-2 h-32 ring-amber-400 hover:ring-offset-2 transition duration-300 my-2 dark:bg-gray-800 dark:ring-offset-gray-800 dark:text-white"
           defaultValue={props.productInfo?.explain}
           maxLength={300}
         />
@@ -34,7 +34,7 @@ export default function ProductInfoForm(props) {
         <div className="text-lg font-semibold">종류</div>
         <select
           {...register("type", { required: true })}
-          className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+          className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2 dark:bg-gray-800 dark:ring-offset-gray-800 dark:text-white"
           defaultValue={props.productInfo?.type}
         >
           {typeOptions.map((item, key) => (
@@ -45,7 +45,7 @@ export default function ProductInfoForm(props) {
         </select>
 
         <button
-          className="bg-amber-400 hover:bg-amber-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
+          className="bg-amber-400 hover:bg-amber-500 transition duration-200  text-white dark:text-black p-2 px-6 rounded-full text-base font-semibold mt-4"
           type="submit"
         >
           제출

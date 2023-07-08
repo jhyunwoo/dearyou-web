@@ -198,28 +198,30 @@ export default function Chat({ chatId }) {
   }, [messages])
 
   return (
-    <div className="bg-slate-50 min-h-screen">
-      <div className="fixed top-0 right-0 left-0 p-2 bg-white shadow-md flex items-center">
+    <div className="bg-slate-50 dark:bg-black min-h-screen">
+      <div className="fixed top-0 right-0 left-0 p-2 bg-white dark:bg-gray-900 shadow-md flex items-center">
         <Link href={"/chats"}>
           <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
         </Link>
-        <div className="text-lg ml-2 font-bold">
+        <div className="text-lg ml-2 font-bold dark:text-white">
           {pb?.authStore?.model?.id === chatInfo?.user1
             ? chatInfo?.expand?.user2?.name
             : chatInfo?.expand?.user1?.name}
         </div>
       </div>
       <div ref={ref} className="w-full pt-20 "></div>
-      <div className="bg-slate-50 flex justify-center">
+      <div className="bg-slate-50 dark:bg-black flex justify-center">
         {hasNextPage ? (
           <div className="flex justify-center items-center flex-col items-cente p-2">
-            <ArrowPathIcon className="w-8 h-8 p-2 animate-spin text-slate-600 " />
-            <div className="text-sm">
+            <ArrowPathIcon className="w-8 h-8 p-2 animate-spin text-slate-600 dark:text-slate-300" />
+            <div className="text-sm dark:text-white">
               로딩이 되지 않는다면 창을 내렸다 올려주세요.
             </div>
           </div>
         ) : (
-          <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
+          <div className="text-sm p-2 dark:text-white">
+            더 이상 기록이 없습니다.
+          </div>
         )}
       </div>
       <div className="overflow-auto pb-16 flex flex-col space-y-2">
@@ -233,12 +235,12 @@ export default function Chat({ chatId }) {
             } mb-1 flex flex-col  mx-2`}
           >
             {key === 19 ? <div ref={infiniteRef}></div> : ""}
-            <div className="text-xs">
+            <div className="text-xs dark:text-white">
               {pb.authStore.model.id === data?.sender
                 ? pb.authStore.model.name
                 : data?.expand?.sender?.name}
             </div>
-            <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
+            <div className="bg-white dark:bg-gray-900 dark:text-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
               {data?.message ? (
                 data.message
               ) : (
@@ -269,12 +271,12 @@ export default function Chat({ chatId }) {
                   : "items-start"
               }`}
             >
-              <div className="text-xs">
+              <div className="text-xs dark:text-white">
                 {pb.authStore.model.id === data?.sender
                   ? pb.authStore.model.name
                   : data?.expand?.sender?.name}
               </div>
-              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
+              <div className="bg-white dark:bg-gray-900 dark:text-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                 {data?.product ? (
                   pb.authStore.model.id === data?.sender ? (
                     <section>
@@ -337,7 +339,7 @@ export default function Chat({ chatId }) {
               </div>
             </div>
             {messages.length === key + 1 ? (
-              <div className="text-xs text-slate-700">
+              <div className="text-xs text-slate-700 dark:text-slate-200">
                 {data.isRead ? "읽음" : ""}
               </div>
             ) : (
@@ -347,12 +349,12 @@ export default function Chat({ chatId }) {
         ))}
       </div>
       <div ref={messageEndRef}></div>
-      <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 ">
+      <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 dark:bg-slate-900 ">
         <form onSubmit={handleSubmit(onSubmit)} className="flex items-end">
           <label
             htmlFor="input-file"
             onChange={onLoadImage}
-            className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
+            className="bg-white dark:bg-gray-900 ring-2  hover:bg-amber-400 text-amber-500  hover:text-white hover:dark:text-black transition duration-200 ring-amber-400 rounded-xl p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
           >
             <PhotoIcon className="w-6 h-6" />
             <input
@@ -363,7 +365,7 @@ export default function Chat({ chatId }) {
             />
           </label>
           <TextareaAutosize
-            className="flex-auto outline-none p-2 rounded-lg mx-1 break-all"
+            className="flex-auto outline-none p-2 rounded-lg mx-1 break-all dark:bg-slate-800 dark:text-white"
             {...register("text", {
               required: {
                 value: true,
@@ -372,7 +374,7 @@ export default function Chat({ chatId }) {
             })}
           />
           <button
-            className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
+            className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white dark:text-black"
             type="submit"
           >
             <ArrowUpIcon className="w-6 h-6" />

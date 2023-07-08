@@ -73,14 +73,14 @@ export default function Report() {
     <Layout>
       <BottomBar />
       <HeadBar title="프로필" />
-      <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50/50">
-        <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white">
+      <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">
+        <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900">
           <div className="text-lg font-bold text-center">
             {user?.name}님을 신고합니까?
           </div>
           <form onSubmit={handleSubmit(handleReport)} className="flex flex-col">
             <button
-              className="bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
+              className="bg-red-400 hover:bg-red-500 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
               type="submit"
             >
               신고
