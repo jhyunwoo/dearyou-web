@@ -18,7 +18,7 @@ export default function ProtectedPage(props) {
   useEffect(() => {
     async function checkIsProtect() {
       const path = router.asPath
-      if (path === "/signin") {
+      if (path === "/signin"||path==="/profile/add-info") {
         setIsProtect(false)
       } else {
         setIsProtect(true)
