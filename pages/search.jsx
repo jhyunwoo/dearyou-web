@@ -48,6 +48,7 @@ export default function Search() {
               ref={searchInput}
               type="text"
               placeholder="검색어를 입력하세요..."
+              defaultValue={searchWord}
               autoFocus
               className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
             />
@@ -83,9 +84,9 @@ export default function Search() {
     if (props.data.length === 0) {
       // props로 전달받은 검색 결과 목록이 비었을 때
       return (
-        <h3 className="text-md text-slate-600 font-bold text-center mt-12">
+        <div className="text-md text-slate-600 font-bold text-center mt-12">
           검색 결과가 없습니다.
-        </h3>
+        </div>
       )
     } else {
       // 검색 결과 표시하는 Ordered List

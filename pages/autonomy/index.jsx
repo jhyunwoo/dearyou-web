@@ -71,7 +71,7 @@ export default function Autonomy() {
           <div className="flex pb-2 items-center">
             <div className="w-20"/>
             <div className="ml-auto text-slate-500">
-            반려된 물건 숨기기
+              반려된 물건 숨기기
             </div>
             <button
               onClick={() => {
@@ -81,6 +81,10 @@ export default function Autonomy() {
               <EyeSlashIcon className={`w-8 h-8 mx-2 ${hideRejected ? "stroke-orange-400" : "stroke-slate-400"}`}/>
             </button> 
           </div>
+          {products.length === 0 ?
+          <div className="text-md text-slate-600 font-bold text-center mt-12">
+            승인 대기 중인 물건이 없습니다.
+          </div> : null}
           <ProductGrid>
             {products?.map((data, key) => (
               <ProductCard data={data} key={key} autonomy={true} />

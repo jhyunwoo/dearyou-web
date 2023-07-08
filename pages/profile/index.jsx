@@ -12,7 +12,7 @@ export default function Profile() {
   const { user, signOut } = usePbAuth()
 
   return (
-    <ProtectedPage allowBanned={true}>
+    <ProtectedPage>
       <Layout>
         <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
@@ -47,9 +47,6 @@ export default function Profile() {
                 <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
                 pb.authStore.model?.autonomy ? 
                 <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
-              }
-              {pb.authStore.model?.isBanned ?
-                <div className="text-sm ml-1 text-red-500">계정 정지됨</div> : null
               }
             </div>
             <div>{pb.authStore.model?.studentId}</div>
