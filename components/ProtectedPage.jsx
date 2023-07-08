@@ -8,7 +8,7 @@ import { useRouter } from "next/router"
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
-  const [userInfo, setUserInfo] = useState(null)
+
   const { user } = usePbAuth()
 
   const [isProtect, setIsProtect] = useState(false)
@@ -27,18 +27,7 @@ export default function ProtectedPage(props) {
     checkIsProtect()
   }, [router])
 
-  useEffect(() => {
-    /** 사용자 정보 */
-    async function checkUser() {
-      if (pb?.authStore?.model?.id) {
-        const userData = await pb
-          .collection("users")
-          .getOne(pb.authStore.model.id)
-        setUserInfo(userData)
-      }
-    }
-    checkUser()
-  }, [])
+  
 
   if (!isProtect) {
     return <>{props.children}</>
@@ -63,7 +52,7 @@ export default function ProtectedPage(props) {
         </div>
       </div>
     )
-  } else if (userInfo && userInfo?.isBanned) {
+  } else if (user && user?.isBanned) {
     return (
       <div className="w-full min-h-screen flex justify-center items-center bg-black p-12 fixed top-0 bottom-0 right-0 left-0">
         <div className="bg-white dark:bg-gray-900 p-4 rounded-xl flex flex-col items-center">
@@ -79,8 +68,7 @@ export default function ProtectedPage(props) {
       </div>
     )
   } else if (
-    userInfo &&
-    (userInfo?.studentId === 0 || userInfo?.studentId == null)
+    !user?.studentId|| !user?.studentId )
   ) {
     /** 학번 정보가 없을 때 */
     return (
