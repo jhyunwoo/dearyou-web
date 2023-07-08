@@ -6,10 +6,8 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline"
 import BottomBar from "@/components/BottomBar"
-import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProtectAdmin from "@/components/ProtectAdmin"
-import ProtectedPage from "@/components/ProtectedPage"
 
 export default function ChatLogPage() {
   const [searched, setSearched] = useState([])
@@ -122,28 +120,26 @@ export default function ChatLogPage() {
   }
 
   return (
-    <ProtectedPage>
-      <ProtectAdmin>
-        <BottomBar />
-        <div className="w-full bg-slate-50 p-3  flex items-center justify-start fixed top-0 right-0 left-0">
-          <Link href={"/devpage"}>
-            <ArrowLeftCircleIcon className="w-8 h-8" />
-          </Link>
-          <div className="font-bold text-xl ml-2">채팅 로그 조회</div>
-        </div>
-        <Layout>
-          <div className="p-2">
-            <div className="font-semibold text-red-500">
-              이 기능은 개발자 권한을 가진 사용자만 접근이 가능함.
-            </div>
-            <div className="font-semibold text-red-500">
-              테스트 용도 혹은 불가피한 경우를 제외하고는 사용하지 말 것
-            </div>
+    <ProtectAdmin>
+      <BottomBar />
+      <div className="w-full bg-slate-50 p-3  flex items-center justify-start fixed top-0 right-0 left-0">
+        <Link href={"/devpage"}>
+          <ArrowLeftCircleIcon className="w-8 h-8" />
+        </Link>
+        <div className="font-bold text-xl ml-2">채팅 로그 조회</div>
+      </div>
+      <Layout>
+        <div className="p-2">
+          <div className="font-semibold text-red-500">
+            이 기능은 개발자 권한을 가진 사용자만 접근이 가능함.
           </div>
-          <SearchBar />
-          <ItemList data={searched} />
-        </Layout>
-      </ProtectAdmin>
-    </ProtectedPage>
+          <div className="font-semibold text-red-500">
+            테스트 용도 혹은 불가피한 경우를 제외하고는 사용하지 말 것
+          </div>
+        </div>
+        <SearchBar />
+        <ItemList data={searched} />
+      </Layout>
+    </ProtectAdmin>
   )
 }

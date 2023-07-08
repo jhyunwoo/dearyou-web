@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import pb from "@/lib/pocketbase"
 import { usePbAuth } from "@/contexts/AuthWrapper"
-import ProtectedPage from "@/components/ProtectedPage"
 import ProductImageView from "@/components/ProductImageView"
 import ProductInfoForm from "@/components/ProductInfoForm"
 import Loading from "@/components/Loading"
@@ -86,7 +85,7 @@ export default function UpdateProduct({ productId }) {
 
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
-      <ProtectedPage>
+      <>
         <BottomBar />
         {isLoading ? <Loading /> : ""}
         <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
@@ -120,7 +119,7 @@ export default function UpdateProduct({ productId }) {
             </div>
           </div>
         ) : null}
-      </ProtectedPage>
+      </>
     )
   } else {
     return (

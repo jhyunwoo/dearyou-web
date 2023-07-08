@@ -4,7 +4,6 @@ import pb from "@/lib/pocketbase"
 import { useForm } from "react-hook-form"
 import { StarIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import { useSetRecoilState } from "recoil"
@@ -66,11 +65,13 @@ export default function MyReviews() {
   }
 
   return (
-    <ProtectedPage>
+    <Layout>
+      <HeadBar title="나눔 후기 남기기" />
+      <BottomBar />
       {sellerId === pb.authStore.model?.id ? (
-        <Layout>이미 후기를 남기셨습니다.</Layout>
+        <div>이미 후기를 남기셨습니다.</div>
       ) : (
-        <Layout>
+        <>
           <div>
             <div className="text-lg font-semibold my-2">
               거래한 사람: {seller?.name}
@@ -103,10 +104,8 @@ export default function MyReviews() {
               제출
             </button>
           </form>
-        </Layout>
+        </>
       )}
-      <HeadBar title="나눔 후기 남기기" />
-      <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

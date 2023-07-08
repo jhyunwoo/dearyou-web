@@ -104,7 +104,7 @@ export default function ProductDetail({ productId }) {
   }, [productId])
 
   return (
-    <ProtectedPage>
+    <Layout>
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
@@ -247,14 +247,12 @@ export default function ProductDetail({ productId }) {
           )}
         </div>
       ) : (
-        <Layout>
-          <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
-            <div>정보가 없습니다.</div>
-          </div>
-        </Layout>
+        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+          <div>정보가 없습니다.</div>
+        </div>
       )}
 
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

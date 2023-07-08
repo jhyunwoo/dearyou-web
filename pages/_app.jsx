@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import Head from "next/head"
 import Router from "next/router"
 import Script from "next/script"
+import { useRouter } from "next/router"
 import { RecoilRoot } from "recoil"
 import * as gtag from "@/lib/gtags"
 import { Analytics } from "@vercel/analytics/react"
@@ -11,6 +12,7 @@ import Loading from "@/components/Loading"
 
 import { IBM_Plex_Sans_KR } from "next/font/google"
 import Modal from "@/components/Modal"
+import ProtectedPage from "@/components/ProtectedPage"
 const plex_sans = IBM_Plex_Sans_KR({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -81,7 +83,9 @@ export default function App({ Component, pageProps }) {
       <Analytics />
       <RecoilRoot>
         <Modal />
-        <Component {...pageProps} />
+        <ProtectedPage>
+          <Component {...pageProps} />
+        </ProtectedPage>
       </RecoilRoot>
     </AuthWrapper>
   )

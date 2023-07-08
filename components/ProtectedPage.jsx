@@ -3,12 +3,29 @@ import Link from "next/link"
 import Image from "next/image"
 import pb from "@/lib/pocketbase"
 import { usePbAuth } from "@/contexts/AuthWrapper"
+import { useRouter } from "next/router"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
   const [userInfo, setUserInfo] = useState(null)
   const { user } = usePbAuth()
+
+  const [isProtect, setIsProtect] = useState(false)
+
+  const router = useRouter()
+
+  useEffect(() => {
+    async function checkIsProtect() {
+      const path = router.asPath
+      if (path === "/signin") {
+        setIsProtect(false)
+      } else {
+        setIsProtect(true)
+      }
+    }
+    checkIsProtect()
+  }, [router])
 
   useEffect(() => {
     /** 사용자 정보 */
@@ -23,7 +40,9 @@ export default function ProtectedPage(props) {
     checkUser()
   }, [])
 
-  if (!user) {
+  if (!isProtect) {
+    return <>{props.children}</>
+  } else if (!user) {
     /** 로그인이 돼있지 않을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 p-4 flex justify-center items-center">
