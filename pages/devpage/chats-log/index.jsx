@@ -46,7 +46,7 @@ export default function ChatLogPage() {
               type="text"
               placeholder="채팅에 참여한 사용자 이름으로 채팅 검색"
               autoFocus
-              className="p-2 rounded-lg dark:bg-slate-800 w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2 dark:ring-offset-black	transition duration-200"
+              className="p-2 rounded-lg dark:bg-slate-800 dark:text-white w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2 dark:ring-offset-black	transition duration-200"
             />
             <button
               type="submit"
