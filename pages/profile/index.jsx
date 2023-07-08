@@ -1,7 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import {
+  Cog6ToothIcon,
+  FireIcon,
+  MoonIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
