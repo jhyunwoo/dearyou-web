@@ -6,7 +6,6 @@ import { PencilSquareIcon, CheckBadgeIcon } from "@heroicons/react/24/outline"
 import { HeartIcon } from "@heroicons/react/24/solid"
 import getUploadedTime from "@/lib/getUploadedTime"
 import { usePbAuth } from "@/contexts/AuthWrapper"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
@@ -26,7 +25,10 @@ export const getServerSideProps = async (context) => {
 export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("")
   const [userWish, setUserWish] = useState([])
-  const autonomy = pb.authStore?.model?.autonomy
+
+  const { user } = usePbAuth()
+
+  const autonomy = user?.autonomy
 
   const setModal = useSetRecoilState(modalState)
 
@@ -194,7 +196,7 @@ export default function ProductDetail({ productId }) {
   }
 
   return (
-    <ProtectedPage>
+    <Layout>
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (
@@ -292,14 +294,12 @@ export default function ProductDetail({ productId }) {
           )}
         </div>
       ) : (
-        <Layout>
-          <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
-            <div>정보가 없습니다.</div>
-          </div>
-        </Layout>
+        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+          <div>정보가 없습니다.</div>
+        </div>
       )}
 
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

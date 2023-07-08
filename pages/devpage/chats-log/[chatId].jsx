@@ -184,7 +184,7 @@ export default function ChatLog({ chatId }) {
   return (
     <ProtectAdmin>
       {userInfoPopup ? <UserInfoPopUp /> : ""}
-      <div className="bg-slate-50 min-h-screen">
+      <div className="bg-slate-50 min-h-screen w-screen">
         <div className="fixed top-0 right-0 left-0 p-2 bg-white shadow-md flex items-center justify-between">
           <Link href={"/devpage/chats-log"}>
             <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
@@ -222,7 +222,7 @@ export default function ChatLog({ chatId }) {
                   ? data?.expand?.receiver?.name
                   : data?.expand?.sender?.name}
               </div>
-              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
+              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                 {data?.message ? (
                   data.message
                 ) : (
@@ -256,7 +256,7 @@ export default function ChatLog({ chatId }) {
                     ? data?.expand?.receiver?.name
                     : data?.expand?.sender?.name}
                 </div>
-                <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
+                <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                   {data?.product ? (
                     <Link href={`/products/${data?.expand?.product?.id}`}>
                       <Image
