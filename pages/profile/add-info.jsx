@@ -1,12 +1,16 @@
-import { useForm, useWatch } from "react-hook-form";
-import pb from "@/lib/pocketbase";
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import pb from "@/lib/pocketbase"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function AddInfo() {
-  const [validStudentId, setValidStudentId] = useState(false);
+  const [validStudentId, setValidStudentId] = useState(false)
 
-  const router = useRouter();
+  const setModal = useSetRecoilState(modalState)
+
+  const router = useRouter()
 
   // React Hook Form 에서 기능 가져오기
   const {
@@ -15,25 +19,25 @@ export default function AddInfo() {
     watch,
     getValues,
     formState: { errors },
-  } = useForm();
+  } = useForm()
 
   /** 사용자가 입력한 이름과 학번을 사용자 계정에 업데이트 */
   async function onSubmit(data) {
     const userUpdate = {
       name: data.userName,
       studentId: data.studentId,
-    };
+    }
     if (validStudentId) {
       try {
-        await pb.collection("users").update(pb.authStore.model.id, userUpdate);
+        await pb.collection("users").update(pb.authStore.model.id, userUpdate)
         // 데이터 업데이트 완료 후 사용자를 메인 페이지로 이동
-        await router.replace("/profile");
-        router.reload();
+        await router.replace("/profile")
+        router.reload()
       } catch {
-        console.error("error");
+        console.error("error")
       }
     } else {
-      alert("학번을 확인해야 합니다.");
+      setModal("학번을 확인해야 합니다.")
     }
   }
 
@@ -42,21 +46,21 @@ export default function AddInfo() {
     if (watch("studentId")) {
       const records = await pb.collection("users").getFullList({
         filter: `studentId = ${getValues("studentId")}`,
-      });
+      })
 
       if (
         records.length > 0 &&
         records[0]?.studentId !== pb?.authStore?.model?.studentId
       ) {
-        alert("이미 등록된 학번입니다.");
+        setModal("이미 등록된 학번입니다.")
       } else if (Number(watch("studentId")) > 210101) {
-        alert("등록 가능한 학번입니다.");
-        setValidStudentId(true);
+        setModal("등록 가능한 학번입니다.")
+        setValidStudentId(true)
       } else {
-        alert("올바른 학번을 입력하세요.");
+        setModal("올바른 학번을 입력하세요.")
       }
     } else {
-      alert("학번을 입력하세요.");
+      setModal("학번을 입력하세요.")
     }
   }
 
@@ -108,5 +112,5 @@ export default function AddInfo() {
         </form>
       </div>
     </div>
-  );
+  )
 }

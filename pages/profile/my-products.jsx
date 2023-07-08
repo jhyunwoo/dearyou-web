@@ -1,25 +1,25 @@
-import ProtectedPage from "@/components/ProtectedPage";
-import pb from "@/lib/pocketbase";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import BottomBar from "@/components/BottomBar";
-import Layout from "@/components/Layout";
-import HeadBar from "@/components/HeadBar";
-import ProductGrid from "@/components/ProductGrid";
-import ProductCard from "@/components/ProductCard";
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import Layout from "@/components/Layout"
+import HeadBar from "@/components/HeadBar"
+import ProductGrid from "@/components/ProductGrid"
+import ProductCard from "@/components/ProductCard"
 
 export default function MyProducts() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([])
 
   useEffect(() => {
     async function getProducts() {
       const list = await pb
         .collection("users")
-        .getOne(pb.authStore.model?.id, { expand: "products(seller).seller" });
-      setProducts(list.expand["products(seller)"]);
+        .getOne(pb.authStore.model?.id, { expand: "products(seller).seller" })
+      setProducts(list.expand["products(seller)"])
     }
-    getProducts();
-  }, []);
+    getProducts()
+  }, [])
 
   return (
     <ProtectedPage>
@@ -46,5 +46,5 @@ export default function MyProducts() {
       <HeadBar title="내 물품" />
       <BottomBar />
     </ProtectedPage>
-  );
+  )
 }

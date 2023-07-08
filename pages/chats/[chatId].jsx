@@ -1,16 +1,17 @@
-import ProtectedPage from "@/components/ProtectedPage"
 import { useEffect, useState, useRef, useCallback } from "react"
-import pb from "@/lib/pocketbase"
+import Image from "next/image"
+import Link from "next/link"
+import { useInView } from "react-intersection-observer"
 import { useForm } from "react-hook-form"
+import pb from "@/lib/pocketbase"
+import TextareaAutosize from "react-textarea-autosize"
 import {
   ArrowLeftCircleIcon,
   ArrowPathIcon,
   ArrowUpIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline"
-import Image from "next/image"
-import { useInView } from "react-intersection-observer"
-import Link from "next/link"
+import ProtectedPage from "@/components/ProtectedPage"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -32,6 +33,8 @@ export default function Chat({ chatId }) {
   const [oldMessages, setOldMessages] = useState([])
   /** 과거 메세지를 불러올 때 더 불러올 메세지가 있는지 판단 */
   const [hasNextPage, setHasNextPage] = useState(true)
+  // update message after user sended message
+  const [updateMessages, setUpdateMessages] = useState(0)
   /** 사용자가 맨 위로 올렸는지 판단 */
   const [ref, inView] = useInView()
   /** React Hook Form 설정 */
@@ -61,6 +64,7 @@ export default function Chat({ chatId }) {
       messages: record.id,
     }
     const updateChat = await pb.collection("chats").update(chatId, update)
+    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** 사진 입력 후 사진 업로드 */
@@ -86,6 +90,7 @@ export default function Chat({ chatId }) {
     } catch (e) {
       console.log(e)
     }
+    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** message를 불러오는 함수 */
@@ -96,7 +101,7 @@ export default function Chat({ chatId }) {
         .getList(page.current, 20, {
           filter: `chat.id="${chatId}"`,
           sort: "-created",
-          expand: "sender, product",
+          expand: "sender, product,reviewProduct",
         })
       if (page.current === 1) {
         setMessages(messageList.items.reverse())
@@ -114,6 +119,15 @@ export default function Chat({ chatId }) {
   }, [])
 
   useEffect(() => {
+    async function readMessage() {
+      if (messages.length < 1) return
+      let lastMessage = messages.slice(-1)
+      if (lastMessage[0].receiver === pb.authStore.model.id) {
+        const readMessage = await pb
+          .collection("messages")
+          .update(lastMessage[0].id, { isRead: true })
+      }
+    }
     /** 채팅 정보 가져오기 */
     async function getChatInfo() {
       if (chatId) {
@@ -131,6 +145,7 @@ export default function Chat({ chatId }) {
             .collection("messages")
             .getOne(e?.record?.messages)
           setMessages((prev) => [...prev, newMessage])
+          readMessage()
         })
       }
     }
@@ -142,6 +157,23 @@ export default function Chat({ chatId }) {
     /** infinite scroll 후 보던 메세지로 이동 */
     infiniteRef?.current?.scrollIntoView()
   }, [oldMessages])
+
+  useEffect(() => {
+    async function updateMessages() {
+      try {
+        let messageList = await pb.collection("messages").getList(1, 20, {
+          filter: `chat.id="${chatId}"`,
+          sort: "-created",
+          expand: "sender, product,reviewProduct",
+        })
+
+        setMessages(messageList.items.reverse())
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    updateMessages()
+  }, [chatId, updateMessages])
 
   /** inView와 hasNextPage값이 참이면 추가 message 로드 */
   useEffect(() => {
@@ -192,7 +224,7 @@ export default function Chat({ chatId }) {
             <div className="text-sm p-2">더 이상 기록이 없습니다.</div>
           )}
         </div>
-        <div className="overflow-auto pb-14 flex flex-col space-y-2">
+        <div className="overflow-auto pb-16 flex flex-col space-y-2">
           {oldMessages?.map((data, key) => (
             <section
               key={key}
@@ -208,7 +240,7 @@ export default function Chat({ chatId }) {
                   ? pb.authStore.model.name
                   : data?.expand?.sender?.name}
               </div>
-              <div className="bg-white p-1 px-2 rounded-md">
+              <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
                 {data?.message ? (
                   data.message
                 ) : (
@@ -244,7 +276,7 @@ export default function Chat({ chatId }) {
                     ? pb.authStore.model.name
                     : data?.expand?.sender?.name}
                 </div>
-                <div className="bg-white p-1 px-2 rounded-md max-w-xs">
+                <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                   {data?.product ? (
                     pb.authStore.model.id === data?.sender ? (
                       <section>
@@ -259,6 +291,31 @@ export default function Chat({ chatId }) {
                       <Link href={`/products/${data?.expand?.product?.id}`}>
                         <Image
                           src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </Link>
+                    )
+                  ) : (
+                    ""
+                  )}
+                  {data.reviewProduct ? (
+                    pb.authStore.model.id === data?.sender ? (
+                      <section>
+                        <Image
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.reviewProduct?.id}/${data?.expand?.reviewProduct?.photos[0]}`}
+                          width={300}
+                          height={300}
+                          alt={"photo"}
+                        />
+                      </section>
+                    ) : (
+                      <Link
+                        href={`/products/buyer-review/${data?.expand?.reviewProduct?.id}?sellerId=${data.sender}`}
+                      >
+                        <Image
+                          src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.reviewProduct?.id}/${data?.expand?.reviewProduct?.photos[0]}`}
                           width={300}
                           height={300}
                           alt={"photo"}
@@ -293,11 +350,11 @@ export default function Chat({ chatId }) {
         </div>
         <div ref={messageEndRef}></div>
         <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 ">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex items-end">
             <label
               htmlFor="input-file"
               onChange={onLoadImage}
-              className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl   p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
+              className="bg-white ring-2  hover:bg-amber-400 text-amber-500 hover:text-white transition duration-200 ring-amber-400 rounded-xl p-1 font-semibold flex justify-center items-center w-10 h-10 mx-1"
             >
               <PhotoIcon className="w-6 h-6" />
               <input
@@ -307,8 +364,8 @@ export default function Chat({ chatId }) {
                 accept="image/jpg, image/png, image/jpeg, image/webp, image/heic, image/heic-sequence, image/heif-sequence image/heif"
               />
             </label>
-            <input
-              className="basis-10/12 outline-none p-2 rounded-lg"
+            <TextareaAutosize
+              className="flex-auto outline-none p-2 rounded-lg mx-1 break-all"
               {...register("text", {
                 required: {
                   value: true,
@@ -317,10 +374,10 @@ export default function Chat({ chatId }) {
               })}
             />
             <button
-              className="mx-auto w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
+              className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
               type="submit"
             >
-              <ArrowUpIcon className="w-4 h-4" />
+              <ArrowUpIcon className="w-6 h-6" />
             </button>
           </form>
         </div>

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react"
-import pb from "@/lib/pocketbase"
+import { useRouter } from "next/router"
 import Link from "next/link"
+import pb from "@/lib/pocketbase"
 import { PencilSquareIcon, CheckBadgeIcon } from "@heroicons/react/24/outline"
 import { HeartIcon } from "@heroicons/react/24/solid"
-import { useRouter } from "next/router"
 import getUploadedTime from "@/lib/getUploadedTime"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -25,6 +27,8 @@ export default function ProductDetail({ productId }) {
   const [productInfo, setProductInfo] = useState("")
   const [userWish, setUserWish] = useState([])
   const autonomy = pb.authStore?.model?.autonomy
+
+  const setModal = useSetRecoilState(modalState)
 
   const router = useRouter()
 
@@ -133,7 +137,7 @@ export default function ProductDetail({ productId }) {
       newInfo.confirmedBy = currentUser.id
 
       await pb.collection("products").update(productInfo.id, newInfo)
-      alert("물품을 숨겼습니다.")
+      setModal("물품을 숨겼습니다.")
       router.replace("/")
     }
   }
@@ -179,10 +183,10 @@ export default function ProductDetail({ productId }) {
     return (
       <div className="w-full text-white font-bold flex justify-center items-center">
         <button
-          className={`flex p-2 px-6 rounded-full ${"bg-red-400 hover:bg-red-500 transition duration-200"}`}
+          className={`flex items-center justify-center mt-4 ${" text-red-500 hover:text-red-600 transition duration-200"}`}
           onClick={onProductHide}
         >
-          <CheckBadgeIcon className="w-6 h-6 mr-2" />
+          <CheckBadgeIcon className="w-6 h-6 mr-1" />
           물품 숨기기
         </button>
       </div>

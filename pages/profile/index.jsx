@@ -1,19 +1,16 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import { usePbAuth } from "@/contexts/AuthWrapper";
-import pb from "@/lib/pocketbase";
-import { CheckBadgeIcon, Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import FloattingBar from "@/components/FloattingBar";
+import Image from "next/image"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import { usePbAuth } from "@/contexts/AuthWrapper"
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function Profile() {
   const { user, signOut } = usePbAuth()
 
-  // 개발자 권한 (로그 열람 권한)
-  const permission = pb.authStore.model?.logPermission
   return (
     <ProtectedPage allowBanned={true}>
       <Layout>
@@ -99,7 +96,7 @@ export default function Profile() {
           >
             드려유 고객센터
           </Link>
-          {permission ? (
+          {user?.admin ? (
             <Link
               href={"/devpage"}
               className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"

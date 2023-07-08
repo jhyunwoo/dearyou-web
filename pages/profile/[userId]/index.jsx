@@ -1,38 +1,38 @@
-import BottomBar from "@/components/BottomBar";
-import HeadBar from "@/components/HeadBar";
-import Layout from "@/components/Layout";
-import ProductCard from "@/components/ProductCard";
-import ProductGrid from "@/components/ProductGrid";
-import ProtectedPage from "@/components/ProtectedPage";
-import pb from "@/lib/pocketbase";
-import { CheckBadgeIcon, Cog6ToothIcon, FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import BottomBar from "@/components/BottomBar"
+import HeadBar from "@/components/HeadBar"
+import Layout from "@/components/Layout"
+import ProductCard from "@/components/ProductCard"
+import ProductGrid from "@/components/ProductGrid"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useRouter } from "next/router"
+import Image from "next/image"
+import Link from "next/link"
+import pb from "@/lib/pocketbase"
+import { useInView } from "react-intersection-observer"
+import { FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function Profile() {
-  const router = useRouter();
+  const router = useRouter()
 
   // profile 보일 user
-  const userId = router.query["userId"];
-  const [user, setUser] = useState(null);
+  const userId = router.query["userId"]
+  const [user, setUser] = useState(null)
 
   async function getUserRecord() {
-    const record = await pb.collection("users")?.getOne(userId);
-    setUser(record);
+    const record = await pb.collection("users")?.getOne(userId)
+    setUser(record)
   }
   useEffect(() => {
-    if (!router.isReady) return;
-    getUserRecord();
-  }, [router.isReady]);
+    if (!router.isReady) return
+    getUserRecord()
+  }, [router.isReady])
 
   // user가 등록한 물품 조회
-  const [products, setProducts] = useState([]);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const page = useRef(1);
-  const [ref, inView] = useInView();
+  const [products, setProducts] = useState([])
+  const [hasNextPage, setHasNextPage] = useState(true)
+  const page = useRef(1)
+  const [ref, inView] = useInView()
 
   const fetch = useCallback(async () => {
     try {
@@ -40,19 +40,19 @@ export default function Profile() {
         expand: "seller",
         sort: "-created",
         filter: `isConfirmed=True&&seller.id="${userId}"`,
-      });
-      setProducts((prevPosts) => [...prevPosts, ...data.items]);
-      setHasNextPage(data.items.length === 40);
+      })
+      setProducts((prevPosts) => [...prevPosts, ...data.items])
+      setHasNextPage(data.items.length === 40)
       if (data.items.length) {
-        page.current += 1;
+        page.current += 1
       }
     } catch (err) {}
-  }, []);
+  }, [])
   useEffect(() => {
     if (inView && hasNextPage) {
-      fetch();
+      fetch()
     }
-  }, [fetch, hasNextPage, inView]);
+  }, [fetch, hasNextPage, inView])
 
   return (
     <ProtectedPage>
@@ -119,5 +119,5 @@ export default function Profile() {
       <BottomBar />
       <HeadBar title="프로필" />
     </ProtectedPage>
-  );
+  )
 }

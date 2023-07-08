@@ -1,32 +1,29 @@
-import Layout from "@/components/Layout";
-import ProtectedPage from "@/components/ProtectedPage";
-import HeadBar from "@/components/HeadBar";
-import BottomBar from "@/components/BottomBar";
-import { useEffect, useState } from "react";
-import pb from "@/lib/pocketbase";
+import { useEffect, useState } from "react"
+import pb from "@/lib/pocketbase"
+import Layout from "@/components/Layout"
+import ProtectedPage from "@/components/ProtectedPage"
+import HeadBar from "@/components/HeadBar"
+import BottomBar from "@/components/BottomBar"
 
 export default function MyReviews() {
-  const [reviewsTo, setReviewsTo] = useState([]);
-  const [reviewsFrom, setReviewsFrom] = useState([]);
-  const [isLoading, setIsLoading] = useState([]);
+  const [reviewsTo, setReviewsTo] = useState([])
+  const [reviewsFrom, setReviewsFrom] = useState([])
 
   useEffect(() => {
     async function getMyReviews() {
-      setIsLoading(true);
       let reviews = await pb.collection("reviews").getFullList({
         filter: `to.id="${pb.authStore.model?.id}"`,
         expand: "from",
-      });
-      setReviewsFrom(reviews);
+      })
+      setReviewsFrom(reviews)
       reviews = await pb.collection("reviews").getFullList({
         filter: `from.id="${pb.authStore.model?.id}"`,
         expand: "to",
-      });
-      setReviewsTo(reviews);
-      setIsLoading(false);
+      })
+      setReviewsTo(reviews)
     }
-    getMyReviews();
-  }, []);
+    getMyReviews()
+  }, [])
 
   return (
     <ProtectedPage>
@@ -50,7 +47,7 @@ export default function MyReviews() {
             </div>
           ))}
         </div>
-        <div className="mt-4 w-full grid grid-cols-1 gap-2">
+        <div className="mt-4 w-full grid grid-cols-1 gap-2 pb-8">
           <div className="text-lg">내가 남긴 후기</div>
           {reviewsTo.map((data, key) => (
             <div
@@ -73,5 +70,5 @@ export default function MyReviews() {
       <HeadBar title="내 나눔 후기" />
       <BottomBar />
     </ProtectedPage>
-  );
+  )
 }

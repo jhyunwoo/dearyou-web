@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import pb from "@/lib/pocketbase";
-import ProtectedPage from "@/components/ProtectedPage";
-import BottomBar from "@/components/BottomBar";
-import { CheckBadgeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import ProductGrid from "@/components/ProductGrid";
-import ProductCard from "@/components/ProductCard";
-import AutonomyPage from "@/components/AutonomyPage";
-import Loading from "@/components/Loading";
-import { useInView } from "react-intersection-observer";
+import { useCallback, useEffect, useState } from "react"
+import pb from "@/lib/pocketbase"
+import ProtectedPage from "@/components/ProtectedPage"
+import BottomBar from "@/components/BottomBar"
+import { CheckBadgeIcon } from "@heroicons/react/24/outline"
+import ProductGrid from "@/components/ProductGrid"
+import ProductCard from "@/components/ProductCard"
+import AutonomyPage from "@/components/AutonomyPage"
+import Loading from "@/components/Loading"
 
 export default function Autonomy() {
   const [products, setProducts] = useState([]);
@@ -34,7 +33,9 @@ export default function Autonomy() {
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      fetch(hideRejected);
+      setIsLoading(true)
+      await fetch(hideRejected);
+      setIsLoading(false)
     }
   }, [fetch, hasNextPage, inView]);
 
@@ -93,5 +94,5 @@ export default function Autonomy() {
         <BottomBar />
       </AutonomyPage>
     </ProtectedPage>
-  );
+  )
 }

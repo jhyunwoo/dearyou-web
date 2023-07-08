@@ -1,16 +1,20 @@
 import { useState, useRef } from "react"
-import pb from "@/lib/pocketbase"
-import Image from "next/image"
 import { useRouter } from "next/router"
+import Image from "next/image"
+import pb from "@/lib/pocketbase"
 import ProtectedPage from "@/components/ProtectedPage"
 import Loading from "@/components/Loading"
 import ProductInfoForm from "@/components/ProductInfoForm"
 import BottomBar from "@/components/BottomBar"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function CreateProduct() {
   const imgRef = useRef()
   const [showImages, setShowImages] = useState([])
   const [refImages, setRefImages] = useState([])
+
+  const setModal = useSetRecoilState(modalState)
 
   const router = useRouter()
 
@@ -24,7 +28,7 @@ export default function CreateProduct() {
     let imageUrlLists = [...showImages]
 
     if (showImages.length + imageLists.length > 10) {
-      alert("이미지는 최대 10개까지 업로드할 수 있습니다!")
+      setModal("이미지는 최대 10개까지 업로드할 수 있습니다!")
       return
     }
 
@@ -45,7 +49,7 @@ export default function CreateProduct() {
 
   async function onSubmit(data) {
     if (showImages.length < 1) {
-      alert("이미지를 업로드해주세요")
+      setModal("이미지를 업로드해주세요")
       return
     } else {
       setIsLoading(true)
@@ -64,7 +68,7 @@ export default function CreateProduct() {
           .create(formData, { $autoCancel: true })
       } catch {}
 
-      alert(
+      setModal(
         "물건이 등록되었습니다. 자율위원의 승인을 받으면 다른 사용자에게 물건이 보입니다.",
       )
       await router.replace("/")

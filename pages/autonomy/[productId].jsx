@@ -3,17 +3,19 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
-import getUploadedTime from "@/lib/getUploadedTime"
-import { usePbAuth } from "@/contexts/AuthWrapper"
 import {
   CheckIcon,
   PencilSquareIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline"
+import getUploadedTime from "@/lib/getUploadedTime"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 // productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
@@ -38,6 +40,7 @@ const rejectOptions = [
 export default function ProductDetail({ productId }) {
   const router = useRouter()
   const { register, handleSubmit } = useForm()
+  const setModal = useSetRecoilState(modalState)
 
   // 물품 정보 저장
   const [productInfo, setProductInfo] = useState("")
@@ -55,7 +58,7 @@ export default function ProductDetail({ productId }) {
     newInfo.rejectedReason = null
 
     await pb.collection("products").update(productInfo.id, newInfo)
-    alert(`승인되었습니다.`)
+    setModal(`승인되었습니다.`)
 
     router.push("/autonomy")
   }
@@ -63,7 +66,7 @@ export default function ProductDetail({ productId }) {
   //거절 버튼
   async function handleReject(data) {
     if (data.type === "* 반려 사유를 선택하세요 *") {
-      alert("반려 사유를 아래 목록에서 선택해 주세요!")
+      setModal("반려 사유를 아래 목록에서 선택해 주세요!")
       return
     }
     let newInfo = productInfo
@@ -73,10 +76,10 @@ export default function ProductDetail({ productId }) {
     try {
       await pb.collection("products").update(productInfo.id, newInfo)
     } catch (e) {
-      alert("반려 처리 오류")
+      setModal("반려 처리 오류")
       console.log(e)
     }
-    alert(`반려 처리되었습니다. 사유: "${data.type}"`)
+    setModal(`반려 처리되었습니다. 사유: "${data.type}"`)
 
     await router.push("/autonomy")
   }

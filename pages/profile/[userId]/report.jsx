@@ -1,22 +1,22 @@
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import pb from "@/lib/pocketbase"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProtectedPage from "@/components/ProtectedPage"
-import { usePbAuth } from "@/contexts/AuthWrapper"
-import pb from "@/lib/pocketbase"
-import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useSetRecoilState } from "recoil"
+import { modalState } from "@/lib/recoil"
 
 export default function Report() {
   const currentUser = usePbAuth().user
   const router = useRouter()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
+  const setModal = useSetRecoilState(modalState)
+
+  const { register, handleSubmit } = useForm()
 
   // profile 보일 user
   const userId = router.query["userId"]
@@ -33,7 +33,7 @@ export default function Report() {
 
   async function handleReport(data) {
     if (data.reason === reportOptions[0]) {
-      alert("신고 사유를 선택하세요.")
+      setModal("신고 사유를 선택하세요.")
       return
     }
 
@@ -45,7 +45,7 @@ export default function Report() {
         const time_elapsed = (new Date() - new Date(records[i].created)) / 1000
 
         if (time_elapsed <= 7200) {
-          alert("최근에 이 사용자를 이미 신고했습니다.")
+          setModal("최근에 이 사용자를 이미 신고했습니다.")
           return
         }
       }
@@ -60,7 +60,7 @@ export default function Report() {
     }
 
     await pb.collection("reports").create(newRecord)
-    alert("신고가 접수되었습니다.")
+    setModal("신고가 접수되었습니다.")
     router.push(`/profile/${userId}`)
   }
 

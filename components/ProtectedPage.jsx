@@ -1,21 +1,23 @@
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useEffect, useState } from "react"
 import pb from "@/lib/pocketbase"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
 export default function ProtectedPage(props) {
-  const [user, setUser] = useState(null)
+  const [userInfo, setUserInfo] = useState(null)
+  const { user } = usePbAuth()
 
   useEffect(() => {
     /** 사용자 정보 */
     async function checkUser() {
       if (pb?.authStore?.model?.id) {
-        const userInfo = await pb
+        const userData = await pb
           .collection("users")
           .getOne(pb.authStore.model.id)
-        setUser(userInfo)
+        setUserInfo(userData)
       }
     }
     checkUser()
@@ -42,24 +44,25 @@ export default function ProtectedPage(props) {
         </div>
       </div>
     )
-  } else if (user?.isBanned && !props.allowBanned) {
+  } else if (userInfo && userInfo?.isBanned) {
     return (
-      <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
-        <div className="p-2 m-4 text-center">
-          <Image
-            className="mx-auto my-4"
-            src="/favicon.png"
-            width={100}
-            height={100}
-            alt="logo"
-          />
-          <div className="text-lg">계정이 정지되었습니다.</div>
-          <div className="mb-2">관리자에게 문의 바랍니다.</div>
-          <Link href="/profile" className="text-slate-500">로그아웃</Link>
+      <div className="w-full min-h-screen flex justify-center items-center bg-black p-12 fixed top-0 bottom-0 right-0 left-0">
+        <div className="bg-white p-4 rounded-xl flex flex-col items-center">
+          <div className="text-2xl font-bold p-4">자율위원회</div>
+          <div>비정상적 활동으로 계정이 정지 조치 되었습니다.</div>
+          <Link
+            href={"https://open.kakao.com/o/sGLY1utf"}
+            className="p-2 px-4 rounded-lg bg-orange-500 text-white mt-4 w-full text-center font-semibold"
+          >
+            문의하기
+          </Link>
         </div>
       </div>
     )
-  } else if (user?.studentId === 0 || user?.studentId == null) {
+  } else if (
+    userInfo &&
+    (userInfo?.studentId === 0 || userInfo?.studentId == null)
+  ) {
     /** 학번 정보가 없을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">

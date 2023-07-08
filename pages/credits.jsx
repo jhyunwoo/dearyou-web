@@ -1,20 +1,22 @@
-import BottomBar from "@/components/BottomBar"
-import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
-import { XMarkIcon } from "@heroicons/react/24/outline"
 import Image from "next/image"
+import Link from "next/link"
+import Layout from "@/components/Layout"
+import { XMarkIcon } from "@heroicons/react/24/outline"
+import BottomBar from "@/components/BottomBar"
+import ProtectedPage from "@/components/ProtectedPage"
 
 export default function Profile() {
   return (
     <div>
       <Layout>
         <div className="mx-auto text-center">
-          <div className="min-h-screen">
+          <div className="">
             <Image
               src={"/favicon.png"}
               width={64}
               height={64}
               className="mt-10 rounded-2xl mx-auto"
+              alt="beatus logo"
             />
             <div className="mt-2 text-xl">드려유 (DearYou)</div>
             <div className="mt-2 text-3xl font-bold">만든 사람들</div>
@@ -55,14 +57,16 @@ export default function Profile() {
 
           <div className="w-full my-8 border-2 rounded-full border-slate-100" />
           <div className="text-xl my-2 font-bold">기획팀</div>
-          <div>김형진</div>
+          <div className="font-semibold">김형진</div>
           <div>정윤승</div>
           <div>허준영</div>
 
           <div className="w-full my-8 border-2 rounded-full border-slate-100" />
           <div className="text-xl my-2 font-bold">개발팀</div>
-          <div>전현우</div>
-          <div>김연준</div>
+          <Link href={"https://jhyunwoo.com"} className="font-semibold">
+            전현우
+          </Link>
+          <div className="font-semibold">김연준</div>
           <div>윤기완</div>
           <div>홍준혁</div>
           <div>변상빈</div>
@@ -87,6 +91,8 @@ export default function Profile() {
           <div className="text-xl my-2 font-bold">자율부위원장</div>
           <div>최진우</div>
           <div>이준희</div>
+          <div className="w-full my-8 border-2 rounded-full border-slate-100" />
+          <div className="text-lg my-2 font-semibold">자율위원단 36명</div>
 
           <div className="w-full my-8 border-2 rounded-full border-slate-100" />
         </div>
