@@ -204,10 +204,14 @@ export default function Chat({ chatId }) {
           <Link href={"/chats"}>
             <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
           </Link>
-          <Link href={`/profile/${pb?.authStore?.model?.id === chatInfo?.user1
-              ? chatInfo?.user2
-              : chatInfo?.user1}`}
-            className="text-lg ml-2 font-bold dark:text-white">
+          <Link
+            href={`/profile/${
+              pb?.authStore?.model?.id === chatInfo?.user1
+                ? chatInfo?.user2
+                : chatInfo?.user1
+            }`}
+            className="text-lg ml-2 font-bold dark:text-white"
+          >
             {pb?.authStore?.model?.id === chatInfo?.user1
               ? chatInfo?.expand?.user2?.name
               : chatInfo?.expand?.user1?.name}
@@ -351,7 +355,7 @@ export default function Chat({ chatId }) {
           ))}
         </div>
         <div ref={messageEndRef}></div>
-        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 ">
+        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 dark:bg-gray-800">
           <form onSubmit={handleSubmit(onSubmit)} className="flex items-end">
             <label
               htmlFor="input-file"
@@ -376,7 +380,9 @@ export default function Chat({ chatId }) {
               })}
             />
             <button
-              onClick={()=>{ setFocus("text") }}
+              onClick={() => {
+                setFocus("text")
+              }}
               className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
               type="submit"
             >
