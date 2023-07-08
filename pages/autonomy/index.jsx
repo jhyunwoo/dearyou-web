@@ -24,7 +24,7 @@ export default function Autonomy() {
     try {
       const data = await pb.collection("products").getList(page.current, 40, {
         expand: "seller",
-        sort: "-created",
+        sort: "-updated",
         filter: `isConfirmed=False${hide ? ` && rejectedReason=""` : ""}`,
       })
       setProducts((prevPosts) => [...prevPosts, ...data.items])

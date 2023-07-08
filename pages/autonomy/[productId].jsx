@@ -35,6 +35,7 @@ const rejectOptions = [
   "올라온 사진만으로 물건의 상태를 확인하기 어려워요.",
   "물건의 종류가 잘못 설정되었어요.",
   "학교에서 거래되기에 부적절한 물건이에요.",
+  "금전 거래를 암시하는 내용이 있어요.",
 ]
 
 export default function ProductDetail({ productId }) {
