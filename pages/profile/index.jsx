@@ -115,6 +115,7 @@ export default function Profile() {
         </Link>
       <HeadBar title="프로필" />
       <BottomBar />
+
     </Layout>
   )
 }
