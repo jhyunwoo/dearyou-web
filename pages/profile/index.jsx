@@ -43,7 +43,7 @@ export default function Profile() {
         </div>
 
         <div className="mt-4">
-          <div className="flex items-center text-xl font-bold dark:text-white">
+          <div className="flex items-center text-xl font-bold dark:text-white ">
             {user?.name}
             {user?.admin ? (
               <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600" />
