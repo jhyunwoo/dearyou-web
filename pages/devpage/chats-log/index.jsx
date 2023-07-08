@@ -124,7 +124,6 @@ export default function ChatLogPage() {
   return (
     <ProtectedPage>
       <ProtectAdmin>
-        <BottomBar />
         <div className="w-full bg-slate-50 p-3  flex items-center justify-start fixed top-0 right-0 left-0">
           <Link href={"/devpage"}>
             <ArrowLeftCircleIcon className="w-8 h-8" />
@@ -143,6 +142,7 @@ export default function ChatLogPage() {
           <SearchBar />
           <ItemList data={searched} />
         </Layout>
+        <BottomBar />
       </ProtectAdmin>
     </ProtectedPage>
   )
