@@ -226,6 +226,11 @@ export default function ProductDetail({ productId }) {
                     <div className="text-lg font-bold text-center dark:text-white">
                       물건 검토
                     </div>
+                    <div className="text-center text-slate-500 mt-2">
+                    <Link href='/autonomy/guideline'>
+                      검토 기준 보기
+                    </Link>
+                    </div>
                     <button
                       className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
                       onClick={handleConfirm}
