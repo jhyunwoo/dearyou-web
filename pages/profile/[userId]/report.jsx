@@ -6,7 +6,6 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 
@@ -71,40 +70,35 @@ export default function Report() {
     "비매너 채팅",
   ]
   return (
-    <ProtectedPage>
-      <Layout>
-        <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50/50">
-          <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white">
-            <div className="text-lg font-bold text-center">
-              {user?.name}님을 신고합니까?
-            </div>
-            <form
-              onSubmit={handleSubmit(handleReport)}
-              className="flex flex-col"
-            >
-              <button
-                className="bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
-                type="submit"
-              >
-                신고
-              </button>
-              <div className="text-lg font-semibold mt-4">신고 사유</div>
-              <select
-                {...register("reason", { required: true })}
-                className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
-              >
-                {reportOptions.map((item, key) => (
-                  <option key={key} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </form>
-          </div>
-        </div>
-      </Layout>
+    <Layout>
       <BottomBar />
       <HeadBar title="프로필" />
-    </ProtectedPage>
+      <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">
+        <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900">
+          <div className="text-lg font-bold text-center">
+            {user?.name}님을 신고합니까?
+          </div>
+          <form onSubmit={handleSubmit(handleReport)} className="flex flex-col">
+            <button
+              className="bg-red-400 hover:bg-red-500 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
+              type="submit"
+            >
+              신고
+            </button>
+            <div className="text-lg font-semibold mt-4">신고 사유</div>
+            <select
+              {...register("reason", { required: true })}
+              className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
+            >
+              {reportOptions.map((item, key) => (
+                <option key={key} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </form>
+        </div>
+      </div>
+    </Layout>
   )
 }

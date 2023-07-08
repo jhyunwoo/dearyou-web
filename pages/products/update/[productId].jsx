@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import pb from "@/lib/pocketbase"
 import { usePbAuth } from "@/contexts/AuthWrapper"
-import ProtectedPage from "@/components/ProtectedPage"
 import ProductImageView from "@/components/ProductImageView"
 import ProductInfoForm from "@/components/ProductInfoForm"
 import Loading from "@/components/Loading"
@@ -86,7 +85,7 @@ export default function UpdateProduct({ productId }) {
 
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
-      <ProtectedPage>
+      <>
         <BottomBar />
         {isLoading ? <Loading /> : ""}
         <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
@@ -98,7 +97,7 @@ export default function UpdateProduct({ productId }) {
                 productId={productId}
               />
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-lg sm:w-1/2">
+            <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-lg sm:w-1/2">
               {!productInfo.soldDate ? (
                 <div>
                   <ProductInfoForm
@@ -106,7 +105,7 @@ export default function UpdateProduct({ productId }) {
                     onSubmit={onSubmit}
                   />
                   <button
-                    className="w-full bg-red-400 hover:bg-red-500 transition duration-200  text-white p-2 px-6 rounded-full text-base font-semibold mt-4"
+                    className="w-full bg-red-400 hover:bg-red-500 transition duration-200  text-white dark:text-black p-2 px-6 rounded-full text-base font-semibold mt-4"
                     onClick={onDeleteProduct}
                   >
                     물품 삭제
@@ -120,7 +119,7 @@ export default function UpdateProduct({ productId }) {
             </div>
           </div>
         ) : null}
-      </ProtectedPage>
+      </>
     )
   } else {
     return (

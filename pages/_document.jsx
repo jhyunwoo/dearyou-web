@@ -252,7 +252,7 @@ export default function Document() {
         />
       </Head>
 
-      <body className={`scrollbar-hide`}>
+      <body className={`scrollbar-hide bg-slate-50 dark:bg-black`}>
         <Main />
         <NextScript />
 

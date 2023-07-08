@@ -65,15 +65,15 @@ export default function AddInfo() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-4 flex flex-col sm:justify-center sm:items-center">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex flex-col sm:justify-center sm:items-center dark:text-white">
       <div className="text-xl p-4 font-bold sm:fixed sm:top-0 sm:right-0 sm:left-0">
         사용자 정보 변경
       </div>
-      <div className="my-4 bg-white p-4 rounded-xl shadow-lg">
+      <div className="my-4 bg-white dark:bg-gray-900 p-4 rounded-xl shadow-lg">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
           <div className="text-lg font-semibold">이름</div>
           <input
-            className="my-2 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
+            className="my-2 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200 dark:bg-gray-800 dark:ring-offset-black"
             {...register("userName", {
               required: true,
               minLength: { value: 2, message: "올바른 이름을 입력해주세요" },
@@ -85,7 +85,7 @@ export default function AddInfo() {
           <div className="text-lg font-semibold">학번 (6자리)</div>
           <div className="flex justify-between">
             <input
-              className="my-2 w-2/3 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200"
+              className="my-2 w-2/3 p-2 rounded-lg outline-none ring-2 ring-amber-300 focus:ring-offset-1 transition duration-200 dark:bg-gray-800 dark:ring-offset-black"
               {...register("studentId", {
                 required: true,
                 min: { value: 200101, message: "올바른 학번을 입력해주세요" },
@@ -94,7 +94,7 @@ export default function AddInfo() {
               defaultValue={pb?.authStore?.model?.studentId}
             />
             <button
-              className="bg-amber-500 w-1/4 text-white p-2 m-2  rounded-full hover:bg-amber-600 transition duration-200"
+              className="bg-amber-500 w-1/4 text-white dark:text-black p-2 m-2  rounded-full hover:bg-amber-600 transition duration-200"
               type="button"
               onClick={checkStudentId}
             >
@@ -104,7 +104,7 @@ export default function AddInfo() {
           {errors.studentId && <span>{errors.studentId.message}</span>}
 
           <button
-            className="bg-amber-400 mt-12 text-lg font-bold text-white p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
+            className="bg-amber-400 mt-12 text-lg font-bold text-white dark:text-black p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
             type="submit"
           >
             확인

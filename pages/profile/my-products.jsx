@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
@@ -22,29 +21,27 @@ export default function MyProducts() {
   }, [])
 
   return (
-    <ProtectedPage>
-      <Layout>
-        <ProductGrid>
-          {products?.length === 0 ? (
-            <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">
-              <div className="font-semibold">아직 등록한 물품이 없습니다.</div>
-              <Link
-                href={"/products/create-product"}
-                className="bg-orange-400 p-2 px-4 rounded-full text-white font-semibold mt-4 hover:bg-orange-500 transition duration-200"
-              >
-                물품 등록
-              </Link>
-            </div>
-          ) : (
-            ""
-          )}
-          {products?.map((data, key) => (
-            <ProductCard data={data} key={key} />
-          ))}
-        </ProductGrid>
-      </Layout>
-      <HeadBar title="내 물품" />
+    <Layout>
+      <ProductGrid>
+        {products?.length === 0 ? (
+          <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">
+            <div className="font-semibold">아직 등록한 물품이 없습니다.</div>
+            <Link
+              href={"/products/create-product"}
+              className="bg-orange-400 p-2 px-4 rounded-full text-white dark:text-black font-semibold mt-4 hover:bg-orange-500 transition duration-200"
+            >
+              물품 등록
+            </Link>
+          </div>
+        ) : (
+          ""
+        )}
+        {products?.map((data, key) => (
+          <ProductCard data={data} key={key} />
+        ))}
+      </ProductGrid>
       <BottomBar />
-    </ProtectedPage>
+      <HeadBar title="내 물품" />
+    </Layout>
   )
 }

@@ -4,7 +4,6 @@ import pb from "@/lib/pocketbase"
 import { useForm } from "react-hook-form"
 import { StarIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import { useSetRecoilState } from "recoil"
@@ -66,13 +65,13 @@ export default function MyReviews() {
   }
 
   return (
-    <ProtectedPage>
+    <Layout>
       {sellerId === pb.authStore.model?.id ? (
-        <Layout>이미 후기를 남기셨습니다.</Layout>
+        <div className="dark:text-white">이미 후기를 남기셨습니다.</div>
       ) : (
-        <Layout>
+        <>
           <div>
-            <div className="text-lg font-semibold my-2">
+            <div className="text-lg font-semibold my-2 dark:text-white">
               거래한 사람: {seller?.name}
             </div>
           </div>
@@ -80,7 +79,9 @@ export default function MyReviews() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col mt-4"
           >
-            <div className="text-lg font-semibold my-2">거래 만족도</div>
+            <div className="text-lg font-semibold my-2 dark:text-white">
+              거래 만족도
+            </div>
             <div className="flex w-full justify-around space-x-1">
               <Star idx={1} />
               <Star idx={2} />
@@ -88,26 +89,29 @@ export default function MyReviews() {
               <Star idx={4} />
               <Star idx={5} />
             </div>
-            <div className="mt-4 text-lg font-semibold my-2">후기</div>
+            <div className="mt-4 text-lg font-semibold my-2 dark:text-white">
+              후기
+            </div>
             <textarea
-              className="p-2 px-4 h-48 rounded-lg outline-none w-full"
+              className="p-2 px-4 h-48 rounded-lg outline-none w-full dark:bg-gray-800 dark:text-white"
               {...register("review", {
                 required: { value: true, message: "후기를 입력해주세요." },
               })}
             />
-            {errors.review && <div>{errors.review.message}</div>}
+            {errors.review && (
+              <div className="dark:text-white">{errors.review.message}</div>
+            )}
             <button
               type="submit"
-              className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white font-semibold mt-4 text-lg"
+              className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white dark:text-black font-semibold mt-4 text-lg"
             >
               제출
             </button>
           </form>
-        <div className="w-full h-16 sm:h-0"></div>
-        </Layout>
+        </>
       )}
       <HeadBar title="나눔 후기 남기기" />
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

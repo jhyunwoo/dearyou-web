@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import pb from "@/lib/pocketbase"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import { CheckBadgeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
 import ProductGrid from "@/components/ProductGrid"
@@ -48,7 +47,6 @@ export default function Autonomy() {
   }, [hideRejected]);
 
   return (
-    <ProtectedPage>
       <AutonomyPage>
         {isLoading ? <Loading /> : ""}
         <div
@@ -98,6 +96,5 @@ export default function Autonomy() {
         <div className="w-full h-8"></div>
         <BottomBar />
       </AutonomyPage>
-    </ProtectedPage>
   )
 }

@@ -6,15 +6,13 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
 
 export default function Profile() {
   const { user, signOut } = usePbAuth()
 
   return (
-    <ProtectedPage>
       <Layout>
-        <div className="bg-white w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
+        <div className="bg-white dark:bg-gray-900 w-full p-4 flex flex-col hover:shadow-lg transidion duration-200">
           <div className="flex">
             {pb?.authStore?.model?.avatar ? (
               <Image
@@ -28,9 +26,9 @@ export default function Profile() {
               <div className="w-24 h-24 bg-slate-400 rounded-full"></div>
             )}
             <div className="ml-auto text-center">
-              <div className="relative w-28 font-bold">
+              <div className="relative w-28 font-bold dark:text-white">
                 품격 온도
-                <FireIcon className="mx-auto w-20 h-20 stroke-amber-200" />
+                <FireIcon className="mx-auto w-20 h-20 stroke-amber-200 dark:stroke-amber-800"/>
                 <div className="absolute w-full bottom-3">
                   <div className="mx-auto text-4xl font-bold text-amber-500">
                     {pb?.authStore?.model?.dignity}ºC
@@ -41,7 +39,7 @@ export default function Profile() {
           </div>
 
           <div className="mt-4">
-            <div className="flex items-center text-xl font-bold">
+            <div className="flex items-center text-xl font-bold dark:text-white">
               {pb.authStore.model?.name}
               {pb.authStore.model?.logPermission ? 
                 <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
@@ -49,12 +47,12 @@ export default function Profile() {
                 <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
               }
             </div>
-            <div>{pb.authStore.model?.studentId}</div>
-            <div>{pb.authStore.model?.email}</div>
+            <div className="dark:text-white">{pb.authStore.model?.studentId}</div>
+            <div className="dark:text-white">{pb.authStore.model?.email}</div>
 
             <div className=" flex flex-col my-4 justify-center items-center">
               <button
-                className="bg-red-500 hover:bg-red-600 transition duration-200 text-white p-1 px-4 rounded-full mb-2"
+                className="bg-red-500 dark:text-white hover:bg-red-600 transition duration-200 text-white p-1 px-4 rounded-full mb-2"
                 onClick={signOut}
               >
                 로그아웃
@@ -71,32 +69,32 @@ export default function Profile() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 my-2">
           <Link
             href={"/profile/wish"}
-            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
           >
             관심목록
           </Link>
           <Link
             href={"/profile/my-products"}
-            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
           >
             내가 등록한 물품
           </Link>
           <Link
             href={"/profile/my-reviews"}
-            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
           >
             나눔 후기
           </Link>
           <Link
             href={"https://open.kakao.com/o/sGLY1utf"}
-            className=" bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+            className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
           >
             드려유 고객센터
           </Link>
           {user?.admin ? (
             <Link
               href={"/devpage"}
-              className="flex bg-white hover:bg-slate-100 transition duration-200 p-4 rounded-xl"
+              className="flex bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
             >
               <Cog6ToothIcon className="w-6 h-6 stroke-slate-600 mr-1" />
               개발자 페이지
@@ -115,9 +113,8 @@ export default function Profile() {
         >
           개인정보처리방침
         </Link>
-      </Layout>
       <HeadBar title="프로필" />
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

@@ -4,7 +4,6 @@ import pb from "@/lib/pocketbase"
 import { useForm } from "react-hook-form"
 import { StarIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
-import ProtectedPage from "@/components/ProtectedPage"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import { usePbAuth } from "@/contexts/AuthWrapper"
@@ -105,54 +104,57 @@ export default function MyReviews() {
   }
 
   return (
-    <ProtectedPage>
-      <Layout>
-        <div>
-          <div className="text-lg font-semibold my-2">나눔(거래)한 사람</div>
-          <div className="grid grid-cols-1 gap-2 max-h-48 overflow-auto scrollbar-hide">
-            {chatedUsers?.map((data, key) => (
-              <button
-                key={key}
-                onClick={() => setSelectedUset(data)}
-                className={`${
-                  selectedUser === data
-                    ? "bg-amber-500 text-white"
-                    : "bg-white hover:bg-amber-100 "
-                } p-2 px-4 rounded-lg transition duration-200`}
-              >
-                <div>{data.name}</div>
-              </button>
-            ))}
-          </div>
+    <Layout>
+      <div>
+        <div className="text-lg font-semibold my-2 dark:text-white">
+          나눔(거래)한 사람
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
-          <div className="text-lg font-semibold my-2">만족도</div>
-          <div className="flex w-full justify-around space-x-1">
-            <Star idx={1} />
-            <Star idx={2} />
-            <Star idx={3} />
-            <Star idx={4} />
-            <Star idx={5} />
-          </div>
-          <div className="mt-4 text-lg font-semibold my-2">후기</div>
-          <textarea
-            className="p-2 px-4 h-48 rounded-lg outline-none w-full"
-            {...register("review", {
-              required: { value: true, message: "후기를 입력해주세요." },
-            })}
-          />
-          {errors.review && <div>{errors.review.message}</div>}
-          <button
-            type="submit"
-            className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white font-semibold mt-4 text-lg"
-          >
-            제출
-          </button>
-        </form>
-        <div className="w-full h-8 sm:h-0"></div>
-      </Layout>
+        <div className="grid grid-cols-1 gap-2 max-h-48 overflow-auto scrollbar-hide">
+          {chatedUsers?.map((data, key) => (
+            <button
+              key={key}
+              onClick={() => setSelectedUset(data)}
+              className={`${
+                selectedUser === data
+                  ? "bg-amber-500 text-white dark:text-black"
+                  : "bg-white dark:bg-gray-900 hover:bg-amber-100 "
+              } p-2 px-4 rounded-lg transition duration-200`}
+            >
+              <div className="dark:text-white">{data.name}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-4">
+        <div className="text-lg font-semibold my-2 dark:text-white">만족도</div>
+        <div className="flex w-full justify-around space-x-1">
+          <Star idx={1} />
+          <Star idx={2} />
+          <Star idx={3} />
+          <Star idx={4} />
+          <Star idx={5} />
+        </div>
+        <div className="mt-4 text-lg font-semibold my-2 dark:text-white">
+          후기
+        </div>
+        <textarea
+          className="p-2 px-4 h-48 rounded-lg outline-none w-full dark:bg-slate-800 dark:text-white"
+          {...register("review", {
+            required: { value: true, message: "후기를 입력해주세요." },
+          })}
+        />
+        {errors.review && (
+          <div className="dark:text-white">{errors.review.message}</div>
+        )}
+        <button
+          type="submit"
+          className="bg-amber-400 p-2 rounded-full hover:bg-amber-500 transition duration-200 text-white dark:text-black font-semibold mt-4 text-lg"
+        >
+          제출
+        </button>
+      </form>
       <HeadBar title="나눔 후기 남기기" />
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

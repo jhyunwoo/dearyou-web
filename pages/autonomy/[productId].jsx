@@ -104,11 +104,11 @@ export default function ProductDetail({ productId }) {
   }, [productId])
 
   return (
-    <ProtectedPage>
+    <Layout>
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
+        <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
-            <div className="sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="sm:bg-white sm:dark:bg-gray-900 sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
               <div className="relative sm:flex ">
                 <ProductImageView
                   productInfo={productInfo}
@@ -118,14 +118,14 @@ export default function ProductDetail({ productId }) {
                   <div className="p-4 sm:p-2 flex flex-col ">
                     <div className=" pb-2 border-b-2 flex flex-col ">
                     <div className="flex justify-between">
-                      <div className="text-xl font-bold">
+                      <div className="text-xl font-bold dark:text-white">
                         {productInfo.name}
                       </div>
                       <div className="flex">
                         <div className="flex items-end">
                           <Link
                             href={`/profile/${productInfo.expand.seller?.id}`}
-                            className="text-lg font-semibold text-black"
+                            className="text-lg font-semibold dark:text-white"
                           >
                             {productInfo.expand.seller?.name} (
                             {productInfo.expand.seller?.studentId})
@@ -176,7 +176,7 @@ export default function ProductDetail({ productId }) {
               </div>
 
               <div>
-                <div className="px-4 sm:p-2 flex flex-col text-center">
+                <div className="px-4 sm:p-2 flex flex-col text-center dark:text-white">
                   {productInfo.rejectedReason ? (
                     <div className="mb-2 font-bold text-red-500">
                       앞선 검토에서 등록이 거절되었던 물건입니다.
@@ -201,11 +201,11 @@ export default function ProductDetail({ productId }) {
                         className={
                           checked
                             ? "bg-amber-500 stroke-white border-2 border-transparent rounded-xl cursor-pointer"
-                            : "bg-white stroke-slate-100 border-2 border-slate-300 rounded-xl cursor-pointer"
+                            : "bg-white dark:bg-gray-900 stroke-slate-100 border-2 border-slate-300 rounded-xl cursor-pointer"
                         }
                       />
                     </label>
-                    <div className="ml-2">
+                    <div className="ml-2 ">
                       등록된 물건 정보를 잘 확인했습니다.
                     </div>
                   </div>
@@ -213,24 +213,24 @@ export default function ProductDetail({ productId }) {
               </div>
 
               {checked ? (
-                <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50/50">
-                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white max-w-md">
+                <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">
+                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900 max-w-md">
                     <XCircleIcon
                       onClick={() => setChecked(null)}
                       className="absolute cursor-pointer top-0 right-0 w-8 h-8 text-slate-600"
                     />
-                    <div className="text-lg font-bold text-center">
+                    <div className="text-lg font-bold text-center dark:text-white">
                       물건 검토
                     </div>
                     <button
-                      className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
+                      className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
                       onClick={handleConfirm}
                     >
                       승인
                     </button>
                     <form
                       onSubmit={handleSubmit(handleReject)}
-                      className="flex flex-col"
+                      className="flex flex-col "
                     >
                       <button
                         className="bg-red-500 hover:bg-red-600 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
@@ -238,7 +238,7 @@ export default function ProductDetail({ productId }) {
                       >
                         반려
                       </button>
-                      <div className="text-lg font-semibold mt-4">
+                      <div className="text-lg font-semibold mt-4 dark:text-white">
                         반려 사유
                       </div>
                       <select
@@ -262,14 +262,12 @@ export default function ProductDetail({ productId }) {
           )}
         </div>
       ) : (
-        <Layout>
-          <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
-            <div>정보가 없습니다.</div>
-          </div>
-        </Layout>
+        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+          <div>정보가 없습니다.</div>
+        </div>
       )}
 
       <BottomBar />
-    </ProtectedPage>
+    </Layout>
   )
 }

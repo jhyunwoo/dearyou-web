@@ -48,9 +48,9 @@ export default function SignIn() {
   }, [])
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-4 flex justify-center items-center">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
-      <div className="bg-white max-w-xl shadow-xl p-8 py-16 flex flex-col w-5/6 space-y-2 ">
+      <div className="bg-white dark:bg-gray-900 max-w-xl shadow-xl p-8 py-16 flex flex-col w-5/6 space-y-2 ">
         <div className="text-3xl font-bold mx-auto m-4">로그인</div>
         <button
           onClick={kakaoSignIn}
@@ -63,7 +63,7 @@ export default function SignIn() {
             height={25}
             alt={"logo"}
           />
-          <div className="ml-4 font-semibold text-base text-white">
+          <div className="ml-4 font-semibold text-base text-white dark:text-black">
             카카오로 로그인
           </div>
         </button>
