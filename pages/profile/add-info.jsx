@@ -31,7 +31,7 @@ export default function AddInfo() {
       try {
         await pb.collection("users").update(pb.authStore.model.id, userUpdate)
         // 데이터 업데이트 완료 후 사용자를 메인 페이지로 이동
-        await router.replace("/profile")
+        await router.replace("/profile/guideline")
         router.reload()
       } catch {
         console.error("error")

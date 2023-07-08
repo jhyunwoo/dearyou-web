@@ -1,6 +1,5 @@
 import BottomBar from "@/components/BottomBar"
 import AutonomyPage from "@/components/AutonomyPage"
-import Image from "next/image"
 import { CheckBadgeIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
@@ -8,7 +7,7 @@ import HeadBar from "@/components/HeadBar"
 export default function Autonomy() {
     function Title(props){
         return (
-            <div className="flex mt-2 ml-1 items-center stroke-amber-400 text-amber-400">
+            <div className="flex mt-2 ml-1 items-center stroke-amber-500 text-amber-500 dark:stroke-amber-400 dark:text-amber-400">
                 <QuestionMarkCircleIcon className="w-8 h-8"/>
                 <div className="ml-1 text-xl font-bold">{props.children}</div>
             </div>
@@ -30,7 +29,7 @@ export default function Autonomy() {
     }
     function Block(props){
         return (
-            <div className="my-2 p-4 flex flex-col rounded-lg bg-slate-100 dark:bg-slate-900  dark:text-white">
+            <div className="my-2 p-4 flex flex-col rounded-lg bg-white dark:bg-slate-900  dark:text-white">
                 <div>{props.children}</div>
             </div>
         )
