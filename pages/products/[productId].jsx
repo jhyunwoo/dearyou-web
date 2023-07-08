@@ -285,7 +285,7 @@ export default function ProductDetail({ productId }) {
                       물품 등록 승인 대기 중입니다.
                     </div>
                   )}
-                  <div className="w-full h-16 sm:h-0"></div>
+                  <div className="w-full h-16 sm:h-0 dark:bg-gray-900"></div>
                 </div>
               </div>
             </div>

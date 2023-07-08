@@ -55,8 +55,6 @@ export default function Profile() {
 
   return (
     <Layout>
-      <BottomBar />
-      <HeadBar title="프로필" />
       <div className="bg-white dark:bg-gray-900 w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
         <div className="flex">
           {user?.avatar ? (
@@ -71,9 +69,9 @@ export default function Profile() {
             <div className="w-24 h-24 bg-slate-400 rounded-full"></div>
           )}
           <div className="ml-auto text-center">
-            <div className="relative w-28 font-bold">
+            <div className="relative w-28 font-bold dark:text-white">
               품격 온도
-              <FireIcon className="mx-auto w-20 h-20 stroke-amber-200" />
+              <FireIcon className="mx-auto w-20 h-20 stroke-amber-200 dark:stroke-amber-800" />
               <div className="absolute w-full bottom-3">
                 <div className="mx-auto text-4xl font-bold text-amber-500">
                   {user?.dignity}ºC
@@ -86,7 +84,7 @@ export default function Profile() {
         <div className="mt-4">
           <div className="flex items-center">
             <div>
-              <div className="flex items-center text-xl font-bold">
+              <div className="flex items-center text-xl font-bold dark:text-white">
                 {user?.name}
                 {user?.logPermission ? 
                   <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
@@ -94,7 +92,7 @@ export default function Profile() {
                   <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
                 }
               </div>
-              <div>{user?.studentId}</div>
+              <div className="dark:text-white">{user?.studentId}</div>
             </div>
             <Link href={`/profile/${userId}/report`} className="ml-auto mr-2 ">
               <MegaphoneIcon className="w-8 h-8 stroke-red-400" />
@@ -112,6 +110,8 @@ export default function Profile() {
           className="h-6 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
         />
       </ProductGrid>
+      <BottomBar />
+      <HeadBar title="프로필" />
     </Layout>
   )
 }

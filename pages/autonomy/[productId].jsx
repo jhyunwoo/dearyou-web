@@ -159,10 +159,10 @@ export default function ProductDetail({ productId }) {
                           <span className="text-amber-500">승인 대기 중</span>
                         )}
                       </div>
-                      <div className="text-lg mt-4 mb-2 border-b-2">
+                      <div className="text-lg mt-4 mb-2 border-b-2 dark:text-white">
                         {productInfo.explain}
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-center dark:text-white">
                         <div className="">종류: {productInfo.type}</div>
                         <div className="mr-2 ml-auto text-sm text-slate-500">
                           {getUploadedTime(productInfo.created)} 등록
@@ -255,7 +255,7 @@ export default function ProductDetail({ productId }) {
                   </div>
                 </div>
               ) : null}
-              <div className="w-full h-16 sm:h-0"></div>
+              <div className="w-full h-16 sm:h-0 dark:bg-gray-900"></div>
             </div>
           ) : (
             ""
