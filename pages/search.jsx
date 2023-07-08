@@ -48,7 +48,7 @@ export default function Search() {
               type="text"
               placeholder="검색어를 입력하세요..."
               autoFocus
-              className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
+              className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2 dark:bg-gray-800 dark:ring-offset-gray-800	transition duration-200 dark:text-white"
             />
             <button
               type="submit"
@@ -82,7 +82,7 @@ export default function Search() {
     if (props.data.length === 0) {
       // props로 전달받은 검색 결과 목록이 비었을 때
       return (
-        <h3 className="text-md text-slate-600 font-bold text-center mt-12">
+        <h3 className="text-md text-slate-600 font-bold text-center mt-12 dark:text-slate-300">
           검색 결과가 없습니다.
         </h3>
       )
@@ -95,7 +95,9 @@ export default function Search() {
               <Link href={`/products/${data.id}`} key={key}>
                 <div
                   className={`flex rounded-lg p-2  w-full ${
-                    data?.soldDate ? "bg-slate-100" : "bg-white"
+                    data?.soldDate
+                      ? "bg-slate-100 dark:bg-slate-900"
+                      : "bg-white dark:bg-gray-900"
                   }`}
                 >
                   <Image
@@ -107,12 +109,16 @@ export default function Search() {
                     className=" w-28 h-28  mr-4 rounded-lg"
                   />
                   <div className="flex justify-between flex-col">
-                    <div className="font-bold text-lg">{data?.name}</div>
+                    <div className="font-bold text-lg dark:text-white">
+                      {data?.name}
+                    </div>
                     <div className="font-medium text-base flex flex-col">
-                      <div className="font-semibold">
+                      <div className="font-semibold dark:text-white">
                         {data?.expand?.seller?.name}
                       </div>
-                      <div>{data?.expand?.seller?.studentId}</div>
+                      <div className="dark:text-white">
+                        {data?.expand?.seller?.studentId}
+                      </div>
                       <div className="text-orange-500">
                         {data?.soldDate ? "나눔 완료" : ""}
                       </div>

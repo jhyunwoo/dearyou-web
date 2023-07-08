@@ -54,20 +54,22 @@ export default function ChatList() {
             )}
             <Link
               href={`/chats/${data.id}`}
-              className="bg-white p-3 rounded-l  flex justify-between items-center"
+              className="bg-white dark:bg-gray-900 p-3 rounded-l  flex justify-between items-center"
             >
-              <div className="text-lg font-bold w-1/3">
+              <div className="text-lg font-bold w-1/3 dark:text-white">
                 {user?.id !== data.expand.user1.id
                   ? data.expand.user1.name
                   : data.expand.user2.name}
               </div>
-              <div className="flex flex-col items-end">
+              <div className="flex flex-col items-end dark:text-white">
                 <div className="font-bold ">
                   {data?.expand?.messages?.message
                     ? cutLongText(data.expand.messages.message)
                     : "<사진>"}
                 </div>
-                <div className="text-sm">{getUploadedTime(data?.updated)}</div>
+                <div className="text-sm dark:text-white">
+                  {getUploadedTime(data?.updated)}
+                </div>
               </div>
             </Link>
           </section>

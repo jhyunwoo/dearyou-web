@@ -39,7 +39,7 @@ export default function Autonomy() {
       {isLoading ? <Loading /> : ""}
       <div
         href={"/autonomy"}
-        className="flex bg-amber-500 text-white p-3 items-center"
+        className="flex bg-amber-500 text-white  p-3 items-center"
       >
         <CheckBadgeIcon className="w-12 h-12" />
         <div className="pl-2">

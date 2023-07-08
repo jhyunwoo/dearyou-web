@@ -8,7 +8,7 @@ export default function Profile() {
   return (
     <Layout>
       <BottomBar />
-      <div className="mx-auto text-center">
+      <div className="mx-auto text-center dark:text-white">
         <div className="">
           <Image
             src={"/favicon.png"}
@@ -17,11 +17,13 @@ export default function Profile() {
             className="mt-10 rounded-2xl mx-auto"
             alt="beatus logo"
           />
-          <div className="mt-2 text-xl">드려유 (DearYou)</div>
-          <div className="mt-2 text-3xl font-bold">만든 사람들</div>
+          <div className="mt-2 text-xl dark:text-white">드려유 (DearYou)</div>
+          <div className="mt-2 text-3xl font-bold dark:text-white">
+            만든 사람들
+          </div>
 
-          <div className="flex mt-20 px-10 my-5 items-center text-cyan-900">
-            <div className="mx-auto">
+          <div className="flex mt-20 px-10 my-5 items-center text-cyan-900 dark:text-cyan-50">
+            <div className="mx-auto ">
               <div className="">
                 <div>IT 개발 동아리</div>
                 <div>Beatus</div>
@@ -52,13 +54,13 @@ export default function Profile() {
         </div>
 
         <div className="w-full mb-8 border-2 rounded-full border-slate-200" />
-        <div className="text-2xl font-bold">Beatus</div>
+        <div className="text-2xl font-bold dark:text-white">Beatus</div>
 
         <div className="w-full my-8 border-2 rounded-full border-slate-100" />
-        <div className="text-xl my-2 font-bold">기획팀</div>
-        <div className="font-semibold">김형진</div>
-        <div>정윤승</div>
-        <div>허준영</div>
+        <div className="text-xl my-2 font-bold dark:text-white">기획팀</div>
+        <div className="font-semibold dark:text-white">김형진</div>
+        <div className="dark:text-white">정윤승</div>
+        <div className="dark:text-white">허준영</div>
 
         <div className="w-full my-8 border-2 rounded-full border-slate-100" />
         <div className="text-xl my-2 font-bold">개발팀</div>

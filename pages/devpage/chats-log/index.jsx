@@ -46,7 +46,7 @@ export default function ChatLogPage() {
               type="text"
               placeholder="채팅에 참여한 사용자 이름으로 채팅 검색"
               autoFocus
-              className="p-2 rounded-lg w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2	transition duration-200"
+              className="p-2 rounded-lg dark:bg-slate-800 w-full focus:outline-4 focus:outline-none ring-2 ring-orange-500 focus:ring-offset-2 dark:ring-offset-black	transition duration-200"
             />
             <button
               type="submit"
@@ -84,21 +84,25 @@ export default function ChatLogPage() {
             <Link href={`/devpage/chats-log/${data.id}`} key={key}>
               <div
                 className={`flex rounded-lg p-2 border-2 my-1  w-full ${
-                  data?.soldDate ? "bg-slate-100" : "bg-white"
+                  data?.soldDate
+                    ? "bg-slate-100 dark:bg-slate-900"
+                    : "bg-white dark:bg-gray-900"
                 }`}
               >
                 <div className="flex justify-between flex-col">
-                  <div className="font-bold text-lg">{data?.name}</div>
+                  <div className="font-bold text-lg dark:text-white">
+                    {data?.name}
+                  </div>
                   <div className="font-medium text-base flex flex-col">
                     <div className="flex">
-                      <div className="font-semibold">
+                      <div className="font-semibold dark:text-white">
                         {data?.expand?.user1?.name}
-                        <span className="text-sm text-slate-400">
+                        <span className="text-sm text-slate-400 ">
                           ({data?.expand?.user1?.studentId})
                         </span>
                       </div>
-                      <div className="mx-1">-</div>
-                      <div className="font-semibold">
+                      <div className="mx-1 dark:text-white">-</div>
+                      <div className="font-semibold dark:text-white">
                         {data?.expand?.user2?.name}
                         <span className="text-sm text-slate-400">
                           ({data?.expand?.user2?.studentId})
@@ -122,11 +126,13 @@ export default function ChatLogPage() {
   return (
     <ProtectAdmin>
       <BottomBar />
-      <div className="w-full bg-slate-50 p-3  flex items-center justify-start fixed top-0 right-0 left-0">
+      <div className="w-full bg-slate-50 dark:bg-black p-3  flex items-center justify-start fixed top-0 right-0 left-0">
         <Link href={"/devpage"}>
-          <ArrowLeftCircleIcon className="w-8 h-8" />
+          <ArrowLeftCircleIcon className="w-8 h-8 dark:text-white" />
         </Link>
-        <div className="font-bold text-xl ml-2">채팅 로그 조회</div>
+        <div className="font-bold text-xl ml-2 dark:text-white">
+          채팅 로그 조회
+        </div>
       </div>
       <Layout>
         <div className="p-2">

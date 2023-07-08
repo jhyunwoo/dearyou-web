@@ -146,7 +146,7 @@ export default function ProductDetail({ productId }) {
 
   function CloseProductButton() {
     return (
-      <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+      <div className="w-full  p-2 text-white dark:text-black font-bold flex justify-center items-center">
         <button
           onClick={() => router.push(`/products/review/${productInfo.id}`)}
           className={`p-2 px-6 rounded-full ${
@@ -163,7 +163,7 @@ export default function ProductDetail({ productId }) {
   }
   function GoToChatButton() {
     return (
-      <div className="w-full  p-2 text-white font-bold flex justify-center items-center">
+      <div className="w-full  p-2 text-white dark:text-black font-bold flex justify-center items-center">
         <button
           onClick={goToChat}
           className={`p-2 px-6 rounded-full ${
@@ -183,7 +183,7 @@ export default function ProductDetail({ productId }) {
     if (!autonomy) return null
 
     return (
-      <div className="w-full text-white font-bold flex justify-center items-center">
+      <div className="w-full text-white dark:text-black font-bold flex justify-center items-center">
         <button
           className={`flex items-center justify-center mt-4 ${" text-red-500 hover:text-red-600 transition duration-200"}`}
           onClick={onProductHide}
@@ -198,9 +198,9 @@ export default function ProductDetail({ productId }) {
   return (
     <Layout>
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
+        <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (
-            <div className="relative sm:flex sm:bg-white sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="relative sm:flex sm:bg-white dark:sm:bg-gray-900 dark:bg-gray-900 sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
               <ProductImageView
                 productInfo={productInfo}
                 productId={productId}
@@ -209,14 +209,14 @@ export default function ProductDetail({ productId }) {
                 <div className="p-4 sm:p-2 flex flex-col ">
                   <div className="pb-2 border-b-2 flex flex-col ">
                     <div className="flex justify-between">
-                      <div className="text-xl font-bold">
+                      <div className="text-xl font-bold dark:text-white">
                         {productInfo.name}
                       </div>
                       <div className="flex">
-                        <div className="flex items-end">
+                        <div className="flex items-end dark:text-white">
                           <Link
                             href={`/profile/${productInfo.expand.seller?.id}`}
-                            className="text-lg font-semibold text-black"
+                            className="text-lg font-semibold text-black dark:text-white"
                           >
                             {productInfo.expand.seller?.name} (
                             {productInfo.expand.seller?.studentId})
@@ -226,7 +226,7 @@ export default function ProductDetail({ productId }) {
                             productInfo?.expand?.seller?.id &&
                           !productInfo?.rejectedReason ? (
                             <Link href={`/products/update/${productId}`}>
-                              <PencilSquareIcon className="ml-2 w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white" />
+                              <PencilSquareIcon className="ml-2 w-8 h-8 bg-amber-500 hover:bg-amber-600 transition duration-200 p-1 rounded-md text-white dark:text-black" />
                             </Link>
                           ) : null}
                         </div>
@@ -246,12 +246,12 @@ export default function ProductDetail({ productId }) {
                           <span className="text-amber-500">승인 대기 중</span>
                         )}
                       </div>
-                      <div className="text-lg mt-4 mb-2 border-b-2">
+                      <div className="text-lg mt-4 mb-2 border-b-2 dark:text-white">
                         {productInfo.explain}
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-center dark:text-white">
                         <div className="">종류: {productInfo.type}</div>
-                        <div className="mr-2 ml-auto text-sm text-slate-500">
+                        <div className="mr-2 ml-auto text-sm text-slate-500 dark:text-slate-300">
                           {getUploadedTime(productInfo.created)} 등록
                         </div>
                         {productInfo.isConfirmed ? (
