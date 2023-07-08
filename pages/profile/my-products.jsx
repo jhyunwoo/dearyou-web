@@ -47,7 +47,7 @@ export default function MyProducts() {
         </div>
       )}
       <BottomBar />
-      <HeadBar title="내 물품" />
+      <HeadBar title="내가 등록한 물건" />
     </Layout>
   )
 }

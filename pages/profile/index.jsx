@@ -5,6 +5,7 @@ import {
   CheckBadgeIcon,
   Cog6ToothIcon,
   FireIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
@@ -81,7 +82,7 @@ export default function Profile() {
           href={"/profile/my-products"}
           className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
         >
-          내가 등록한 물품
+          내가 등록한 물건
         </Link>
         <Link
           href={"/profile/my-reviews"}
@@ -94,6 +95,13 @@ export default function Profile() {
           className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
         >
           드려유 고객센터
+        </Link>
+        <Link
+          href={"/profile/guideline"}
+          className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white flex items-center"
+        >
+          <QuestionMarkCircleIcon className="w-6 stroke-slate-600 h-6 mr-1"/>
+          도움말
         </Link>
         {user?.admin ? (
           <Link
