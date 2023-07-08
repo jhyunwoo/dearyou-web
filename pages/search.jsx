@@ -2,7 +2,6 @@ import { useState, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import pb from "@/lib/pocketbase"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 
 import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
@@ -130,13 +129,11 @@ export default function Search() {
   }
 
   return (
-    <ProtectedPage>
-      <Layout>
-        <HeadBar title={"검색"} />
-        <SearchBar />
-        <ItemList data={searched} />
-        <BottomBar />
-      </Layout>
-    </ProtectedPage>
+    <Layout>
+      <HeadBar title={"검색"} />
+      <SearchBar />
+      <ItemList data={searched} />
+      <BottomBar />
+    </Layout>
   )
 }

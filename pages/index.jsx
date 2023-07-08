@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import pb from "@/lib/pocketbase"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
@@ -37,22 +36,20 @@ export default function Home() {
   }, [fetch, hasNextPage, inView])
 
   return (
-    <ProtectedPage>
+    <Layout>
       <BottomBar />
       <FloattingBar />
 
       <HeadBar title="드려유" />
-      <Layout>
-        <ProductGrid>
-          {products.map((data, key) => (
-            <ProductCard data={data} key={key} />
-          ))}
-          <div
-            ref={ref}
-            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
-          />
-        </ProductGrid>
-      </Layout>
-    </ProtectedPage>
+      <ProductGrid>
+        {products.map((data, key) => (
+          <ProductCard data={data} key={key} />
+        ))}
+        <div
+          ref={ref}
+          className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+        />
+      </ProductGrid>
+    </Layout>
   )
 }

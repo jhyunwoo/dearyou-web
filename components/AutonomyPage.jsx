@@ -1,9 +1,10 @@
 import Image from "next/image"
-import pb from "@/lib/pocketbase"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 /** 자율위원 전용 페이지 -> 권한 확인 */
 export default function AutonomyPage(props) {
-  const autonomy = pb.authStore.model.autonomy
+  const { user } = usePbAuth()
+  const autonomy = user?.autonomy
   if (!autonomy) {
     return (
       <div className="w-full h-screen bg-slate-50 flex justify-center items-center p-4">
