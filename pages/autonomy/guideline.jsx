@@ -1,6 +1,5 @@
 import BottomBar from "@/components/BottomBar"
 import AutonomyPage from "@/components/AutonomyPage"
-import Image from "next/image"
 import { CheckBadgeIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
