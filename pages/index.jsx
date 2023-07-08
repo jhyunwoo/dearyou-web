@@ -36,20 +36,19 @@ export default function Home() {
   }, [fetch, hasNextPage, inView])
 
   return (
-    <Layout>
-      <BottomBar />
-      <FloattingBar />
-
-      <HeadBar title="드려유" />
-      <ProductGrid>
-        {products.map((data, key) => (
-          <ProductCard data={data} key={key} />
-        ))}
-        <div
-          ref={ref}
-          className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
-        />
-      </ProductGrid>
-    </Layout>
+      <Layout>
+        <ProductGrid>
+          {products.map((data, key) => (
+            <ProductCard data={data} key={key} />
+          ))}
+          <div
+            ref={ref}
+            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+          />
+        </ProductGrid>
+        <HeadBar title="드려유" />
+        <BottomBar />
+        <FloattingBar />
+      </Layout>
   )
 }

@@ -105,8 +105,6 @@ export default function MyReviews() {
 
   return (
     <Layout>
-      <HeadBar title="나눔 후기 남기기" />
-      <BottomBar />
       <div>
         <div className="text-lg font-semibold my-2 dark:text-white">
           나눔(거래)한 사람
@@ -155,6 +153,8 @@ export default function MyReviews() {
           제출
         </button>
       </form>
+      <HeadBar title="나눔 후기 남기기" />
+      <BottomBar />
     </Layout>
   )
 }

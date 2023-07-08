@@ -196,7 +196,7 @@ export default function ProductDetail({ productId }) {
   }
 
   return (
-    <Layout>
+    <>
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (
@@ -300,6 +300,6 @@ export default function ProductDetail({ productId }) {
       )}
 
       <BottomBar />
-    </Layout>
+    </>
   )
 }
