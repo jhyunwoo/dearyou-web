@@ -355,7 +355,7 @@ export default function Chat({ chatId }) {
           ))}
         </div>
         <div ref={messageEndRef}></div>
-        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 dark:bg-gray-800">
+        <div className="w-full p-2 fixed bottom-0 right-0 left-0 bg-slate-100 dark:bg-black">
           <form onSubmit={handleSubmit(onSubmit)} className="flex items-end">
             <label
               htmlFor="input-file"
@@ -371,7 +371,7 @@ export default function Chat({ chatId }) {
               />
             </label>
             <TextareaAutosize
-              className="flex-auto outline-none p-2 rounded-lg mx-1 break-all"
+              className="flex-auto outline-none p-2 rounded-lg mx-1 break-all dark:bg-gray-800 dark:text-white"
               {...register("text", {
                 required: {
                   value: true,
