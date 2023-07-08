@@ -206,13 +206,11 @@ export default function Chat({ chatId }) {
           </Link>
           <Link
             href={`/profile/${
-              pb?.authStore?.model?.id === chatInfo?.user1
-                ? chatInfo?.user2
-                : chatInfo?.user1
+              user?.id === chatInfo?.user1 ? chatInfo?.user2 : chatInfo?.user1
             }`}
             className="text-lg ml-2 font-bold dark:text-white"
           >
-            {pb?.authStore?.model?.id === chatInfo?.user1
+            {user?.id === chatInfo?.user1
               ? chatInfo?.expand?.user2?.name
               : chatInfo?.expand?.user1?.name}
           </Link>
@@ -235,15 +233,15 @@ export default function Chat({ chatId }) {
             <section
               key={key}
               className={`${
-                pb.authStore.model.id === data?.sender
+                user?.id === data?.sender
                   ? "ml-auto items-end"
                   : "mr-auto items-start"
               } mb-1 flex flex-col  mx-2`}
             >
               {key === 19 ? <div ref={infiniteRef}></div> : ""}
               <div className="text-xs dark:text-white">
-                {pb.authStore.model.id === data?.sender
-                  ? pb.authStore.model.name
+                {user?.id === data?.sender
+                  ? user?.name
                   : data?.expand?.sender?.name}
               </div>
               <div className="bg-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
@@ -265,26 +263,24 @@ export default function Chat({ chatId }) {
             <section
               key={key}
               className={`${
-                pb.authStore.model.id === data?.sender
+                user?.id === data?.sender
                   ? "ml-auto flex-row-reverse"
                   : "mr-auto"
               } mb-1  mx-2 flex items-end`}
             >
               <div
                 className={`flex flex-col ${
-                  pb.authStore.model.id === data?.sender
-                    ? "items-end"
-                    : "items-start"
+                  user?.id === data?.sender ? "items-end" : "items-start"
                 }`}
               >
                 <div className="text-xs dark:text-white">
-                  {pb.authStore.model.id === data?.sender
-                    ? pb.authStore.model.name
+                  {user?.id === data?.sender
+                    ? user?.name
                     : data?.expand?.sender?.name}
                 </div>
                 <div className="bg-white dark:bg-gray-900 dark:text-white p-1 px-2 rounded-md max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl break-words">
                   {data?.product ? (
-                    pb.authStore.model.id === data?.sender ? (
+                    user?.id === data?.sender ? (
                       <section>
                         <Image
                           src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.product?.id}/${data?.expand?.product?.photos[0]}`}
@@ -307,7 +303,7 @@ export default function Chat({ chatId }) {
                     ""
                   )}
                   {data.reviewProduct ? (
-                    pb.authStore.model.id === data?.sender ? (
+                    user?.id === data?.sender ? (
                       <section>
                         <Image
                           src={`https://dearyouapi.moveto.kr/api/files/products/${data?.expand?.reviewProduct?.id}/${data?.expand?.reviewProduct?.photos[0]}`}

@@ -40,40 +40,40 @@ export default function ChatList() {
 
   return (
     <Layout>
-        <div className="grid grid-cols gap-3 mt-2">
-          {chats.map((data, key) => (
-            <section key={key} className="relative">
-              {!data?.expand?.messages?.isRead &&
-              data?.expand?.messages?.receiver === pb.authStore.model.id ? (
-                <div className="w-3 h-3 bg-red-300 animate-pulse rounded-full absolute -top-1 -right-1"></div>
-              ) : (
-                ""
-              )}
-              <Link
-                href={`/chats/${data.id}`}
-                className="bg-white dark:bg-gray-900 p-3 rounded-l flex justify-between items-center"
-              >
-                <div className="text-lg font-bold w-1/3 dark:text-white">
-                  {user?.id !== data.expand.user1.id
-                    ? data.expand.user1.name
-                    : data.expand.user2.name}
+      <div className="grid grid-cols gap-3 mt-2">
+        {chats.map((data, key) => (
+          <section key={key} className="relative">
+            {!data?.expand?.messages?.isRead &&
+            data?.expand?.messages?.receiver === user?.id ? (
+              <div className="w-3 h-3 bg-red-300 animate-pulse rounded-full absolute -top-1 -right-1"></div>
+            ) : (
+              ""
+            )}
+            <Link
+              href={`/chats/${data.id}`}
+              className="bg-white dark:bg-gray-900 p-3 rounded-l flex justify-between items-center"
+            >
+              <div className="text-lg font-bold w-1/3 dark:text-white">
+                {user?.id !== data.expand.user1.id
+                  ? data.expand.user1.name
+                  : data.expand.user2.name}
+              </div>
+              <div className="flex flex-col items-end dark:text-white">
+                <div className="font-bold ">
+                  {data?.expand?.messages?.message
+                    ? cutLongText(data.expand.messages.message)
+                    : "<사진>"}
                 </div>
-                <div className="flex flex-col items-end dark:text-white">
-                  <div className="font-bold ">
-                    {data?.expand?.messages?.message
-                      ? cutLongText(data.expand.messages.message)
-                      : "<사진>"}
-                  </div>
-                  <div className="text-sm dark:text-white">
-                    {getUploadedTime(data?.updated)}
-                  </div>
+                <div className="text-sm dark:text-white">
+                  {getUploadedTime(data?.updated)}
                 </div>
-              </Link>
-            </section>
-          ))}
-        </div>
-        <HeadBar title={"채팅"} />
-        <BottomBar />
+              </div>
+            </Link>
+          </section>
+        ))}
+      </div>
+      <HeadBar title={"채팅"} />
+      <BottomBar />
     </Layout>
   )
 }
