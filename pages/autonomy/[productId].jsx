@@ -220,7 +220,7 @@ export default function ProductDetail({ productId }) {
                       className="flex flex-col "
                     >
                       <button
-                        className="bg-red-500 hover:bg-red-600 transition duration-200  text-white p-2 px-12 rounded-full text-base font-semibold mt-4"
+                        className="bg-red-500 hover:bg-red-600 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
                         type="submit"
                       >
                         반려
