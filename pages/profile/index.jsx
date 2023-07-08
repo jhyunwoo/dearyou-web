@@ -1,7 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
-import { Cog6ToothIcon, FireIcon } from "@heroicons/react/24/outline"
+import {
+  Cog6ToothIcon,
+  FireIcon,
+  MoonIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
@@ -86,7 +91,7 @@ export default function Profile() {
         >
           드려유 고객센터
         </Link>
-        {pb.authStore.model?.admin ? (
+        {user?.admin ? (
           <Link
             href={"/devpage"}
             className="flex bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white"
