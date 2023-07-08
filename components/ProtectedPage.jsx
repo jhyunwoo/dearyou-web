@@ -67,9 +67,7 @@ export default function ProtectedPage(props) {
         </div>
       </div>
     )
-  } else if (
-    !user?.studentId|| !user?.studentId )
-  ) {
+  } else if (!user?.name || !user?.studentId) {
     /** 학번 정보가 없을 때 */
     return (
       <div className="w-full h-screen bg-slate-50 dark:bg-black flex justify-center items-center p-4">
