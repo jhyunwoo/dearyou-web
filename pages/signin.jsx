@@ -51,7 +51,9 @@ export default function SignIn() {
     <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex justify-center items-center">
       {isLoading ? <Loading /> : ""}
       <div className="bg-white dark:bg-gray-900 max-w-xl shadow-xl p-8 py-16 flex flex-col w-5/6 space-y-2 ">
-        <div className="text-3xl font-bold mx-auto m-4">로그인</div>
+        <div className="text-3xl font-bold mx-auto m-4 dark:text-white">
+          로그인
+        </div>
         <button
           onClick={kakaoSignIn}
           className="bg-[#ffe812] shadow-lg  p-2 px-4 rounded-lg  transition duration-200 flex justify-center items-center"
