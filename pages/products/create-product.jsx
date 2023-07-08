@@ -77,7 +77,6 @@ export default function CreateProduct() {
 
   return (
     <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 dark:bg-black p-4">
-      <BottomBar />
       {isLoading ? <Loading /> : ""}
       <div className="text-xl font-bold dark:text-white">물품 등록</div>
       <div className="sm:flex sm:justify-center sm:items-start">
@@ -128,6 +127,7 @@ export default function CreateProduct() {
         <ProductInfoForm onSubmit={onSubmit} />
         <div className="w-full h-16" />
       </div>
+      <BottomBar />
     </div>
   )
 }

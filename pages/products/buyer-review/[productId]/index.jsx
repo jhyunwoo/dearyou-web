@@ -66,8 +66,6 @@ export default function MyReviews() {
 
   return (
     <Layout>
-      <HeadBar title="나눔 후기 남기기" />
-      <BottomBar />
       {sellerId === pb.authStore.model?.id ? (
         <div className="dark:text-white">이미 후기를 남기셨습니다.</div>
       ) : (
@@ -112,6 +110,8 @@ export default function MyReviews() {
           </form>
         </>
       )}
+      <HeadBar title="나눔 후기 남기기" />
+      <BottomBar />
     </Layout>
   )
 }

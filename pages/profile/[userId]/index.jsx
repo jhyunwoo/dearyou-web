@@ -9,7 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
 import { useInView } from "react-intersection-observer"
-import { FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
+import { CheckBadgeIcon, Cog6ToothIcon, FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
 
 export default function Profile() {
   const router = useRouter()
@@ -86,7 +86,14 @@ export default function Profile() {
         <div className="mt-4">
           <div className="flex items-center">
             <div>
-              <div className="text-xl font-bold">{user?.name}</div>
+              <div className="flex items-center text-xl font-bold">
+                {user?.name}
+                {user?.logPermission ? 
+                  <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
+                  user?.autonomy ? 
+                  <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
+                }
+              </div>
               <div>{user?.studentId}</div>
             </div>
             <Link href={`/profile/${userId}/report`} className="ml-auto mr-2 ">

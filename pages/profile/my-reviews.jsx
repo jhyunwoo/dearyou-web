@@ -26,8 +26,6 @@ export default function MyReviews() {
 
   return (
     <Layout>
-      <HeadBar title="내 나눔 후기" />
-      <BottomBar />
       <div className="mt-2 w-full grid grid-cols-1 gap-2">
         <div className="text-lg dark:text-white">내가 받은 후기</div>
         {reviewsFrom.map((data, key) => (
@@ -66,6 +64,8 @@ export default function MyReviews() {
           </div>
         ))}
       </div>
+      <HeadBar title="내 나눔 후기" />
+      <BottomBar />
     </Layout>
   )
 }

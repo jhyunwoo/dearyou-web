@@ -25,8 +25,6 @@ export default function WishPage() {
 
   return (
     <Layout>
-      <BottomBar />
-      <HeadBar title="관심목록" />
       {!productList ? (
         <div className="flex flex-col sm:col-span-2 lg:col-span-3 xl:col-span-4 justify-center items-center mt-24">
           <div>아직 등록한 관심 물품이 없습니다.</div>
@@ -45,6 +43,8 @@ export default function WishPage() {
           <ProductCard data={data} key={key} />
         ))}
       </ProductGrid>
+      <BottomBar />
+      <HeadBar title="관심목록" />
     </Layout>
   )
 }

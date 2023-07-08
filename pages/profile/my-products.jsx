@@ -22,8 +22,6 @@ export default function MyProducts() {
 
   return (
     <Layout>
-      <BottomBar />
-      <HeadBar title="내 물품" />
       <ProductGrid>
         {products?.length === 0 ? (
           <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">
@@ -42,6 +40,8 @@ export default function MyProducts() {
           <ProductCard data={data} key={key} />
         ))}
       </ProductGrid>
+      <BottomBar />
+      <HeadBar title="내 물품" />
     </Layout>
   )
 }
