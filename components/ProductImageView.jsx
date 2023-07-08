@@ -10,7 +10,7 @@ export default function ProductImageView(props) {
   function ImageUI() {
     return (
       <div className="absolute w-full sm:w-80 opacity-60 hover:opacity-100">
-        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white">
+        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white dark:text-black">
           {imageScroll}/{imageRef?.current?.children.length}
         </div>
         {imageScroll < imageRef?.current?.children.length ? (
@@ -42,7 +42,7 @@ export default function ProductImageView(props) {
     <div>
       <ImageUI />
       <div
-        className="bg-white sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x"
+        className="bg-white dark:bg-gray-900 sm:h-80 sm:w-80 flex overflow-x-auto  scrollbar-hide snap-x"
         ref={imageRef}
         onScroll={() => {
           setImageScroll(

@@ -14,8 +14,8 @@ export default function ProductCard(props) {
       <div
         className={`flex rounded-lg p-2  w-full ${
           props.data?.soldDate || props.data?.rejectedReason
-            ? "bg-slate-100"
-            : "bg-white"
+            ? "bg-slate-100 dark:bg-black"
+            : "bg-white dark:bg-gray-900"
         }`}
       >
         <Image
@@ -27,12 +27,16 @@ export default function ProductCard(props) {
           className=" w-28 h-28  mr-4 rounded-lg"
         />
         <div className="flex justify-between flex-col">
-          <div className="font-bold text-lg">{props.data?.name}</div>
+          <div className="font-bold text-lg dark:text-white">
+            {props.data?.name}
+          </div>
           <div className="font-medium text-base flex flex-col">
-            <div className="font-semibold">
+            <div className="font-semibold dark:text-white">
               {props.data?.expand?.seller?.name}
             </div>
-            <div>{props.data?.expand?.seller?.studentId}</div>
+            <div className="dark:text-white">
+              {props.data?.expand?.seller?.studentId}
+            </div>
             <div className="text-amber-500">
               {props.data?.soldDate ? "나눔 완료" : ""}
             </div>

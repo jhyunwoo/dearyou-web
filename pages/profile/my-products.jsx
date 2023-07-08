@@ -30,7 +30,7 @@ export default function MyProducts() {
             <div className="font-semibold">아직 등록한 물품이 없습니다.</div>
             <Link
               href={"/products/create-product"}
-              className="bg-orange-400 p-2 px-4 rounded-full text-white font-semibold mt-4 hover:bg-orange-500 transition duration-200"
+              className="bg-orange-400 p-2 px-4 rounded-full text-white dark:text-black font-semibold mt-4 hover:bg-orange-500 transition duration-200"
             >
               물품 등록
             </Link>

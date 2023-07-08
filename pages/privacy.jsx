@@ -1,25 +1,35 @@
 export function Paragraph(props) {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">{props.children}</div>
+    <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-lg dark:text-white">
+      {props.children}
+    </div>
   )
 }
 
 export function Title(props) {
-  return <div className="text-lg font-semibold">{props.children}</div>
+  return (
+    <div className="text-lg font-semibold dark:text-white">
+      {props.children}
+    </div>
+  )
 }
 
 export function List(props) {
-  return <div className="flex flex-col mt-4">{props.children}</div>
+  return (
+    <div className="flex flex-col mt-4 dark:text-white">{props.children}</div>
+  )
 }
 
 export function Text(props) {
-  return <div className="">{props.children}</div>
+  return <div className="dark:text-white">{props.children}</div>
 }
 
 export default function Privacy() {
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-4 flex flex-col space-y-2">
-      <div className="text-xl font-bold">드려유 개인정보처리방침</div>
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex flex-col space-y-2">
+      <div className="text-xl font-bold dark:text-white">
+        드려유 개인정보처리방침
+      </div>
       <Paragraph>
         <Text>
           {"<"}Beatus{">"}(&apos;https://dearyou.vercel.app&apos;이하
