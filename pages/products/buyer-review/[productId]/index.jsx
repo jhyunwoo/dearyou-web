@@ -103,6 +103,7 @@ export default function MyReviews() {
               제출
             </button>
           </form>
+        <div className="w-full h-16 sm:h-0"></div>
         </Layout>
       )}
       <HeadBar title="나눔 후기 남기기" />

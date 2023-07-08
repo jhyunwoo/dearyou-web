@@ -38,7 +38,7 @@ export default function Chat({ chatId }) {
   /** 사용자가 맨 위로 올렸는지 판단 */
   const [ref, inView] = useInView()
   /** React Hook Form 설정 */
-  const { register, handleSubmit, setValue } = useForm()
+  const { register, handleSubmit, setValue, setFocus } = useForm()
   /** 메세지 전송 후 스크롤 내리는 기준 */
   const messageEndRef = useRef(null)
   /** infinite scroll 후 이전 메세지로 이동하는 기준 */
@@ -374,6 +374,7 @@ export default function Chat({ chatId }) {
               })}
             />
             <button
+              onClick={()=>{ setFocus("text") }}
               className=" w-10 h-10 p-1 rounded-full flex justify-center items-center bg-amber-500 text-white"
               type="submit"
             >

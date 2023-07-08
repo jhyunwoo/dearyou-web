@@ -42,7 +42,7 @@ export default function ChatList() {
   return (
     <Layout>
       <ProtectedPage>
-        <div className="grid grid-cols gap-3">
+        <div className="grid grid-cols gap-3 mt-2">
           {chats.map((data, key) => (
             <section key={key} className="relative">
               {!data?.expand?.messages?.isRead &&
