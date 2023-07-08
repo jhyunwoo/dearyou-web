@@ -41,6 +41,13 @@ export default function ChatList() {
   return (
     <Layout>
       <div className="grid grid-cols gap-3 mt-2">
+        {chats.length < 1 ? (
+          <div className="dark:text-white text-center p-4">
+            아직 메세지가 오지 않았어요!
+          </div>
+        ) : (
+          ""
+        )}
         {chats.map((data, key) => (
           <section key={key} className="relative">
             {!data?.expand?.messages?.isRead &&
