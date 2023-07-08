@@ -42,6 +42,7 @@ export default function ProductDetail({ productId }) {
   const { register, handleSubmit } = useForm()
   const setModal = useSetRecoilState(modalState)
 
+  const [isLoading, setIsLoading] = useState(false);
   // 물품 정보 저장
   const [productInfo, setProductInfo] = useState("")
   // 승인 되었는지 저장
@@ -88,6 +89,7 @@ export default function ProductDetail({ productId }) {
     /** 물품 정보 불러오기 expand seller, confirmedBy */
     async function getProductInfo() {
       try {
+        setIsLoading(true);
         const record = await pb.collection("products").getOne(productId, {
           expand: "seller, confirmedBy",
         })
@@ -96,7 +98,9 @@ export default function ProductDetail({ productId }) {
         } else {
           setProductInfo(false)
         }
+        setIsLoading(false);
       } catch (e) {
+        setIsLoading(false);
         console.log(e)
       }
     }
@@ -262,9 +266,13 @@ export default function ProductDetail({ productId }) {
           )}
         </div>
       ) : (
-        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+        isLoading ? 
+        (<div className="text-center mt-12 font-semibold text-slate-500">
+          <div>정보를 불러오는 중입니다...</div>
+        </div>) :
+        (<div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보가 없습니다.</div>
-        </div>
+        </div>)
       )}
 
       <BottomBar />

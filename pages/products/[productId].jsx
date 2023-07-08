@@ -23,7 +23,8 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function ProductDetail({ productId }) {
-  const [productInfo, setProductInfo] = useState("")
+  const [productInfo, setProductInfo] = useState()
+  const [isLoading, setIsLoading] = useState(false);
   const [userWish, setUserWish] = useState([])
 
   const { user } = usePbAuth()
@@ -36,13 +37,20 @@ export default function ProductDetail({ productId }) {
 
   useEffect(() => {
     async function getProductInfo() {
-      const record = await pb.collection("products").getOne(productId, {
-        expand: "seller",
-      })
-      if (record.isConfirmed || record.seller === pb.authStore.model.id) {
-        setProductInfo(record)
-      } else {
-        setProductInfo(false)
+      try{
+        setIsLoading(true);
+        const record = await pb.collection("products").getOne(productId, {
+          expand: "seller",
+        })
+        if (record.isConfirmed || record.seller === pb.authStore.model.id) {
+          setProductInfo(record)
+        } else {
+          setProductInfo(false)
+        }
+        setIsLoading(false);
+      }
+      catch{
+        setIsLoading(false);
       }
     }
     async function getUserWish() {
@@ -294,9 +302,13 @@ export default function ProductDetail({ productId }) {
           )}
         </div>
       ) : (
-        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+        isLoading ? 
+        (<div className="text-center mt-12 font-semibold text-slate-500">
+          <div>정보를 불러오는 중입니다...</div>
+        </div>) :
+        (<div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보가 없습니다.</div>
-        </div>
+        </div>)
       )}
 
       <BottomBar />
