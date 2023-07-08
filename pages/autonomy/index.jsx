@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import pb from "@/lib/pocketbase"
 import BottomBar from "@/components/BottomBar"
-import { CheckBadgeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
+import { CheckBadgeIcon, EyeSlashIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import AutonomyPage from "@/components/AutonomyPage"
 import Loading from "@/components/Loading"
 import { useInView } from "react-intersection-observer"
 import { usePbAuth } from "@/contexts/AuthWrapper"
+import Link from "next/link"
 
 export default function Autonomy() {
   const [products, setProducts] = useState([])
@@ -97,6 +98,15 @@ export default function Autonomy() {
         </ProductGrid>
       </div>
       <div className="w-full h-8"></div>
+      <Link
+        href={"/autonomy/guideline"}
+        className="fixed right-4 sm:right-8 bottom-24 bg-amber-400 p-2 rounded-full transition duration-200 shadow-md ring-2 ring-amber-400 hover:ring-offset-2 dark:ring-offset-black group hover:bg-white hover:dark:bg-black dark:bg-amber-400"
+      >
+        <QuestionMarkCircleIcon className="w-8 h-8 text-white dark:text-black group-hover:text-amber-400" />
+        <div className="absolute -bottom-6 right-0 left-0 text-sm text-center font-semibold dark:text-white">
+          도움말
+        </div>
+      </Link>
       <BottomBar />
     </AutonomyPage>
   )
