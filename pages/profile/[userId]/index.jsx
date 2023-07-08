@@ -9,7 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
 import { useInView } from "react-intersection-observer"
-import { FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
+import { CheckBadgeIcon, Cog6ToothIcon, FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
 
 export default function Profile() {
   const router = useRouter()

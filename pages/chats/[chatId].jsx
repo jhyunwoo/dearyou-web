@@ -198,17 +198,20 @@ export default function Chat({ chatId }) {
   }, [messages])
 
   return (
-    <ProtectedPage>
+    <div>
       <div className="bg-slate-50 dark:bg-black min-h-screen">
         <div className="fixed top-0 right-0 left-0 p-2 bg-white dark:bg-gray-900 shadow-md flex items-center">
           <Link href={"/chats"}>
             <ArrowLeftCircleIcon className="w-8 h-8 text-amber-500" />
           </Link>
-          <div className="text-lg ml-2 font-bold dark:text-white">
+          <Link href={`/profile/${pb?.authStore?.model?.id === chatInfo?.user1
+              ? chatInfo?.user2
+              : chatInfo?.user1}`}
+            className="text-lg ml-2 font-bold dark:text-white">
             {pb?.authStore?.model?.id === chatInfo?.user1
               ? chatInfo?.expand?.user2?.name
               : chatInfo?.expand?.user1?.name}
-          </div>
+          </Link>
         </div>
         <div ref={ref} className="w-full pt-20 "></div>
         <div className="bg-slate-50 dark:bg-black flex justify-center">
@@ -382,6 +385,6 @@ export default function Chat({ chatId }) {
           </form>
         </div>
       </div>
-    </ProtectedPage>
+    </div>
   )
 }
