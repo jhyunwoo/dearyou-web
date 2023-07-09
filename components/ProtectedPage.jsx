@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import { useRouter } from "next/router"
+import errorTransmission from "@/lib/errorTransmission"
 
 /** 로그인 되어 있으면 하위 JSX를 보여주고 로그인 되어 있지 않으면 로그인 페이지로 이동하는 링크를 보여줌 */
 /** 또한, 로그인은 되어 있으나 학번이 등록되지 않았으면 학번 이름 등록 페이지로 이동*/
@@ -15,11 +16,15 @@ export default function ProtectedPage(props) {
 
   useEffect(() => {
     async function checkIsProtect() {
-      const path = router.asPath
-      if (path === "/signin" || path === "/profile/add-info") {
-        setIsProtect(false)
-      } else {
-        setIsProtect(true)
+      try {
+        const path = router.asPath
+        if (path === "/signin" || path === "/profile/add-info") {
+          setIsProtect(false)
+        } else {
+          setIsProtect(true)
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     checkIsProtect()

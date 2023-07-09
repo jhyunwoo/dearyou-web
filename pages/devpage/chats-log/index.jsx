@@ -9,6 +9,7 @@ import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProtectAdmin from "@/components/ProtectAdmin"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function ChatLogPage() {
   const [searched, setSearched] = useState([])
@@ -16,24 +17,32 @@ export default function ChatLogPage() {
   const searchInput = useRef("")
 
   async function doSearch(word) {
-    if (word.length === 0) return
+    try {
+      if (word.length === 0) return
 
-    const searchResult = await pb.collection("chats").getFullList({
-      filter: `user1.name~"${word}"||user2.name~"${word}"`,
-      expand: "user1,user2",
-    })
+      const searchResult = await pb.collection("chats").getFullList({
+        filter: `user1.name~"${word}"||user2.name~"${word}"`,
+        expand: "user1,user2",
+      })
 
-    // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(searchResult)
+      // 화면에 표시할 정보만을 담은 'searched' state 설정
+      setSearched(searchResult)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   async function handleSearch(event) {
-    event.preventDefault()
-    let word = searchInput?.current?.value // 검색어
-    if (word.length === 0) return
+    try {
+      event.preventDefault()
+      let word = searchInput?.current?.value // 검색어
+      if (word.length === 0) return
 
-    setSearchWord(word)
-    await doSearch(word)
+      setSearchWord(word)
+      await doSearch(word)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장

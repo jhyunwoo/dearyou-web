@@ -7,6 +7,7 @@ import Layout from "@/components/Layout"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function WishPage() {
   const [products, setProducts] = useState(false)
@@ -19,7 +20,7 @@ export default function WishPage() {
           .getOne(pb.authStore.model?.id, { expand: "wishes.seller" })
         setProducts(records.expand.wishes ? records.expand.wishes : [])
       } catch (e) {
-        console.error(e)
+        errorTransmission(e)
       }
     }
     getWishProducts()
@@ -27,8 +28,8 @@ export default function WishPage() {
 
   return (
     <Layout>
-
       <SEO title={"관심 목록"} />
+
 
       {products ? 
       (<ProductGrid>
@@ -51,6 +52,7 @@ export default function WishPage() {
         <div className="w-full h-8 sm:h-0 dark:bg-black"></div>
       </ProductGrid>)
       : (
+
         <div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보를 불러오는 중입니다...</div>
         </div>

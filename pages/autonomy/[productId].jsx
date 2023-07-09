@@ -12,6 +12,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import sendPush from "@/lib/client-send-push"
+import errorTransmission from "@/lib/errorTransmission"
 
 // productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
@@ -50,16 +51,24 @@ export default function ProductDetail({ productId }) {
 
   // 승인 버튼
   async function handleConfirm() {
-    let newInfo = productInfo
-    newInfo.isConfirmed = true
-    newInfo.confirmedBy = currentUser.id
-    newInfo.rejectedReason = null
+    try {
+      let newInfo = productInfo
+      newInfo.isConfirmed = true
+      newInfo.confirmedBy = currentUser.id
+      newInfo.rejectedReason = null
 
-    await pb.collection("products").update(productInfo.id, newInfo)
-    setModal(`승인되었습니다.`)
-    sendPush(productInfo.seller, "자율위원회", "등록한 물품이 승인되었습니다.")
+      await pb.collection("products").update(productInfo.id, newInfo)
+      setModal(`승인되었습니다.`)
+      sendPush(
+        productInfo.seller,
+        "자율위원회",
+        "등록한 물품이 승인되었습니다.",
+      )
 
-    router.push("/autonomy")
+      router.push("/autonomy")
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   //거절 버튼
@@ -82,7 +91,7 @@ export default function ProductDetail({ productId }) {
       setModal(`반려 처리되었습니다. 사유: "${data.type}"`)
     } catch (e) {
       setModal("반려 처리 오류")
-      console.log(e)
+      errorTransmission(e)
     }
 
     await router.push("/autonomy")
@@ -104,7 +113,7 @@ export default function ProductDetail({ productId }) {
         setIsLoading(false)
       } catch (e) {
         setIsLoading(false)
-        console.log(e)
+        errorTransmission(e)
       }
     }
     getProductInfo()

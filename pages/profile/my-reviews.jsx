@@ -4,6 +4,7 @@ import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function MyReviews() {
   const [reviewsTo, setReviewsTo] = useState([])
@@ -11,16 +12,20 @@ export default function MyReviews() {
 
   useEffect(() => {
     async function getMyReviews() {
-      let reviews = await pb.collection("reviews").getFullList({
-        filter: `to.id="${pb.authStore.model?.id}"`,
-        expand: "from",
-      })
-      setReviewsFrom(reviews)
-      reviews = await pb.collection("reviews").getFullList({
-        filter: `from.id="${pb.authStore.model?.id}"`,
-        expand: "to",
-      })
-      setReviewsTo(reviews)
+      try {
+        let reviews = await pb.collection("reviews").getFullList({
+          filter: `to.id="${pb.authStore.model?.id}"`,
+          expand: "from",
+        })
+        setReviewsFrom(reviews)
+        reviews = await pb.collection("reviews").getFullList({
+          filter: `from.id="${pb.authStore.model?.id}"`,
+          expand: "to",
+        })
+        setReviewsTo(reviews)
+      } catch {
+        errorTransmission(e)
+      }
     }
     getMyReviews()
   }, [])

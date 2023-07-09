@@ -7,23 +7,31 @@ import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function MyProducts() {
   const [products, setProducts] = useState()
 
   useEffect(() => {
     async function getProducts() {
-      const list = await pb
-        .collection("users")
-        .getOne(pb.authStore.model?.id, { expand: "products(seller).seller" })
-      setProducts(list.expand["products(seller)"] ? list.expand["products(seller)"] : [])
+      try {
+        const list = await pb
+          .collection("users")
+          .getOne(pb.authStore.model?.id, { expand: "products(seller).seller" })
+        setProducts(
+          list.expand["products(seller)"]
+            ? list.expand["products(seller)"]
+            : [],
+        )
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
     getProducts()
   }, [])
 
   return (
     <Layout>
-
       <SEO title={"내 물품"} />
 
       {products ? 

@@ -11,6 +11,7 @@ import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import sendPush from "@/lib/client-send-push"
 import { usePbAuth } from "@/contexts/AuthWrapper"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -29,30 +30,38 @@ export default function MyReviews() {
   } = useForm()
 
   async function onSubmit(data) {
-    if (rating) {
-      const reviewData = {
-        product: productId,
-        to: sellerId,
-        from: pb.authStore.model?.id,
-        comment: data.review,
-        rate: rating,
-      }
+    try {
+      if (rating) {
+        const reviewData = {
+          product: productId,
+          to: sellerId,
+          from: pb.authStore.model?.id,
+          comment: data.review,
+          rate: rating,
+        }
 
-      const record = await pb.collection("reviews").create(reviewData)
-      const updateSeller = await pb
-        .collection("users")
-        .update(seller.id, { dignity: Number(seller.dignity) + Number(rating) })
-      sendPush(sellerId, user.name, "후기가 등록되었어요!")
-      router.push("/")
-    } else {
-      setModal("후기를 입력해주세요.")
+        await pb.collection("reviews").create(reviewData)
+        await pb.collection("users").update(seller.id, {
+          dignity: Number(seller.dignity) + Number(rating),
+        })
+        sendPush(sellerId, user.name, "후기가 등록되었어요!")
+        router.push("/")
+      } else {
+        setModal("후기를 입력해주세요.")
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   useEffect(() => {
     async function getSellerInfo() {
-      const sellerInfo = await pb.collection("users").getOne(sellerId)
-      setSeller(sellerInfo)
+      try {
+        const sellerInfo = await pb.collection("users").getOne(sellerId)
+        setSeller(sellerInfo)
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
     getSellerInfo()
   }, [sellerId])

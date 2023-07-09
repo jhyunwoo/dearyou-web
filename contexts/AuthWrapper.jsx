@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import pb from "../lib/pocketbase"
+import errorTransmission from "@/lib/errorTransmission"
 
 const AuthContext = createContext(null)
 
@@ -12,28 +13,36 @@ const AuthWrapper = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const authMethods = await pb
-        .collection("users")
-        .listAuthMethods()
-        .then((methods) => methods)
-        .catch((err) => {
-          console.error(err)
-        })
+      try {
+        const authMethods = await pb
+          .collection("users")
+          .listAuthMethods()
+          .then((methods) => methods)
+          .catch((err) => {
+            console.error(err)
+          })
 
-      if (authMethods)
-        for (const provider of authMethods.authProviders) {
-          if (provider.name === "kakao") setKakaoAuthProvider(provider)
-        }
+        if (authMethods)
+          for (const provider of authMethods.authProviders) {
+            if (provider.name === "kakao") setKakaoAuthProvider(provider)
+          }
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
 
     initAuth()
 
     async function getUserData() {
-      if (pb.authStore.model) {
-        const userData = await pb
-          .collection("users")
-          .getOne(pb.authStore.model.id)
-        setUserData(userData)
+      try {
+        if (pb.authStore.model) {
+          const userData = await pb
+            .collection("users")
+            .getOne(pb.authStore.model.id)
+          setUserData(userData)
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     getUserData()
