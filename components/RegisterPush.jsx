@@ -1,4 +1,3 @@
-import errorTransmission from "@/lib/errorTransmission"
 import pb from "@/lib/pocketbase"
 import { isNoti, modalState } from "@/lib/recoil"
 import { BellIcon } from "@heroicons/react/24/outline"
@@ -13,36 +12,33 @@ export default function RegisterPush() {
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
-    try {
-      if (pb.authStore.model?.id) {
-        const jsonPushInfo = JSON.stringify(subscription)
-        const pushInfo = JSON.parse(jsonPushInfo)
-        const data = {
-          endpoint: pushInfo.endpoint,
-          expirationTime: pushInfo.expirationTime,
-          auth: pushInfo.keys.auth,
-          p256dh: pushInfo.keys.p256dh,
-          user: pb.authStore.model.id,
-        }
-
-        try {
-          await pb.collection("pushInfos").create(data)
-          setModal("알림이 등록되었습니다.")
-          window.localStorage.setItem("pushInfo", "true")
-          setNoti(true)
-        } catch {
-          setModal("이미 등록된 기기입니다.")
-          window.localStorage.setItem("pushInfo", "true")
-          setNoti(true)
-        }
+    console.log("push info")
+    if (pb.authStore.model?.id) {
+      const jsonPushInfo = JSON.stringify(subscription)
+      const pushInfo = JSON.parse(jsonPushInfo)
+      const data = {
+        endpoint: pushInfo.endpoint,
+        expirationTime: pushInfo.expirationTime,
+        auth: pushInfo.keys.auth,
+        p256dh: pushInfo.keys.p256dh,
+        user: pb.authStore.model.id,
       }
-    } catch (e) {
-      errorTransmission(e)
+
+      try {
+        await pb.collection("pushInfos").create(data)
+        window.localStorage.setItem("pushInfo", "true")
+        setModal("알림이 등록되었습니다.")
+        setNoti(true)
+      } catch (e) {
+        window.localStorage.setItem("pushInfo", "true")
+        setModal("이미 등록된 기기입니다.")
+        setNoti(true)
+      }
     }
   }
 
   function isIOS() {
-    const agent = navigator?.userAgent.toLowerCase()
+    const agent = navigator.userAgent.toLowerCase()
     return (
       agent.includes("iphone") ||
       agent.includes("ipad") ||
@@ -52,52 +48,48 @@ export default function RegisterPush() {
   }
 
   async function register() {
-    try {
-      const result = await window.Notification.requestPermission()
-      if (result === "denied") {
-        setModal("알림이 거부됨")
-        return
-      } else {
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.pushManager
-            .getSubscription()
-            .then(async (subscription) => {
-              if (subscription) {
-                pushInfo(subscription)
-              } else {
-                registration.pushManager
-                  .subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey:
-                      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
-                  })
-                  .then(async (subscription) => {
-                    pushInfo(subscription)
-                  })
-              }
-            })
-        })
-      }
-    } catch (e) {
-      errorTransmission(e)
+    console.log("start register")
+    const result = await window.Notification.requestPermission()
+    if (result === "denied") {
+      setModal("알림이 거부됨")
+      return
+    } else {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.pushManager
+          .getSubscription()
+          .then(async (subscription) => {
+            if (subscription) {
+              pushInfo(subscription)
+            } else {
+              registration.pushManager
+                .subscribe({
+                  userVisibleOnly: true,
+                  applicationServerKey:
+                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+                })
+                .then(async (subscription) => {
+                  pushInfo(subscription)
+                })
+            }
+          })
+      })
     }
   }
 
   useEffect(() => {
-    try {
-      if (isIOS() && !("standalone" in window.navigator)) {
-        window.localStorage.setItem("pushInfo", "true")
-        setNoti(true)
-      } else {
+    if (isIOS() && !("standalone" in window.navigator)) {
+      window.localStorage.setItem("pushInfo", "true")
+      setNoti(true)
+    } else {
+      try {
         if (Notification?.permission === "granted") {
           setNoti(true)
         } else {
           setNoti(false)
         }
+      } catch {
+        setNoti(false)
       }
-    } catch (e) {
-      setNoti(false)
-      errorTransmission(e)
     }
   }, [router, setNoti])
 
