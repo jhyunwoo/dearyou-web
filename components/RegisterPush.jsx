@@ -13,28 +13,31 @@ export default function RegisterPush() {
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
-    if (pb.authStore.model?.id) {
-      const jsonPushInfo = JSON.stringify(subscription)
-      const pushInfo = JSON.parse(jsonPushInfo)
-      const data = {
-        endpoint: pushInfo.endpoint,
-        expirationTime: pushInfo.expirationTime,
-        auth: pushInfo.keys.auth,
-        p256dh: pushInfo.keys.p256dh,
-        user: pb.authStore.model.id,
-      }
+    try {
+      if (pb.authStore.model?.id) {
+        const jsonPushInfo = JSON.stringify(subscription)
+        const pushInfo = JSON.parse(jsonPushInfo)
+        const data = {
+          endpoint: pushInfo.endpoint,
+          expirationTime: pushInfo.expirationTime,
+          auth: pushInfo.keys.auth,
+          p256dh: pushInfo.keys.p256dh,
+          user: pb.authStore.model.id,
+        }
 
-      try {
-        await pb.collection("pushInfos").create(data)
-        window.localStorage.setItem("pushInfo", "true")
-        setModal("알림이 등록되었습니다.")
-        setNoti(true)
-      } catch (e) {
-        window.localStorage.setItem("pushInfo", "true")
-        setModal("이미 등록된 기기입니다.")
-        setNoti(true)
-        errorTransmission(e)
+        try {
+          await pb.collection("pushInfos").create(data)
+          setModal("알림이 등록되었습니다.")
+          window.localStorage.setItem("pushInfo", "true")
+          setNoti(true)
+        } catch {
+          setModal("이미 등록된 기기입니다.")
+          window.localStorage.setItem("pushInfo", "true")
+          setNoti(true)
+        }
       }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
