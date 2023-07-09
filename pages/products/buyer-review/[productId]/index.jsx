@@ -8,6 +8,7 @@ import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -66,6 +67,7 @@ export default function MyReviews() {
 
   return (
     <Layout>
+      <SEO title={"거래 후기"} />
       {sellerId === pb.authStore.model?.id ? (
         <div className="dark:text-white">이미 후기를 남기셨습니다.</div>
       ) : (

@@ -1,3 +1,5 @@
+import SEO from "@/components/SEO"
+
 export function Paragraph(props) {
   return (
     <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-lg dark:text-white">
@@ -27,6 +29,7 @@ export function Text(props) {
 export default function Privacy() {
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex flex-col space-y-2">
+      <SEO title={"Privacy"} />
       <div className="text-xl font-bold dark:text-white">
         드려유 개인정보처리방침
       </div>

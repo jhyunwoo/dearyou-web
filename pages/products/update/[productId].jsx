@@ -8,6 +8,7 @@ import Loading from "@/components/Loading"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import BottomBar from "@/components/BottomBar"
+import SEO from "@/components/SEO"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -86,6 +87,7 @@ export default function UpdateProduct({ productId }) {
   if (productInfo?.expand?.seller?.id === user?.id) {
     return (
       <>
+        <SEO title={"정보 수정"} />
         <BottomBar />
         {isLoading ? <Loading /> : ""}
         <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>

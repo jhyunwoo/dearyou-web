@@ -7,6 +7,7 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
+import SEO from "@/components/SEO"
 
 export default function ChatList() {
   const { user } = usePbAuth()
@@ -40,6 +41,7 @@ export default function ChatList() {
 
   return (
     <Layout>
+      <SEO title={"Chats"} />
       <div className="grid grid-cols gap-3 mt-2">
         {chats.length < 1 ? (
           <div className="dark:text-white text-center p-4">

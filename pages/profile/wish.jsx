@@ -6,6 +6,7 @@ import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
+import SEO from "@/components/SEO"
 
 export default function WishPage() {
   const [products, setProducts] = useState(false)
@@ -26,6 +27,9 @@ export default function WishPage() {
 
   return (
     <Layout>
+
+      <SEO title={"관심 목록"} />
+
       {products ? 
       (<ProductGrid>
         {products?.length === 0 ? (

@@ -8,6 +8,7 @@ import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
+import SEO from "@/components/SEO"
 
 export default function Search() {
   const [searched, setSearched] = useState([])
@@ -136,11 +137,12 @@ export default function Search() {
   }
 
   return (
-      <Layout>
-        <SearchBar />
-        <ItemList data={searched} />
-        <HeadBar title={"검색"} />
-        <BottomBar />
-      </Layout>
+    <Layout>
+      <SEO title={"Search"} />
+      <SearchBar />
+      <ItemList data={searched} />
+      <HeadBar title={"검색"} />
+      <BottomBar />
+    </Layout>
   )
 }
