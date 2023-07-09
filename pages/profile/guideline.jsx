@@ -62,7 +62,7 @@ export default function Guideline() {
                 <Paragraph>
                      &apos;드려유&apos;는 
                     우리 <span className="text-blue-400">충남삼성고</span>에서
-                    교과서, 풀지 않은 문제집, 학용품 등을 쉽게 나누고 거래할 수 있는
+                    교과서, 풀지 않은 문제집, 학용품 등을 쉽게 나누고 교환할 수 있는
                     온라인 플랫폼입니다!
                 </Paragraph>
                 <Paragraph>
@@ -112,7 +112,7 @@ export default function Guideline() {
                 <Title>이외 주의사항</Title>
                 <Paragraph>
                     비매너 채팅 금지, 초상권 침해 금지 등은 굳이 말하지 않아도 되겠죠?
-                    CNSAian의 품격을 지켜 주세요! (만약 불미스러운 일이 발생한다면
+                    CNSAian의 품격을 지켜 주세요! (만일 불미스러운 일이 발생한다면
                     운영진은 사용자에게 계정 차단 조치를 취할 수 있으며, 활동 기록을 
                     조회하는 것도 가능합니다.)
                 </Paragraph>
