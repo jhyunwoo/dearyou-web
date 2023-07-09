@@ -13,32 +13,28 @@ export default function RegisterPush() {
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
-    try {
-      if (pb.authStore.model?.id) {
-        const jsonPushInfo = JSON.stringify(subscription)
-        const pushInfo = JSON.parse(jsonPushInfo)
-        const data = {
-          endpoint: pushInfo.endpoint,
-          expirationTime: pushInfo.expirationTime,
-          auth: pushInfo.keys.auth,
-          p256dh: pushInfo.keys.p256dh,
-          user: pb.authStore.model.id,
-        }
-
-        try {
-          const pushInfo = await pb.collection("pushInfos").create(data)
-          console.log(pushInfo)
-          setModal("알림이 등록되었습니다.")
-          window.localStorage.setItem("pushInfo", "true")
-          setNoti(true)
-        } catch {
-          setModal("이미 등록된 기기입니다.")
-          window.localStorage.setItem("pushInfo", "true")
-          setNoti(true)
-        }
+    if (pb.authStore.model?.id) {
+      const jsonPushInfo = JSON.stringify(subscription)
+      const pushInfo = JSON.parse(jsonPushInfo)
+      const data = {
+        endpoint: pushInfo.endpoint,
+        expirationTime: pushInfo.expirationTime,
+        auth: pushInfo.keys.auth,
+        p256dh: pushInfo.keys.p256dh,
+        user: pb.authStore.model.id,
       }
-    } catch (e) {
-      errorTransmission(e)
+
+      try {
+        const pushInfo = await pb.collection("pushInfos").create(data)
+        console.log(pushInfo)
+        setModal("알림이 등록되었습니다.")
+        window.localStorage.setItem("pushInfo", "true")
+        setNoti(true)
+      } catch {
+        setModal("이미 등록된 기기입니다.")
+        window.localStorage.setItem("pushInfo", "true")
+        setNoti(true)
+      }
     }
   }
 
@@ -53,34 +49,30 @@ export default function RegisterPush() {
   }
 
   async function register() {
-    try {
-      const result = await window.Notification.requestPermission()
-      if (result === "denied") {
-        setModal("알림이 거부됨")
-        return
-      } else {
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.pushManager
-            .getSubscription()
-            .then(async (subscription) => {
-              if (subscription) {
-                pushInfo(subscription)
-              } else {
-                registration.pushManager
-                  .subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey:
-                      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
-                  })
-                  .then(async (subscription) => {
-                    pushInfo(subscription)
-                  })
-              }
-            })
-        })
-      }
-    } catch (e) {
-      errorTransmission(e)
+    const result = await window.Notification.requestPermission()
+    if (result === "denied") {
+      setModal("알림이 거부됨")
+      return
+    } else {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.pushManager
+          .getSubscription()
+          .then(async (subscription) => {
+            if (subscription) {
+              pushInfo(subscription)
+            } else {
+              registration.pushManager
+                .subscribe({
+                  userVisibleOnly: true,
+                  applicationServerKey:
+                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+                })
+                .then(async (subscription) => {
+                  pushInfo(subscription)
+                })
+            }
+          })
+      })
     }
   }
 
