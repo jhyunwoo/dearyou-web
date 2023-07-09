@@ -7,6 +7,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 
 module.exports = withPWA({
   reactStrictMode: true,
+  siteUrl: "https://dearyou.moveto.kr",
   images: {
     remotePatterns: [
       {
