@@ -46,3 +46,5 @@ AuthKey_22XXFTR3RC.p8
 sw.js
 sw.js.map
 workbox-*
+
+.env

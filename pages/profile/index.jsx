@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-import pb from "@/lib/pocketbase"
 import {
   CheckBadgeIcon,
   Cog6ToothIcon,
@@ -12,6 +11,7 @@ import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import SEO from "@/components/SEO"
+import RegisterPush from "@/components/RegisterPush"
 
 export default function Profile() {
   const { user, signOut } = usePbAuth()
@@ -58,8 +58,9 @@ export default function Profile() {
           <div className="dark:text-white">{user?.email}</div>
 
           <div className=" flex flex-col my-4 justify-center items-center">
+            <RegisterPush />
             <button
-              className="bg-red-500 dark:text-white hover:bg-red-600 transition duration-200 text-white p-1 px-4 rounded-full mb-2"
+              className="bg-red-500 mt-2 dark:text-black font-semibold hover:bg-red-600 transition duration-200 text-white p-1 px-4 rounded-full mb-2"
               onClick={signOut}
             >
               로그아웃
@@ -102,7 +103,7 @@ export default function Profile() {
           href={"/profile/guideline"}
           className=" bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-slate-800  transition duration-200 p-4 rounded-xl dark:text-white flex items-center"
         >
-          <QuestionMarkCircleIcon className="w-6 stroke-slate-600 h-6 mr-1"/>
+          <QuestionMarkCircleIcon className="w-6 stroke-slate-600 h-6 mr-1" />
           도움말
         </Link>
         {user?.admin ? (
