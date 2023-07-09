@@ -200,13 +200,7 @@ export default function Chat({ chatId }) {
 
   return (
     <div>
-      <SEO
-        title={
-          "Chat: " + user?.id === chatInfo?.user1
-            ? chatInfo?.expand?.user2?.name
-            : chatInfo?.expand?.user1?.name
-        }
-      />
+      <SEO title={"Chat"} />
       <div className="bg-slate-50 dark:bg-black min-h-screen">
         <div className="fixed top-0 right-0 left-0 p-2 bg-white dark:bg-gray-900 shadow-md flex items-center">
           <Link href={"/chats"}>

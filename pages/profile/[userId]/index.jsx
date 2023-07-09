@@ -61,7 +61,7 @@ export default function Profile() {
 
   return (
     <Layout>
-      <SEO title={user.name} />
+      <SEO title={"Profile"} />
       <BottomBar />
       <HeadBar title="프로필" />
       <div className="bg-white dark:bg-gray-900 w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
