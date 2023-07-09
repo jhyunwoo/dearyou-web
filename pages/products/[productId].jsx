@@ -233,7 +233,7 @@ export default function ProductDetail({ productId }) {
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (
-            <div className="relative sm:flex sm:bg-white dark:sm:bg-gray-900 dark:bg-gray-900 sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="relative sm:flex sm:bg-white dark:sm:bg-black dark:bg-black sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
               <ProductImageView
                 productInfo={productInfo}
                 productId={productId}
@@ -318,7 +318,7 @@ export default function ProductDetail({ productId }) {
                       물품 등록 승인 대기 중입니다.
                     </div>
                   )}
-                  <div className="w-full h-16 sm:h-0 dark:bg-gray-900"></div>
+                  <div className="w-full h-16 sm:h-0 dark:bg-black"></div>
                 </div>
               </div>
             </div>
