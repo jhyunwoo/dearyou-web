@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
@@ -66,6 +67,7 @@ export default function AddInfo() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex flex-col sm:justify-center sm:items-center dark:text-white">
+      <SEO title={"사용자 정보 변경"} />
       <div className="text-xl p-4 font-bold sm:fixed sm:top-0 sm:right-0 sm:left-0">
         사용자 정보 변경
       </div>

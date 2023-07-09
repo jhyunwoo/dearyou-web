@@ -4,10 +4,12 @@ import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import ProtectAdmin from "@/components/ProtectAdmin"
+import SEO from "@/components/SEO"
 
 export default function LogPage() {
   return (
     <ProtectAdmin>
+      <SEO title={"개발자 페이지"} />
       <BottomBar />
       <HeadBar title="개발자 페이지" />
       <Layout>

@@ -16,6 +16,7 @@ import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 // productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
@@ -105,6 +106,7 @@ export default function ProductDetail({ productId }) {
 
   return (
     <>
+      <SEO title={"자율위원 물품 검토"} />
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
@@ -117,59 +119,56 @@ export default function ProductDetail({ productId }) {
                 <div className="sm:flex sm:flex-col sm:w-52 md:w-80 lg:w-96">
                   <div className="p-4 sm:p-2 flex flex-col ">
                     <div className=" pb-2 border-b-2 flex flex-col ">
-                    <div className="flex justify-between">
-                      <div className="text-xl font-bold dark:text-white">
-                        {productInfo.name}
-                      </div>
-                      <div className="flex">
-                        <div className="flex items-end">
-                          <Link
-                            href={`/profile/${productInfo.expand.seller?.id}`}
-                            className="text-lg font-semibold dark:text-white"
-                          >
-                            {productInfo.expand.seller?.name} (
-                            {productInfo.expand.seller?.studentId})
-                          </Link>
+                      <div className="flex justify-between">
+                        <div className="text-xl font-bold dark:text-white">
+                          {productInfo.name}
+                        </div>
+                        <div className="flex">
+                          <div className="flex items-end">
+                            <Link
+                              href={`/profile/${productInfo.expand.seller?.id}`}
+                              className="text-lg font-semibold dark:text-white"
+                            >
+                              {productInfo.expand.seller?.name} (
+                              {productInfo.expand.seller?.studentId})
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
                       <div className="flex flex-col">
-                      <div className="ml-auto text-xl font-bold text-slate">
-                        {productInfo.isConfirmed ? (
-                          productInfo.soldDate ? (
-                            <span className="text-amber-500">나눔 완료</span>
+                        <div className="ml-auto text-xl font-bold text-slate">
+                          {productInfo.isConfirmed ? (
+                            productInfo.soldDate ? (
+                              <span className="text-amber-500">나눔 완료</span>
+                            ) : (
+                              <span className="text-amber-400">나눔 중</span>
+                            )
+                          ) : productInfo.rejectedReason ? (
+                            <div className="flex">
+                              <span className="text-red-500">반려됨{` `}</span>
+
+                              <Link
+                                href={`/profile/${productInfo.expand.confirmedBy?.id}`}
+                                className="text-slate-500 ml-1"
+                              >
+                                (검토인: {productInfo.expand.confirmedBy?.name})
+                              </Link>
+                            </div>
                           ) : (
-                            <span className="text-amber-400">나눔 중</span>
-                          )
-                        ) : productInfo.rejectedReason ? (
-                          <div className="flex">
-                          <span className="text-red-500">
-                            반려됨{` `}
-                          </span>
-                          
-                          <Link
-                            href={`/profile/${productInfo.expand.confirmedBy?.id}`}
-                            className="text-slate-500 ml-1"
-                          >
-                            (검토인: {productInfo.expand.confirmedBy?.name})
-                          </Link>
+                            <span className="text-amber-500">승인 대기 중</span>
+                          )}
+                        </div>
+                        <div className="text-lg mt-4 mb-2 border-b-2">
+                          {productInfo.explain}
+                        </div>
+                        <div className="flex items-center">
+                          <div className="">종류: {productInfo.type}</div>
+                          <div className="mr-2 ml-auto text-sm text-slate-500">
+                            {getUploadedTime(productInfo.created)} 등록
                           </div>
-                        ) : (
-                          <span className="text-amber-500">승인 대기 중</span>
-                        )}
-                      </div>
-                      <div className="text-lg mt-4 mb-2 border-b-2">
-                        {productInfo.explain}
-                      </div>
-                      <div className="flex items-center">
-                        <div className="">종류: {productInfo.type}</div>
-                        <div className="mr-2 ml-auto text-sm text-slate-500">
-                          {getUploadedTime(productInfo.created)} 등록
                         </div>
                       </div>
-                    </div>
-
                     </div>
                   </div>
                 </div>

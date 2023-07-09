@@ -8,6 +8,7 @@ import AutonomyPage from "@/components/AutonomyPage"
 import Loading from "@/components/Loading"
 import { useInView } from "react-intersection-observer"
 import { usePbAuth } from "@/contexts/AuthWrapper"
+import SEO from "@/components/SEO"
 
 export default function Autonomy() {
   const [products, setProducts] = useState([])
@@ -51,6 +52,7 @@ export default function Autonomy() {
 
   return (
     <AutonomyPage>
+      <SEO title={"물품 승인 관리"} />
       {isLoading ? <Loading /> : ""}
       <div
         href={"/autonomy"}

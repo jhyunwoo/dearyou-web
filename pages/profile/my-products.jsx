@@ -6,6 +6,7 @@ import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
+import SEO from "@/components/SEO"
 
 export default function MyProducts() {
   const [products, setProducts] = useState([])
@@ -22,6 +23,7 @@ export default function MyProducts() {
 
   return (
     <Layout>
+      <SEO title={"내 물품"} />
       <ProductGrid>
         {products?.length === 0 ? (
           <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">

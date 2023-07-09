@@ -10,12 +10,14 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
+import SEO from "@/components/SEO"
 
 export default function Profile() {
   const { user, signOut } = usePbAuth()
 
   return (
     <Layout>
+      <SEO title={"Profile"} />
       <div className="bg-white dark:bg-gray-900 w-full p-4 flex flex-col hover:shadow-lg transidion duration-200">
         <div className="flex">
           {user?.avatar ? (

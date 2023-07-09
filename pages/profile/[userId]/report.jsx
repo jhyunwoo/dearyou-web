@@ -8,6 +8,7 @@ import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export default function Report() {
   const currentUser = usePbAuth().user
@@ -71,6 +72,7 @@ export default function Report() {
   ]
   return (
     <Layout>
+      <SEO title={"신고"} />
       <BottomBar />
       <HeadBar title="프로필" />
       <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">

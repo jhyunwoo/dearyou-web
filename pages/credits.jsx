@@ -3,10 +3,12 @@ import Link from "next/link"
 import Layout from "@/components/Layout"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import BottomBar from "@/components/BottomBar"
+import SEO from "@/components/SEO"
 
 export default function Profile() {
   return (
     <Layout>
+      <SEO title={"Credits"} />
       <BottomBar />
       <div className="mx-auto text-center dark:text-white">
         <div className="">

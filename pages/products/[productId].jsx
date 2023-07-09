@@ -11,6 +11,7 @@ import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -197,6 +198,7 @@ export default function ProductDetail({ productId }) {
 
   return (
     <>
+      <SEO title={productInfo.name} />
       {productInfo ? (
         <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pb-24">
           {productInfo ? (

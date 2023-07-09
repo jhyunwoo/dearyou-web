@@ -8,6 +8,7 @@ import {
 import BottomBar from "@/components/BottomBar"
 import Layout from "@/components/Layout"
 import ProtectAdmin from "@/components/ProtectAdmin"
+import SEO from "@/components/SEO"
 
 export default function ChatLogPage() {
   const [searched, setSearched] = useState([])
@@ -125,6 +126,7 @@ export default function ChatLogPage() {
 
   return (
     <ProtectAdmin>
+      <SEO title={"채팅 로그 조회"} />
       <div className="w-full bg-slate-50 dark:bg-black p-3  flex items-center justify-start fixed top-0 right-0 left-0">
         <Link href={"/devpage"}>
           <ArrowLeftCircleIcon className="w-8 h-8 dark:text-white" />
