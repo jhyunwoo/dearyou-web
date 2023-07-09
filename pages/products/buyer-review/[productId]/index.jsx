@@ -9,6 +9,8 @@ import BottomBar from "@/components/BottomBar"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import sendPush from "@/lib/client-send-push"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -17,6 +19,8 @@ export default function MyReviews() {
   const [seller, setSeller] = useState()
 
   const setModal = useSetRecoilState(modalState)
+
+  const { user } = usePbAuth()
 
   const {
     register,
@@ -37,8 +41,8 @@ export default function MyReviews() {
       const record = await pb.collection("reviews").create(reviewData)
       const updateSeller = await pb
         .collection("users")
-        .update(seller.id, { dignity: seller.dignity + rating })
-
+        .update(seller.id, { dignity: Number(seller.dignity) + Number(rating) })
+      sendPush(sellerId, user.name, "후기가 등록되었어요!")
       router.push("/")
     } else {
       setModal("후기를 입력해주세요.")
