@@ -9,7 +9,13 @@ import Image from "next/image"
 import Link from "next/link"
 import pb from "@/lib/pocketbase"
 import { useInView } from "react-intersection-observer"
-import { CheckBadgeIcon, Cog6ToothIcon, FireIcon, MegaphoneIcon } from "@heroicons/react/24/outline"
+import {
+  CheckBadgeIcon,
+  Cog6ToothIcon,
+  FireIcon,
+  MegaphoneIcon,
+} from "@heroicons/react/24/outline"
+import SEO from "@/components/SEO"
 
 export default function Profile() {
   const router = useRouter()
@@ -55,6 +61,9 @@ export default function Profile() {
 
   return (
     <Layout>
+      <SEO title={"Profile"} />
+      <BottomBar />
+      <HeadBar title="프로필" />
       <div className="bg-white dark:bg-gray-900 w-full  p-4 flex flex-col hover:shadow-lg transidion duration-200">
         <div className="flex">
           {user?.avatar ? (
@@ -86,11 +95,11 @@ export default function Profile() {
             <div>
               <div className="flex items-center text-xl font-bold dark:text-white">
                 {user?.name}
-                {user?.logPermission ? 
-                  <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : 
-                  user?.autonomy ? 
-                  <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600"/> : null
-                }
+                {user?.logPermission ? (
+                  <Cog6ToothIcon className="w-6 h-6 ml-1 stroke-slate-600" />
+                ) : user?.autonomy ? (
+                  <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600" />
+                ) : null}
               </div>
               <div className="dark:text-white">{user?.studentId}</div>
             </div>
@@ -110,8 +119,6 @@ export default function Profile() {
           className="h-6 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
         />
       </ProductGrid>
-      <BottomBar />
-      <HeadBar title="프로필" />
     </Layout>
   )
 }

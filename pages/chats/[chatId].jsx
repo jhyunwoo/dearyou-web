@@ -11,6 +11,7 @@ import {
   ArrowUpIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline"
+import SEO from "@/components/SEO"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 
 /** 주소에서 chatId 가져오기 */
@@ -201,6 +202,7 @@ export default function Chat({ chatId }) {
 
   return (
     <div>
+      <SEO title={"Chat"} />
       <div className="bg-slate-50 dark:bg-black min-h-screen">
         <div className="fixed top-0 right-0 left-0 p-2 bg-white dark:bg-gray-900 shadow-md flex items-center">
           <Link href={"/chats"}>

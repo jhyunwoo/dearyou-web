@@ -9,6 +9,7 @@ import BottomBar from "@/components/BottomBar"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -105,6 +106,7 @@ export default function MyReviews() {
 
   return (
     <Layout>
+      <SEO title={"거래 후기"} />
       <div>
         <div className="text-lg font-semibold my-2 dark:text-white">
           나눔(거래)한 사람

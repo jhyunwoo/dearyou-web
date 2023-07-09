@@ -3,6 +3,7 @@ import pb from "@/lib/pocketbase"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import BottomBar from "@/components/BottomBar"
+import SEO from "@/components/SEO"
 
 export default function MyReviews() {
   const [reviewsTo, setReviewsTo] = useState([])
@@ -26,6 +27,7 @@ export default function MyReviews() {
 
   return (
     <Layout>
+      <SEO title={"거래 후기"} />
       <div className="mt-2 w-full grid grid-cols-1 gap-2">
         <div className="text-lg dark:text-white">내가 받은 후기</div>
         {reviewsFrom.map((data, key) => (

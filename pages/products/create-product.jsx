@@ -7,6 +7,7 @@ import ProductInfoForm from "@/components/ProductInfoForm"
 import BottomBar from "@/components/BottomBar"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
+import SEO from "@/components/SEO"
 
 export default function CreateProduct() {
   const imgRef = useRef()
@@ -77,6 +78,7 @@ export default function CreateProduct() {
 
   return (
     <div className="w-full min-h-screen sm:flex sm:flex-col bg-slate-50 dark:bg-black p-4">
+      <SEO title={"물품 등록"} />
       {isLoading ? <Loading /> : ""}
       <div className="text-xl font-bold dark:text-white">물품 등록</div>
       <div className="sm:flex sm:justify-center sm:items-start">

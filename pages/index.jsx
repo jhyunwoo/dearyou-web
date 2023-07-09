@@ -7,6 +7,8 @@ import Layout from "@/components/Layout"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import FloattingBar from "@/components/FloattingBar"
+import Head from "next/head"
+import SEO from "@/components/SEO"
 
 export default function Home() {
   const [products, setProducts] = useState([])
@@ -36,19 +38,20 @@ export default function Home() {
   }, [fetch, hasNextPage, inView])
 
   return (
-      <Layout>
-        <ProductGrid>
-          {products.map((data, key) => (
-            <ProductCard data={data} key={key} />
-          ))}
-          <div
-            ref={ref}
-            className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
-          />
-        </ProductGrid>
-        <HeadBar title="드려유" />
-        <BottomBar />
-        <FloattingBar />
-      </Layout>
+    <Layout>
+      <SEO title={"Home"} />
+      <ProductGrid>
+        {products.map((data, key) => (
+          <ProductCard data={data} key={key} />
+        ))}
+        <div
+          ref={ref}
+          className="h-8 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4"
+        />
+      </ProductGrid>
+      <HeadBar title="드려유" />
+      <BottomBar />
+      <FloattingBar />
+    </Layout>
   )
 }
