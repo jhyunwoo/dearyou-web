@@ -215,14 +215,6 @@ export default function Chat({ chatId }) {
     readMessage()
   }, [messages])
 
-  useEffect(() => {
-    sendPush(
-      user.id,
-      "전현우",
-      "안녕하세요. '새달고나'에 대해 문의하고 싶어요!",
-    )
-  }, [])
-
   return (
     <div>
       <SEO title={"Chat"} />
