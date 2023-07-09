@@ -5,6 +5,7 @@ import pb from "@/lib/pocketbase"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
@@ -24,44 +25,48 @@ export default function AddInfo() {
 
   /** 사용자가 입력한 이름과 학번을 사용자 계정에 업데이트 */
   async function onSubmit(data) {
-    const userUpdate = {
-      name: data.userName,
-      studentId: data.studentId,
-    }
-    if (validStudentId) {
-      try {
+    try {
+      const userUpdate = {
+        name: data.userName,
+        studentId: data.studentId,
+      }
+      if (validStudentId) {
         await pb.collection("users").update(pb.authStore.model.id, userUpdate)
         // 데이터 업데이트 완료 후 사용자를 메인 페이지로 이동
         await router.replace("/profile/guideline")
         router.reload()
-      } catch {
-        console.error("error")
+      } else {
+        setModal("학번을 확인해야 합니다.")
       }
-    } else {
-      setModal("학번을 확인해야 합니다.")
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   /** 사용자가 입력한 학번이 등록된 학번인지 확인 */
   async function checkStudentId() {
-    if (watch("studentId")) {
-      const records = await pb.collection("users").getFullList({
-        filter: `studentId = ${getValues("studentId")}`,
-      })
+    try {
+      if (watch("studentId")) {
+        const records = await pb.collection("users").getFullList({
+          filter: `studentId = ${getValues("studentId")}`,
+        })
 
-      if (
-        records.length > 0 &&
-        records[0]?.studentId !== pb?.authStore?.model?.studentId
-      ) {
-        setModal("이미 등록된 학번입니다.")
-      } else if (Number(watch("studentId")) > 210101) {
-        setModal("등록 가능한 학번입니다.")
-        setValidStudentId(true)
+        if (
+          records.length > 0 &&
+          records[0]?.studentId !== pb?.authStore?.model?.studentId
+        ) {
+          setModal("이미 등록된 학번입니다.")
+        } else if (Number(watch("studentId")) > 210101) {
+          setModal("등록 가능한 학번입니다.")
+          setValidStudentId(true)
+        } else {
+          setModal("올바른 학번을 입력하세요.")
+        }
       } else {
-        setModal("올바른 학번을 입력하세요.")
+        setModal("학번을 입력하세요.")
       }
-    } else {
-      setModal("학번을 입력하세요.")
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 

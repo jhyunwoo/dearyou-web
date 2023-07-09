@@ -9,6 +9,7 @@ import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 
 // 등록 가능한 물품 종류
@@ -21,6 +22,7 @@ export default function Search() {
   const [searchType, setSearchType] = useState(typeOptions[0])
   const [openOnly, setOpenOnly] = useState(true)
   const searchInput = useRef("")
+
 
   async function doSearch(word, isOpenOnly, type) {
     if (word.length === 0) return
@@ -39,17 +41,24 @@ export default function Search() {
       expand: "seller",
     })
 
-    // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(searchResult)
+      // 화면에 표시할 정보만을 담은 'searched' state 설정
+      setSearched(searchResult)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   async function handleSearch(event) {
-    event.preventDefault()
-    let word = searchInput?.current?.value // 검색어
-    if (word.length === 0) return
+    try {
+      event.preventDefault()
+      let word = searchInput?.current?.value // 검색어
+      if (word.length === 0) return
+      setSearchWord(word)
+     await doSearch(word, openOnly, searchType)
+    } catch (e) {
+      errorTransmission(e)
+    }
 
-    setSearchWord(word)
-    await doSearch(word, openOnly, searchType)
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장

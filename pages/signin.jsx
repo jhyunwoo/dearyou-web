@@ -5,6 +5,7 @@ import pb from "@/lib/pocketbase"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import Loading from "@/components/Loading"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function SignIn() {
   const { setUserData, kakaoSignIn } = usePbAuth()
@@ -12,40 +13,44 @@ export default function SignIn() {
   const router = useRouter()
 
   useEffect(() => {
-    const localAuthProvider = JSON.parse(localStorage.getItem("provider"))
-    const params = new URL(location.href).searchParams
-    const redirectUrl = `${location.origin}/signin`
-    const code = params.get("code")
+    try {
+      const localAuthProvider = JSON.parse(localStorage.getItem("provider"))
+      const params = new URL(location.href).searchParams
+      const redirectUrl = `${location.origin}/signin`
+      const code = params.get("code")
 
-    const storeUserAndRedirect = (user) => {
-      setUserData(user)
-      router.replace("/")
-    }
+      const storeUserAndRedirect = (user) => {
+        setUserData(user)
+        router.replace("/")
+      }
 
-    // 리다이렉트 되지 않으면 로그인 취소
-    if (
-      !localAuthProvider ||
-      !code ||
-      localAuthProvider.state !== params.get("state")
-    )
-      return
-    setIsLoading(true)
-    pb.collection("users")
-      .authWithOAuth2Code(
-        localAuthProvider.name,
-        code,
-        localAuthProvider.codeVerifier,
-        redirectUrl,
-        {
-          emailVisibility: false,
-        },
-        { $autoCancel: false },
+      // 리다이렉트 되지 않으면 로그인 취소
+      if (
+        !localAuthProvider ||
+        !code ||
+        localAuthProvider.state !== params.get("state")
       )
-      .then(async (response) => {
-        const user = await pb.collection("users").getOne(response.record.id)
-        storeUserAndRedirect(user)
-      })
-    setIsLoading(false)
+        return
+      setIsLoading(true)
+      pb.collection("users")
+        .authWithOAuth2Code(
+          localAuthProvider.name,
+          code,
+          localAuthProvider.codeVerifier,
+          redirectUrl,
+          {
+            emailVisibility: false,
+          },
+          { $autoCancel: false },
+        )
+        .then(async (response) => {
+          const user = await pb.collection("users").getOne(response.record.id)
+          storeUserAndRedirect(user)
+        })
+      setIsLoading(false)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [])
 
   return (

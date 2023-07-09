@@ -12,6 +12,7 @@ import ProtectAdmin from "@/components/ProtectAdmin"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -68,30 +69,38 @@ export default function ChatLog({ chatId }) {
       if (messageList.items.length) {
         page.current += 1
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      errorTransmission(e)
     }
   }, [])
 
   useEffect(() => {
     /** 채팅 정보 가져오기 */
     async function getChatInfo() {
-      if (chatId) {
-        const info = await pb.collection("chats").getOne(chatId, {
-          expand: "user1,user2",
-        })
-        setChatInfo(info)
+      try {
+        if (chatId) {
+          const info = await pb.collection("chats").getOne(chatId, {
+            expand: "user1,user2",
+          })
+          setChatInfo(info)
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     /** 실시간 채팅을 위한 realtime 설정 */
     async function subscribeChat() {
-      if (chatId) {
-        pb.collection("chats").subscribe(chatId, async function (e) {
-          const newMessage = await pb
-            .collection("messages")
-            .getOne(e?.record?.messages)
-          setMessages((prev) => [...prev, newMessage])
-        })
+      try {
+        if (chatId) {
+          pb.collection("chats").subscribe(chatId, async function (e) {
+            const newMessage = await pb
+              .collection("messages")
+              .getOne(e?.record?.messages)
+            setMessages((prev) => [...prev, newMessage])
+          })
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     subscribeChat()
@@ -99,13 +108,21 @@ export default function ChatLog({ chatId }) {
   }, [chatId, updateUser])
 
   useEffect(() => {
-    /** infinite scroll 후 보던 메세지로 이동 */
-    infiniteRef?.current?.scrollIntoView()
+    try {
+      /** infinite scroll 후 보던 메세지로 이동 */
+      infiniteRef?.current?.scrollIntoView()
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [oldMessages])
 
   useEffect(() => {
-    /** 채팅 입력 후 스크롤 아래로 내리기 */
-    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
+    try {
+      /** 채팅 입력 후 스크롤 아래로 내리기 */
+      messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [messages])
 
   /** inView와 hasNextPage값이 참이면 추가 message 로드 */
@@ -117,24 +134,28 @@ export default function ChatLog({ chatId }) {
 
   function UserInfoPopUp() {
     async function handleUserBan(userId, isBanned) {
-      if (isBanned) {
-        const ban = await pb
-          .collection("users")
-          .update(userId, { isBanned: false })
-        setUpdateUser((prev) => prev + 1)
-        setUserInfoPopup(null)
-        if (ban) {
-          setModal(`${ban.name} 차단 해제`)
+      try {
+        if (isBanned) {
+          const ban = await pb
+            .collection("users")
+            .update(userId, { isBanned: false })
+          setUpdateUser((prev) => prev + 1)
+          setUserInfoPopup(null)
+          if (ban) {
+            setModal(`${ban.name} 차단 해제`)
+          }
+        } else {
+          const ban = await pb
+            .collection("users")
+            .update(userId, { isBanned: true })
+          setUpdateUser((prev) => prev + 1)
+          setUserInfoPopup(null)
+          if (ban) {
+            setModal(`${ban.name} 차단 완료`)
+          }
         }
-      } else {
-        const ban = await pb
-          .collection("users")
-          .update(userId, { isBanned: true })
-        setUpdateUser((prev) => prev + 1)
-        setUserInfoPopup(null)
-        if (ban) {
-          setModal(`${ban.name} 차단 완료`)
-        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     return (

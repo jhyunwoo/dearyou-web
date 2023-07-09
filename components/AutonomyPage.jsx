@@ -5,6 +5,7 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 export default function AutonomyPage(props) {
   const { user } = usePbAuth()
   const autonomy = user?.autonomy
+
   if (!autonomy) {
     return (
       <div className="w-full h-screen bg-slate-50 dark:bg-black flex justify-center items-center p-4">

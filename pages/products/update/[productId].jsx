@@ -9,6 +9,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import BottomBar from "@/components/BottomBar"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -27,60 +28,50 @@ export default function UpdateProduct({ productId }) {
 
   const setModal = useSetRecoilState(modalState)
 
-  const useWindowSize = () => {
-    const isClient = typeof window === "object"
-
-    const getSize = () => {
-      return { width: isClient ? window.innerWidth : undefined }
-    }
-    const [windowSize, setWindowSize] = useState(getSize)
-    useEffect(() => {
-      if (!isClient) {
-        return false
-      }
-      const handleResize = () => {
-        setWindowSize(getSize())
-      }
-      window.addEventListener("resize", handleResize)
-      return () => window.removeEventListener("resize", handleResize)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isClient])
-    return windowSize
-  }
-  const windows = useWindowSize()
-
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     async function getProductInfo() {
-      const record = await pb.collection("products").getOne(productId, {
-        expand: "seller",
-      })
-      setProductInfo(record)
+      try {
+        const record = await pb.collection("products").getOne(productId, {
+          expand: "seller",
+        })
+        setProductInfo(record)
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
 
     getProductInfo()
   }, [productId])
 
   async function onSubmit(data) {
-    setIsLoading(true)
-    let newInfo = productInfo
-    newInfo.name = data.name
-    newInfo.explain = data.explain
-    newInfo.type = data.type
-    newInfo.lastupdated = new Date().getTime()
+    try {
+      setIsLoading(true)
+      let newInfo = productInfo
+      newInfo.name = data.name
+      newInfo.explain = data.explain
+      newInfo.type = data.type
+      newInfo.lastupdated = new Date().getTime()
 
-    let result = await pb.collection("products").update(productId, newInfo)
-    setIsLoading(false)
-    router.replace("/")
+      let result = await pb.collection("products").update(productId, newInfo)
+      setIsLoading(false)
+      router.replace("/")
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   async function onDeleteProduct() {
-    if (window.confirm("물품을 정말 삭제할까요? (취소할 수 없습니다!)")) {
-      await pb.collection("products").delete(productId)
-      setModal("물품이 삭제되었습니다.")
-      router.replace("/")
+    try {
+      if (window.confirm("물품을 정말 삭제할까요? (취소할 수 없습니다!)")) {
+        await pb.collection("products").delete(productId)
+        setModal("물품이 삭제되었습니다.")
+        router.replace("/")
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
