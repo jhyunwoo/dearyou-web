@@ -4,7 +4,7 @@ export default function SEO(props) {
   const { title } = props
   return (
     <Head>
-      <title>드려유 | {title}</title>
+      <title>드려유 | {title ? title : ""}</title>
       <meta
         name="description"
         content="충남삼성고등학교 교내 물품 나눔 플랫폼"
