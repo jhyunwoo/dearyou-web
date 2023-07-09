@@ -11,10 +11,14 @@ import ProductGrid from "@/components/ProductGrid"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
 
-
 // 등록 가능한 물품 종류
-const typeOptions = ["모든 종류", "교과서", "문제집 / 인강 교재", "교양서", "기타"]
-
+const typeOptions = [
+  "모든 종류",
+  "교과서",
+  "문제집 / 인강 교재",
+  "교양서",
+  "기타",
+]
 
 export default function Search() {
   const [searched, setSearched] = useState([])
@@ -23,23 +27,23 @@ export default function Search() {
   const [openOnly, setOpenOnly] = useState(true)
   const searchInput = useRef("")
 
-
   async function doSearch(word, isOpenOnly, type) {
-    if (word.length === 0) return
+    try {
+      if (word.length === 0) return
 
-    let searchFilter = `(name~"${word}"||explain~"${word}"||seller.name~"${word}") && isConfirmed=True`
-    if(isOpenOnly){
-      searchFilter += ' && soldDate=null'
-    }
-    if(type != typeOptions[0]){
-      searchFilter += ` && type="${type}"`
-    }
+      let searchFilter = `(name~"${word}"||explain~"${word}"||seller.name~"${word}") && isConfirmed=True`
+      if (isOpenOnly) {
+        searchFilter += " && soldDate=null"
+      }
+      if (type != typeOptions[0]) {
+        searchFilter += ` && type="${type}"`
+      }
 
-    console.log(searchFilter);
-    const searchResult = await pb.collection("products").getFullList({
-      filter: searchFilter,
-      expand: "seller",
-    })
+      console.log(searchFilter)
+      const searchResult = await pb.collection("products").getFullList({
+        filter: searchFilter,
+        expand: "seller",
+      })
 
       // 화면에 표시할 정보만을 담은 'searched' state 설정
       setSearched(searchResult)
@@ -53,12 +57,12 @@ export default function Search() {
       event.preventDefault()
       let word = searchInput?.current?.value // 검색어
       if (word.length === 0) return
+
       setSearchWord(word)
-     await doSearch(word, openOnly, searchType)
+      await doSearch(word, openOnly, searchType)
     } catch (e) {
       errorTransmission(e)
     }
-
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장
@@ -99,7 +103,9 @@ export default function Search() {
             ))}
           </select>
           <div className="flex ml-auto pl-2 items-center">
-            <div className="ml-auto text-slate-500">&apos;나눔 완료&apos; 숨기기</div>
+            <div className="ml-auto text-slate-500">
+              &apos;나눔 완료&apos; 숨기기
+            </div>
             <button
               onClick={() => {
                 setOpenOnly(!openOnly)
