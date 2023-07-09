@@ -12,6 +12,7 @@ export default function RegisterPush() {
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
+    console.log("push info")
     if (pb.authStore.model?.id) {
       const jsonPushInfo = JSON.stringify(subscription)
       const pushInfo = JSON.parse(jsonPushInfo)
@@ -47,6 +48,7 @@ export default function RegisterPush() {
   }
 
   async function register() {
+    console.log("start register")
     const result = await window.Notification.requestPermission()
     if (result === "denied") {
       setModal("알림이 거부됨")
