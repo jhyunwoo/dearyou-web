@@ -114,7 +114,7 @@ export default function ProductDetail({ productId }) {
     <>
       <SEO title={"자율위원 물품 검토"} />
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
+        <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-900 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
             <div className="sm:bg-white sm:dark:bg-gray-900 sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
               <div className="relative sm:flex ">
@@ -165,11 +165,11 @@ export default function ProductDetail({ productId }) {
                             <span className="text-amber-500">승인 대기 중</span>
                           )}
                         </div>
-                        <div className="text-lg mt-4 mb-2 border-b-2">
+                        <div className="text-lg mt-4 mb-2 border-b-2 dark:text-white">
                           {productInfo.explain}
                         </div>
                         <div className="flex items-center">
-                          <div className="">종류: {productInfo.type}</div>
+                          <div className="dark:text-white">종류: {productInfo.type}</div>
                           <div className="mr-2 ml-auto text-sm text-slate-500">
                             {getUploadedTime(productInfo.created)} 등록
                           </div>
