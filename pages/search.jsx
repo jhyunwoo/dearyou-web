@@ -10,18 +10,32 @@ import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
 import SEO from "@/components/SEO"
 
+
+// 등록 가능한 물품 종류
+const typeOptions = ["모든 종류", "교과서", "문제집 / 인강 교재", "교양서", "기타"]
+
+
 export default function Search() {
   const [searched, setSearched] = useState([])
   const [searchWord, setSearchWord] = useState("")
+  const [searchType, setSearchType] = useState(typeOptions[0])
   const [openOnly, setOpenOnly] = useState(true)
   const searchInput = useRef("")
 
-  async function doSearch(word, isOpenOnly) {
+  async function doSearch(word, isOpenOnly, type) {
     if (word.length === 0) return
 
+    let searchFilter = `(name~"${word}"||explain~"${word}"||seller.name~"${word}") && isConfirmed=True`
+    if(isOpenOnly){
+      searchFilter += ' && soldDate=null'
+    }
+    if(type != typeOptions[0]){
+      searchFilter += ` && type="${type}"`
+    }
+
+    console.log(searchFilter);
     const searchResult = await pb.collection("products").getFullList({
-      filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
-      ${isOpenOnly ? `&&soldDate=null` : ""}`,
+      filter: searchFilter,
       expand: "seller",
     })
 
@@ -35,7 +49,7 @@ export default function Search() {
     if (word.length === 0) return
 
     setSearchWord(word)
-    await doSearch(word, openOnly)
+    await doSearch(word, openOnly, searchType)
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장
@@ -60,20 +74,36 @@ export default function Search() {
             </button>
           </form>
         </div>
-        <div className="flex pb-2 items-center">
-          <div className="ml-auto text-slate-500">나눔 완료된 물건 숨기기</div>
-          <button
-            onClick={() => {
-              setOpenOnly(!openOnly)
-              doSearch(searchWord, !openOnly)
+        <div className="flex items-center">
+          <select
+            className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2 dark:bg-gray-800 dark:ring-offset-gray-800 dark:text-white"
+            value={searchType}
+            onChange={(e) => {
+              setSearchType(e.target?.value)
+              doSearch(searchWord, openOnly, e.target?.value)
             }}
           >
-            <EyeSlashIcon
-              className={`w-8 h-8 mx-2 ${
-                openOnly ? "stroke-orange-400" : "stroke-slate-400"
-              }`}
-            />
-          </button>
+            {typeOptions.map((item, key) => (
+              <option key={key} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+          <div className="flex ml-auto pl-2 items-center">
+            <div className="ml-auto text-slate-500">&apos;나눔 완료&apos; 숨기기</div>
+            <button
+              onClick={() => {
+                setOpenOnly(!openOnly)
+                doSearch(searchWord, !openOnly, searchType)
+              }}
+            >
+              <EyeSlashIcon
+                className={`w-8 h-8 mx-2 ${
+                  openOnly ? "stroke-orange-400" : "stroke-slate-400"
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </div>
     )
