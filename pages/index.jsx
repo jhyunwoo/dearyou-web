@@ -7,8 +7,8 @@ import Layout from "@/components/Layout"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import FloattingBar from "@/components/FloattingBar"
-import Head from "next/head"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function Home() {
   const [products, setProducts] = useState([])
@@ -28,7 +28,9 @@ export default function Home() {
       if (data.items.length) {
         page.current += 1
       }
-    } catch (err) {}
+    } catch (err) {
+      errorTransmission(err)
+    }
   }, [])
 
   useEffect(() => {

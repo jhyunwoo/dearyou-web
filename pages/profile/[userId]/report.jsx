@@ -9,6 +9,7 @@ import Layout from "@/components/Layout"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function Report() {
   const currentUser = usePbAuth().user
@@ -23,45 +24,59 @@ export default function Report() {
   const [user, setUser] = useState(null)
 
   async function getUserRecord() {
-    const record = await pb.collection("users")?.getOne(userId)
-    setUser(record)
+    try {
+      const record = await pb.collection("users")?.getOne(userId)
+      setUser(record)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
+
   useEffect(() => {
-    if (!router.isReady) return
-    getUserRecord()
+    try {
+      if (!router.isReady) return
+      getUserRecord()
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [router.isReady])
 
   async function handleReport(data) {
-    if (data.reason === reportOptions[0]) {
-      setModal("신고 사유를 선택하세요.")
-      return
-    }
+    try {
+      if (data.reason === reportOptions[0]) {
+        setModal("신고 사유를 선택하세요.")
+        return
+      }
 
-    const records = await pb.collection("reports").getFullList({
-      sort: "-created",
-    })
-    for (let i = 0; i < records.length; i++) {
-      if (records[i].target === userId) {
-        const time_elapsed = (new Date() - new Date(records[i].created)) / 1000
+      const records = await pb.collection("reports").getFullList({
+        sort: "-created",
+      })
+      for (let i = 0; i < records.length; i++) {
+        if (records[i].target === userId) {
+          const time_elapsed =
+            (new Date() - new Date(records[i].created)) / 1000
 
-        if (time_elapsed <= 7200) {
-          setModal("최근에 이 사용자를 이미 신고했습니다.")
-          return
+          if (time_elapsed <= 7200) {
+            setModal("최근에 이 사용자를 이미 신고했습니다.")
+            return
+          }
         }
       }
-    }
 
-    // example create data
-    const newRecord = {
-      target: `${userId}`,
-      reporter: `${currentUser.id}`,
-      reason: `${data.reason}`,
-      isHandled: false,
-    }
+      // example create data
+      const newRecord = {
+        target: `${userId}`,
+        reporter: `${currentUser.id}`,
+        reason: `${data.reason}`,
+        isHandled: false,
+      }
 
-    await pb.collection("reports").create(newRecord)
-    setModal("신고가 접수되었습니다.")
-    router.push(`/profile/${userId}`)
+      await pb.collection("reports").create(newRecord)
+      setModal("신고가 접수되었습니다.")
+      router.push(`/profile/${userId}`)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   const reportOptions = [

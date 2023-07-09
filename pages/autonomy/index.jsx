@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import pb from "@/lib/pocketbase"
 import BottomBar from "@/components/BottomBar"
-import { CheckBadgeIcon, EyeSlashIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
+import {
+  CheckBadgeIcon,
+  EyeSlashIcon,
+  QuestionMarkCircleIcon,
+} from "@heroicons/react/24/outline"
 import ProductGrid from "@/components/ProductGrid"
 import ProductCard from "@/components/ProductCard"
 import AutonomyPage from "@/components/AutonomyPage"
@@ -10,7 +14,7 @@ import { useInView } from "react-intersection-observer"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import SEO from "@/components/SEO"
 import Link from "next/link"
-
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function Autonomy() {
   const [products, setProducts] = useState([])
@@ -34,7 +38,9 @@ export default function Autonomy() {
       if (data.items.length) {
         page.current += 1
       }
-    } catch (err) {}
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [])
 
   useEffect(() => {
@@ -43,7 +49,7 @@ export default function Autonomy() {
       fetch(hideRejected)
       setIsLoading(false)
     }
-  }, [fetch, hasNextPage, inView])
+  }, [fetch, hasNextPage, hideRejected, inView])
 
   useEffect(() => {
     page.current = 1

@@ -11,6 +11,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import sendPush from "@/lib/client-send-push"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -30,66 +31,73 @@ export default function MyReviews() {
   } = useForm()
 
   async function onSubmit(data) {
-    if (selectedUser && rating) {
-      const reviewData = {
-        product: productId,
-        from: pb.authStore.model?.id,
-        to: selectedUser.id,
-        comment: data.review,
-        rate: rating,
-      }
-      const sendReview = await pb.collection("reviews").create(reviewData)
-      sendPush(selectedUser.id, user.name, "후기가 등록되었어요!")
+    try {
+      if (selectedUser && rating) {
+        const reviewData = {
+          product: productId,
+          from: pb.authStore.model?.id,
+          to: selectedUser.id,
+          comment: data.review,
+          rate: rating,
+        }
+        const sendReview = await pb.collection("reviews").create(reviewData)
+        sendPush(selectedUser.id, user.name, "후기가 등록되었어요!")
 
-      const findChat = await pb.collection("chats").getFullList({
-        filter: `(user1="${user.id}"&&user2="${selectedUser.id}")||user2="${user.id}"&&user1="${selectedUser.id}"`,
-      })
+        const findChat = await pb.collection("chats").getFullList({
+          filter: `(user1="${user.id}"&&user2="${selectedUser.id}")||user2="${user.id}"&&user1="${selectedUser.id}"`,
+        })
 
-      const requestData = {
-        chat: findChat[0].id,
-        sender: user.id,
-        receiver: selectedUser.id,
-        message: "나눔에 대해 리뷰해주세요.",
-        isRead: false,
-        reviewProduct: productId,
+        const requestData = {
+          chat: findChat[0].id,
+          sender: user.id,
+          receiver: selectedUser.id,
+          message: "나눔에 대해 리뷰해주세요.",
+          isRead: false,
+          reviewProduct: productId,
+        }
+        const sendReviewRequest = await pb
+          .collection("messages")
+          .create(requestData)
+        const updateChat = await pb
+          .collection("chats")
+          .update(findChat[0].id, { messages: sendReviewRequest.id })
+        sendPush(selectedUser.id, user.name, "나눔에 대해 리뷰해주세요.")
+        const closeProduct = await pb
+          .collection("products")
+          .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
+        router.push("/")
+      } else if (selectedUser && !rating) {
+        setModal("별점을 입력해주세요.")
+      } else if (!selectedUser && rating) {
+        setModal("나눔한 사람을 선택해주세요.")
+      } else {
+        setModal("나눔한 사람과 별점을 입력해주세요.")
       }
-      const sendReviewRequest = await pb
-        .collection("messages")
-        .create(requestData)
-      const updateChat = await pb
-        .collection("chats")
-        .update(findChat[0].id, { messages: sendReviewRequest.id })
-      sendPush(selectedUser.id, user.name, "나눔에 대해 리뷰해주세요.")
-      const closeProduct = await pb
-        .collection("products")
-        .update(productId, { soldDate: new Date(), buyer: selectedUser.id })
-      router.push("/")
-    } else if (selectedUser && !rating) {
-      setModal("별점을 입력해주세요.")
-    } else if (!selectedUser && rating) {
-      setModal("나눔한 사람을 선택해주세요.")
-    } else {
-      setModal("나눔한 사람과 별점을 입력해주세요.")
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   useEffect(() => {
     async function getChatedUsers() {
-      if (!user?.id) return
-      let userList = []
-      const record = await pb.collection("chats").getFullList({
-        filter: `user1="${user?.id}"||user2="${user?.id}"`,
-        expand: "user1,user2",
-      })
-      record.map((data) => {
-        if (data.user1 === user?.id) {
-          userList.push(data.expand.user2)
-        } else if (data.user2 === user?.id) {
-          userList.push(data.expand.user1)
-        }
-      })
-      console.log(userList)
-      setChatedUsers(userList)
+      try {
+        if (!user?.id) return
+        let userList = []
+        const record = await pb.collection("chats").getFullList({
+          filter: `user1="${user?.id}"||user2="${user?.id}"`,
+          expand: "user1,user2",
+        })
+        record.map((data) => {
+          if (data.user1 === user?.id) {
+            userList.push(data.expand.user2)
+          } else if (data.user2 === user?.id) {
+            userList.push(data.expand.user1)
+          }
+        })
+        setChatedUsers(userList)
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
     getChatedUsers()
   }, [user?.id])

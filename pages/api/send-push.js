@@ -8,7 +8,6 @@ export default async function handler(req, res) {
       process.env.WEB_PUSH_PRIVATE_KEY,
     )
     const requestData = req.body
-    console.log(requestData)
     let result = []
     for (let i = 0; i < requestData?.users?.length; i++) {
       try {

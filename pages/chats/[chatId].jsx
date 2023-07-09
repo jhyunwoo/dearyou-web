@@ -15,6 +15,7 @@ import {
 import SEO from "@/components/SEO"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import sendPush from "@/lib/client-send-push"
+import errorTransmission from "@/lib/errorTransmission"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -52,49 +53,51 @@ export default function Chat({ chatId }) {
 
   /** 채팅 입력 후 message 생성 */
   const onSubmit = async (data) => {
-    setValue("text", "")
-    const message = {
-      chat: chatId,
-      sender: pb.authStore.model.id,
-      receiver:
+    try {
+      setValue("text", "")
+      const message = {
+        chat: chatId,
+        sender: pb.authStore.model.id,
+        receiver:
+          pb.authStore.model.id === chatInfo.user1
+            ? chatInfo.user2
+            : chatInfo.user1,
+        message: data.text,
+        isRead: false,
+      }
+      const record = await pb.collection("messages").create(message)
+      await pb.collection("chats").update(chatId, { messages: record.id })
+      sendPush(
         pb.authStore.model.id === chatInfo.user1
           ? chatInfo.user2
           : chatInfo.user1,
-      message: data.text,
-      isRead: false,
+        user.name,
+        data.text,
+      )
+      setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
+    } catch (e) {
+      errorTransmission(e)
     }
-    const record = await pb.collection("messages").create(message)
-    const updateChat = await pb
-      .collection("chats")
-      .update(chatId, { messages: record.id })
-    sendPush(
-      pb.authStore.model.id === chatInfo.user1
-        ? chatInfo.user2
-        : chatInfo.user1,
-      user.name,
-      data.text,
-    )
-    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** 사진 입력 후 사진 업로드 */
   async function onLoadImage(e) {
-    const file = e.target.files
-    const formData = new FormData()
-    formData.append("image", file["0"])
-    formData.append("chat", chatId)
-    formData.append("sender", pb.authStore.model.id)
-    formData.append(
-      "receiver",
-      pb.authStore.model.id === chatInfo.user1
-        ? chatInfo.user2
-        : chatInfo.user1,
-    )
-    formData.append("isRead", false)
-
     try {
+      const file = e.target.files
+      const formData = new FormData()
+      formData.append("image", file["0"])
+      formData.append("chat", chatId)
+      formData.append("sender", pb.authStore.model.id)
+      formData.append(
+        "receiver",
+        pb.authStore.model.id === chatInfo.user1
+          ? chatInfo.user2
+          : chatInfo.user1,
+      )
+      formData.append("isRead", false)
+
       const result = await pb.collection("messages").create(formData)
-      const updateChat = await pb.collection("chats").update(chatId, {
+      await pb.collection("chats").update(chatId, {
         messages: result.id,
       })
       sendPush(
@@ -104,10 +107,11 @@ export default function Chat({ chatId }) {
         user.name,
         "<사진>",
       )
+
+      setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
     } catch (e) {
-      console.log(e)
+      errorTransmission(e)
     }
-    setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
   }
 
   /** message를 불러오는 함수 */
@@ -130,40 +134,52 @@ export default function Chat({ chatId }) {
       if (messageList.items.length) {
         page.current += 1
       }
-    } catch (err) {
-      console.log(err)
+    } catch (e) {
+      errorTransmission(e)
     }
   }, [])
 
   useEffect(() => {
     async function readMessage() {
-      if (messages.length < 1) return
-      let lastMessage = messages.slice(-1)
-      if (lastMessage[0].receiver === pb.authStore.model.id) {
-        const readMessage = await pb
-          .collection("messages")
-          .update(lastMessage[0].id, { isRead: true })
+      try {
+        if (messages.length < 1) return
+        let lastMessage = messages.slice(-1)
+        if (lastMessage[0].receiver === pb.authStore.model.id) {
+          await pb
+            .collection("messages")
+            .update(lastMessage[0].id, { isRead: true })
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     /** 채팅 정보 가져오기 */
     async function getChatInfo() {
-      if (chatId) {
-        const info = await pb.collection("chats").getOne(chatId, {
-          expand: "user1,user2",
-        })
-        setChatInfo(info)
+      try {
+        if (chatId) {
+          const info = await pb.collection("chats").getOne(chatId, {
+            expand: "user1,user2",
+          })
+          setChatInfo(info)
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     /** 실시간 채팅을 위한 realtime 설정 */
     async function subscribeChat() {
-      if (chatId) {
-        pb.collection("chats").subscribe(chatId, async function (e) {
-          const newMessage = await pb
-            .collection("messages")
-            .getOne(e?.record?.messages)
-          setMessages((prev) => [...prev, newMessage])
-          readMessage()
-        })
+      try {
+        if (chatId) {
+          pb.collection("chats").subscribe(chatId, async function (e) {
+            const newMessage = await pb
+              .collection("messages")
+              .getOne(e?.record?.messages)
+            setMessages((prev) => [...prev, newMessage])
+            readMessage()
+          })
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     subscribeChat()
@@ -171,8 +187,12 @@ export default function Chat({ chatId }) {
   }, [chatId])
 
   useEffect(() => {
-    /** infinite scroll 후 보던 메세지로 이동 */
-    infiniteRef?.current?.scrollIntoView()
+    try {
+      /** infinite scroll 후 보던 메세지로 이동 */
+      infiniteRef?.current?.scrollIntoView()
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [oldMessages])
 
   useEffect(() => {
@@ -185,8 +205,8 @@ export default function Chat({ chatId }) {
         })
 
         setMessages(messageList.items.reverse())
-      } catch (err) {
-        console.log(err)
+      } catch (e) {
+        errorTransmission(e)
       }
     }
     updateMessages()
@@ -202,18 +222,37 @@ export default function Chat({ chatId }) {
   useEffect(() => {
     /** 사용자가 채팅방에 들어오면 상대방이 보낸 메세지 읽음 표시 */
     async function readMessage() {
-      if (messages.length < 1) return
-      let lastMessage = messages.slice(-1)
-      if (lastMessage[0].receiver === pb.authStore.model.id) {
-        const readMessage = await pb
-          .collection("messages")
-          .update(lastMessage[0].id, { isRead: true })
+      try {
+        if (messages.length < 1) return
+        let lastMessage = messages.slice(-1)
+        if (lastMessage[0].receiver === pb.authStore.model.id) {
+          await pb
+            .collection("messages")
+            .update(lastMessage[0].id, { isRead: true })
+        }
+      } catch (e) {
+        errorTransmission(e)
       }
     }
-    /** 채팅 입력 후 스크롤 아래로 내리기 */
-    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
-    readMessage()
+    try {
+      /** 채팅 입력 후 스크롤 아래로 내리기 */
+      messageEndRef?.current?.scrollIntoView({ behavior: "smooth" })
+      readMessage()
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [messages])
+
+  const onEnterPress = (e) => {
+    try {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault()
+        handleSubmit(onSubmit)()
+      }
+    } catch (e) {
+      errorTransmission(e)
+    }
+  }
 
   return (
     <div>
@@ -386,6 +425,8 @@ export default function Chat({ chatId }) {
               />
             </label>
             <TextareaAutosize
+              type={"text"}
+              onKeyDown={onEnterPress}
               className="flex-auto outline-none p-2 rounded-lg mx-1 break-all dark:bg-gray-800 dark:text-white"
               {...register("text", {
                 required: {

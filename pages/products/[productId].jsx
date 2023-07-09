@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import pb from "@/lib/pocketbase"
+import { useSetRecoilState } from "recoil"
 import { PencilSquareIcon, CheckBadgeIcon } from "@heroicons/react/24/outline"
 import { HeartIcon } from "@heroicons/react/24/solid"
 import getUploadedTime from "@/lib/getUploadedTime"
+import pb from "@/lib/pocketbase"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import BottomBar from "@/components/BottomBar"
-import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
-import { useSetRecoilState } from "recoil"
-import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import { modalState } from "@/lib/recoil"
 import sendPush from "@/lib/client-send-push"
+import errorTransmission from "@/lib/errorTransmission"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -50,15 +50,20 @@ export default function ProductDetail({ productId }) {
           setProductInfo(false)
         }
         setIsLoading(false)
-      } catch {
+      } catch (e) {
+        errorTransmission(e)
         setIsLoading(false)
       }
     }
     async function getUserWish() {
-      const userInfo = await pb
-        .collection("users")
-        .getOne(pb.authStore.model.id)
-      setUserWish(userInfo.wishes)
+      try {
+        const userInfo = await pb
+          .collection("users")
+          .getOne(pb.authStore.model.id)
+        setUserWish(userInfo.wishes)
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
 
     getProductInfo()
@@ -88,78 +93,86 @@ export default function ProductDetail({ productId }) {
             wishes: [...originWishes, productId],
           })
       }
-    } catch (error) {
-      console.error("Error adding product to wishlist:", error)
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   /** 판매자와 채팅 버튼 누를 때 호출 */
   async function goToChat() {
-    const checkChat = await pb.collection("chats").getFullList({
-      // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
-      filter: `(user1.id="${pb.authStore.model.id}"&&user2.id="${productInfo.expand.seller.id}")||
-              (user2.id="${pb.authStore.model.id}"&&user1.id="${productInfo.expand.seller.id}")`,
-      expand: "messages",
-    })
+    try {
+      const checkChat = await pb.collection("chats").getFullList({
+        // 해당 판매자, 구매자의 채팅 기록이 있는지 확인
+        filter: `(user1.id="${pb.authStore.model.id}"&&user2.id="${productInfo.expand.seller.id}")||
+                (user2.id="${pb.authStore.model.id}"&&user1.id="${productInfo.expand.seller.id}")`,
+        expand: "messages",
+      })
 
-    if (checkChat.length > 0) {
-      const createMessage = await pb.collection("messages").create({
-        chat: checkChat[0].id,
-        sender: pb.authStore.model.id,
-        receiver: productInfo.seller,
-        message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
-        isRead: false,
-        product: productInfo.id,
-      })
-      const updateChat = await pb
-        .collection("chats")
-        .update(checkChat[0].id, { messages: createMessage.id })
-      sendPush(
-        productInfo.seller,
-        user.name,
-        `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
-      )
-      router.push(`/chats/${createMessage.chat}`)
-    } else {
-      const createNewChat = await pb
-        .collection("chats")
-        .create({ user1: pb.authStore.model.id, user2: productInfo.seller })
-      const createMessage = await pb.collection("messages").create({
-        chat: createNewChat.id,
-        sender: pb.authStore.model.id,
-        receiver: productInfo.seller,
-        message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
-        isRead: false,
-        product: productInfo.id,
-      })
-      const updateChat = await pb
-        .collection("chats")
-        .update(createNewChat.id, { messages: createMessage.id })
-      sendPush(
-        productInfo.seller,
-        user.name,
-        `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
-      )
-      router.push(`/chats/${createMessage.chat}`)
+      if (checkChat.length > 0) {
+        const createMessage = await pb.collection("messages").create({
+          chat: checkChat[0].id,
+          sender: pb.authStore.model.id,
+          receiver: productInfo.seller,
+          message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+          isRead: false,
+          product: productInfo.id,
+        })
+        const updateChat = await pb
+          .collection("chats")
+          .update(checkChat[0].id, { messages: createMessage.id })
+        sendPush(
+          productInfo.seller,
+          user.name,
+          `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+        )
+        router.push(`/chats/${createMessage.chat}`)
+      } else {
+        const createNewChat = await pb
+          .collection("chats")
+          .create({ user1: pb.authStore.model.id, user2: productInfo.seller })
+        const createMessage = await pb.collection("messages").create({
+          chat: createNewChat.id,
+          sender: pb.authStore.model.id,
+          receiver: productInfo.seller,
+          message: `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+          isRead: false,
+          product: productInfo.id,
+        })
+        const updateChat = await pb
+          .collection("chats")
+          .update(createNewChat.id, { messages: createMessage.id })
+        sendPush(
+          productInfo.seller,
+          user.name,
+          `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+        )
+        router.push(`/chats/${createMessage.chat}`)
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   async function onProductHide() {
     if (!autonomy) return null
 
-    if (
-      window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
-숨긴 물품은 승인 페이지에서 다시 승인할 수 있습니다.
-꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)
-    ) {
-      let newInfo = productInfo
-      newInfo.rejectedReason = "임시로 숨김 처리되었습니다."
-      newInfo.isConfirmed = false
-      newInfo.confirmedBy = currentUser.id
+    try {
+      if (
+        window.confirm(`자율위원의 권한으로 물품을 조회할 수 없도록 숨길까요?
+  숨긴 물품은 승인 페이지에서 다시 승인할 수 있습니다.
+  꼭 필요한 상황에서만 이 기능을 사용해 주세요.`)
+      ) {
+        let newInfo = productInfo
+        newInfo.rejectedReason = "임시로 숨김 처리되었습니다."
+        newInfo.isConfirmed = false
+        newInfo.confirmedBy = currentUser.id
 
-      await pb.collection("products").update(productInfo.id, newInfo)
-      setModal("물품을 숨겼습니다.")
-      router.replace("/")
+        await pb.collection("products").update(productInfo.id, newInfo)
+        setModal("물품을 숨겼습니다.")
+        router.replace("/")
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 

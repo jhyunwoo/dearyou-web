@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil"
 
 export default function Modal() {
   const [modal, setModalState] = useRecoilState(modalState)
+
   if (modal) {
     return (
       <div className="z-40 fixed top-0 bottom-0 right-0 left-0 w-full h-screen flex justify-center items-center bg-slate-100 dark:bg-slate-900/50 p-8 touch-none">
