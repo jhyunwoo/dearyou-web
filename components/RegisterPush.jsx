@@ -46,17 +46,16 @@ export default function RegisterPush() {
     )
   }
 
-  function register() {
-    if (isIOS() && !("standalone" in window.navigator)) {
-      setModal(
-        "iOS 또는 iPad OS에서는 홈 화면에 웹사이트를 추가해야 알림을 받을 수 있습니다.",
-      )
+  async function register() {
+    const result = await window.Notification.requestPermission()
+    if (result === "denied") {
+      setModal("알림이 거부됨")
+      return
     } else {
       navigator.serviceWorker.ready.then((registration) => {
         registration.pushManager
           .getSubscription()
           .then(async (subscription) => {
-            console.log(subscription)
             if (subscription) {
               pushInfo(subscription)
             } else {
