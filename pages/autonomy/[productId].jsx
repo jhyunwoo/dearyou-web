@@ -123,9 +123,9 @@ export default function ProductDetail({ productId }) {
     <>
       <SEO title={"자율위원 물품 검토"} />
       {productInfo ? (
-        <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-900 sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
+        <div className="w-full min-h-screen bg-slate-50 dark:bg-black sm:flex sm:flex-col sm:justify-center sm:items-center sm:pt-6 sm:pb-24">
           {productInfo ? (
-            <div className="sm:bg-white sm:dark:bg-gray-900 sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
+            <div className="sm:bg-white sm:dark:bg-black sm:p-4 md:p-8 sm:rounded-xl sm:shadow-xl">
               <div className="relative sm:flex ">
                 <ProductImageView
                   productInfo={productInfo}
@@ -178,7 +178,9 @@ export default function ProductDetail({ productId }) {
                           {productInfo.explain}
                         </div>
                         <div className="flex items-center">
-                          <div className="dark:text-white">종류: {productInfo.type}</div>
+                          <div className="dark:text-white">
+                            종류: {productInfo.type}
+                          </div>
                           <div className="mr-2 ml-auto text-sm text-slate-500">
                             {getUploadedTime(productInfo.created)} 등록
                           </div>
@@ -228,7 +230,7 @@ export default function ProductDetail({ productId }) {
 
               {checked ? (
                 <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">
-                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900 max-w-md">
+                  <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-black max-w-md">
                     <XCircleIcon
                       onClick={() => setChecked(null)}
                       className="absolute cursor-pointer top-0 right-0 w-8 h-8 text-slate-600"
