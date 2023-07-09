@@ -48,6 +48,7 @@ export default function WishPage() {
         {products?.map((data, key) => (
           <ProductCard data={data} key={key} />
         ))}
+        <div className="w-full h-8 sm:h-0 dark:bg-black"></div>
       </ProductGrid>)
       : (
         <div className="text-center mt-12 font-semibold text-slate-500">
