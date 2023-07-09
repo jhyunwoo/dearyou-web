@@ -76,9 +76,7 @@ export default function RegisterPush() {
   }
 
   useEffect(() => {
-    const agent = navigator.userAgent.toLowerCase()
-
-    if (isIOS()) {
+    if (isIOS() && !("standalone" in window.navigator)) {
       window.localStorage.setItem("pushInfo", "true")
       setNoti(true)
     } else {
