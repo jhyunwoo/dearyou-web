@@ -79,9 +79,7 @@ export default function UpdateProduct({ productId }) {
     return (
       <>
         <SEO title={"정보 수정"} />
-        <BottomBar />
         {isLoading ? <Loading /> : ""}
-        <div className="text-xl font-bold mx-4 mb-4 pt-4">정보 수정</div>
         {productInfo ? (
           <div className="sm:flex sm:flex-row  sm:justify-center">
             <div className="sm:m-4">
@@ -106,12 +104,13 @@ export default function UpdateProduct({ productId }) {
                 </div>
               ) : (
                 <div className="p-4 text-center text-slate-500">
-                  거래가 완료된 물건이므로 수정하거나 삭제할 수 없습니다.
+                  이미 나눔이 완료된 물건이므로 수정하거나 삭제할 수 없습니다.
                 </div>
               )}
             </div>
           </div>
         ) : null}
+        <BottomBar />
       </>
     )
   } else {
