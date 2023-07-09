@@ -10,6 +10,7 @@ import { usePbAuth } from "@/contexts/AuthWrapper"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import sendPush from "@/lib/client-send-push"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -38,11 +39,12 @@ export default function MyReviews() {
         rate: rating,
       }
       const sendReview = await pb.collection("reviews").create(reviewData)
-      console.log(sendReview)
+      sendPush(selectedUser.id, user.name, "후기가 등록되었어요!")
+
       const findChat = await pb.collection("chats").getFullList({
         filter: `(user1="${user.id}"&&user2="${selectedUser.id}")||user2="${user.id}"&&user1="${selectedUser.id}"`,
       })
-      console.log(findChat)
+
       const requestData = {
         chat: findChat[0].id,
         sender: user.id,
@@ -57,7 +59,7 @@ export default function MyReviews() {
       const updateChat = await pb
         .collection("chats")
         .update(findChat[0].id, { messages: sendReviewRequest.id })
-      console.log(updateChat)
+      sendPush(selectedUser.id, user.name, "나눔에 대해 리뷰해주세요.")
       const closeProduct = await pb
         .collection("products")
         .update(productId, { soldDate: new Date(), buyer: selectedUser.id })

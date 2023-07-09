@@ -12,6 +12,7 @@ import ProductImageView from "@/components/ProductImageView"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import sendPush from "@/lib/client-send-push"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -113,6 +114,11 @@ export default function ProductDetail({ productId }) {
       const updateChat = await pb
         .collection("chats")
         .update(checkChat[0].id, { messages: createMessage.id })
+      sendPush(
+        productInfo.seller,
+        user.name,
+        `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+      )
       router.push(`/chats/${createMessage.chat}`)
     } else {
       const createNewChat = await pb
@@ -129,6 +135,11 @@ export default function ProductDetail({ productId }) {
       const updateChat = await pb
         .collection("chats")
         .update(createNewChat.id, { messages: createMessage.id })
+      sendPush(
+        productInfo.seller,
+        user.name,
+        `안녕하세요. "${productInfo.name}"에 대해 문의하고 싶어요!`,
+      )
       router.push(`/chats/${createMessage.chat}`)
     }
   }
