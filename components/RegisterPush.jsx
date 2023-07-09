@@ -1,4 +1,3 @@
-import errorTransmission from "@/lib/errorTransmission"
 import pb from "@/lib/pocketbase"
 import { isNoti, modalState } from "@/lib/recoil"
 import { BellIcon } from "@heroicons/react/24/outline"
@@ -25,21 +24,20 @@ export default function RegisterPush() {
       }
 
       try {
-        const pushInfo = await pb.collection("pushInfos").create(data)
-        console.log(pushInfo)
+        await pb.collection("pushInfos").create(data)
+        window.localStorage.setItem("pushInfo", "true")
         setModal("알림이 등록되었습니다.")
-        window.localStorage.setItem("pushInfo", "true")
         setNoti(true)
-      } catch {
-        setModal("이미 등록된 기기입니다.")
+      } catch (e) {
         window.localStorage.setItem("pushInfo", "true")
+        setModal("이미 등록된 기기입니다.")
         setNoti(true)
       }
     }
   }
 
   function isIOS() {
-    const agent = navigator?.userAgent.toLowerCase()
+    const agent = navigator.userAgent.toLowerCase()
     return (
       agent.includes("iphone") ||
       agent.includes("ipad") ||
@@ -77,20 +75,19 @@ export default function RegisterPush() {
   }
 
   useEffect(() => {
-    try {
-      if (isIOS() && !("standalone" in window.navigator)) {
-        window.localStorage.setItem("pushInfo", "true")
-        setNoti(true)
-      } else {
+    if (isIOS() && !("standalone" in window.navigator)) {
+      window.localStorage.setItem("pushInfo", "true")
+      setNoti(true)
+    } else {
+      try {
         if (Notification?.permission === "granted") {
           setNoti(true)
         } else {
           setNoti(false)
         }
+      } catch {
+        setNoti(false)
       }
-    } catch (e) {
-      setNoti(false)
-      errorTransmission(e)
     }
   }, [router, setNoti])
 
