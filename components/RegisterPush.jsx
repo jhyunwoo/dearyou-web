@@ -26,7 +26,8 @@ export default function RegisterPush() {
         }
 
         try {
-          await pb.collection("pushInfos").create(data)
+          const pushInfo = await pb.collection("pushInfos").create(data)
+          console.log(pushInfo)
           setModal("알림이 등록되었습니다.")
           window.localStorage.setItem("pushInfo", "true")
           setNoti(true)
