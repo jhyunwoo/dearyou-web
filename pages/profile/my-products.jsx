@@ -9,24 +9,27 @@ import ProductCard from "@/components/ProductCard"
 import SEO from "@/components/SEO"
 
 export default function MyProducts() {
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState()
 
   useEffect(() => {
     async function getProducts() {
       const list = await pb
         .collection("users")
         .getOne(pb.authStore.model?.id, { expand: "products(seller).seller" })
-      setProducts(list.expand["products(seller)"])
+      setProducts(list.expand["products(seller)"] ? list.expand["products(seller)"] : [])
     }
     getProducts()
   }, [])
 
   return (
     <Layout>
+
       <SEO title={"내 물품"} />
-      <ProductGrid>
+
+      {products ? 
+      (<ProductGrid>
         {products?.length === 0 ? (
-          <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center">
+          <div className="mx-auto mt-24 sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center dark:text-white">
             <div className="font-semibold">아직 등록한 물품이 없습니다.</div>
             <Link
               href={"/products/create-product"}
@@ -41,9 +44,14 @@ export default function MyProducts() {
         {products?.map((data, key) => (
           <ProductCard data={data} key={key} />
         ))}
-      </ProductGrid>
+      </ProductGrid>)
+      : (
+        <div className="text-center mt-12 font-semibold text-slate-500">
+          <div>정보를 불러오는 중입니다...</div>
+        </div>
+      )}
       <BottomBar />
-      <HeadBar title="내 물품" />
+      <HeadBar title="내가 등록한 물건" />
     </Layout>
   )
 }

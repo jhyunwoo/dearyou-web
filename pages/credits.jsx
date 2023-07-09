@@ -17,7 +17,7 @@ export default function Profile() {
             width={64}
             height={64}
             className="mt-10 rounded-2xl mx-auto"
-            alt="beatus logo"
+            alt="dearyou logo"
           />
           <div className="mt-2 text-xl dark:text-white">드려유 (DearYou)</div>
           <div className="mt-2 text-3xl font-bold dark:text-white">

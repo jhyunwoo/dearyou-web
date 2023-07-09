@@ -36,6 +36,7 @@ const rejectOptions = [
   "올라온 사진만으로 물건의 상태를 확인하기 어려워요.",
   "물건의 종류가 잘못 설정되었어요.",
   "학교에서 거래되기에 부적절한 물건이에요.",
+  "금전 거래를 암시하는 내용이 있어요.",
 ]
 
 export default function ProductDetail({ productId }) {
@@ -43,6 +44,7 @@ export default function ProductDetail({ productId }) {
   const { register, handleSubmit } = useForm()
   const setModal = useSetRecoilState(modalState)
 
+  const [isLoading, setIsLoading] = useState(false);
   // 물품 정보 저장
   const [productInfo, setProductInfo] = useState("")
   // 승인 되었는지 저장
@@ -89,6 +91,7 @@ export default function ProductDetail({ productId }) {
     /** 물품 정보 불러오기 expand seller, confirmedBy */
     async function getProductInfo() {
       try {
+        setIsLoading(true);
         const record = await pb.collection("products").getOne(productId, {
           expand: "seller, confirmedBy",
         })
@@ -97,7 +100,9 @@ export default function ProductDetail({ productId }) {
         } else {
           setProductInfo(false)
         }
+        setIsLoading(false);
       } catch (e) {
+        setIsLoading(false);
         console.log(e)
       }
     }
@@ -221,6 +226,11 @@ export default function ProductDetail({ productId }) {
                     <div className="text-lg font-bold text-center dark:text-white">
                       물건 검토
                     </div>
+                    <div className="text-center text-slate-500 mt-2">
+                    <Link href='/autonomy/guideline'>
+                      검토 기준 보기
+                    </Link>
+                    </div>
                     <button
                       className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
                       onClick={handleConfirm}
@@ -254,16 +264,20 @@ export default function ProductDetail({ productId }) {
                   </div>
                 </div>
               ) : null}
-              <div className="w-full h-16 sm:h-0"></div>
+              <div className="w-full h-16 sm:h-0 dark:bg-gray-900"></div>
             </div>
           ) : (
             ""
           )}
         </div>
       ) : (
-        <div className="flex justify-center items-center m-auto text-xl font-semibold text-slate-500">
+        isLoading ? 
+        (<div className="text-center mt-12 font-semibold text-slate-500">
+          <div>정보를 불러오는 중입니다...</div>
+        </div>) :
+        (<div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보가 없습니다.</div>
-        </div>
+        </div>)
       )}
 
       <BottomBar />

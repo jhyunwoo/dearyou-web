@@ -12,6 +12,7 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline"
 import SEO from "@/components/SEO"
+import { usePbAuth } from "@/contexts/AuthWrapper"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -25,6 +26,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function Chat({ chatId }) {
+  const { user } = usePbAuth()
   /** 채팅 정보 저장 */
   const [chatInfo, setChatInfo] = useState()
   /** 초기 메세지 및 새로 받는 메세지 저장 */

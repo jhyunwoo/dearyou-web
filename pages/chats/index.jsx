@@ -63,9 +63,9 @@ export default function ChatList() {
               className="bg-white dark:bg-gray-900 p-3 rounded-l flex justify-between items-center"
             >
               <div className="text-lg font-bold w-1/3 dark:text-white">
-                {user?.id !== data.expand.user1.id
-                  ? data.expand.user1.name
-                  : data.expand.user2.name}
+                {user?.id !== data.expand.user1?.id
+                  ? data.expand.user1?.name
+                  : data.expand.user2?.name}
               </div>
               <div className="flex flex-col items-end dark:text-white">
                 <div className="font-bold ">

@@ -10,7 +10,7 @@ export default function ProductImageView(props) {
   function ImageUI() {
     return (
       <div className="absolute w-full sm:w-80 opacity-60 hover:opacity-100">
-        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 text-white dark:text-black">
+        <div className="absolute m-2 p-2 rounded-2xl text-sm bg-slate-700 dark:bg-slate-300 text-white dark:text-black">
           {imageScroll}/{imageRef?.current?.children.length}
         </div>
         {imageScroll < imageRef?.current?.children.length ? (
