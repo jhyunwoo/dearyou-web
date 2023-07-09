@@ -8,15 +8,15 @@ import * as gtag from "@/lib/gtags"
 import { Analytics } from "@vercel/analytics/react"
 import AuthWrapper from "@/contexts/AuthWrapper"
 import Loading from "@/components/Loading"
-import { IBM_Plex_Sans_KR } from "next/font/google"
+// import { IBM_Plex_Sans_KR } from "next/font/google"
 import Modal from "@/components/Modal"
 import ProtectedPage from "@/components/ProtectedPage"
 import errorTransmission from "@/lib/errorTransmission"
 
-const plex_sans = IBM_Plex_Sans_KR({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600"],
-})
+// const plex_sans = IBM_Plex_Sans_KR({
+//   subsets: ["latin"],
+//   weight: ["100", "200", "300", "400", "500", "600"],
+// })
 
 export default function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
@@ -50,10 +50,6 @@ export default function App({ Component, pageProps }) {
 
   return (
     <AuthWrapper>
-      <Head>
-        <title>드려유</title>
-        <meta property="og:title" content="드려유" key="title" />
-      </Head>
       {process.env.NODE_ENV !== "development" && (
         <>
           {/* Global Site Tag (gtag.js) - Google Analytics */}
@@ -78,11 +74,11 @@ export default function App({ Component, pageProps }) {
         </>
       )}
 
-      <style jsx global>{`
+      {/* <style jsx global>{`
         html {
           font-family: ${plex_sans.style.fontFamily};
         }
-      `}</style>
+      `}</style> */}
       {loading ? <Loading /> : ""}
       <Analytics />
       <RecoilRoot>
