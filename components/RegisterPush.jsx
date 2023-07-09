@@ -1,3 +1,4 @@
+import errorTransmission from "@/lib/errorTransmission"
 import pb from "@/lib/pocketbase"
 import { isNoti, modalState } from "@/lib/recoil"
 import { BellIcon } from "@heroicons/react/24/outline"
@@ -12,28 +13,31 @@ export default function RegisterPush() {
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
-    console.log("push info")
-    if (pb.authStore.model?.id) {
-      const jsonPushInfo = JSON.stringify(subscription)
-      const pushInfo = JSON.parse(jsonPushInfo)
-      const data = {
-        endpoint: pushInfo.endpoint,
-        expirationTime: pushInfo.expirationTime,
-        auth: pushInfo.keys.auth,
-        p256dh: pushInfo.keys.p256dh,
-        user: pb.authStore.model.id,
-      }
+    try {
+      if (pb.authStore.model?.id) {
+        const jsonPushInfo = JSON.stringify(subscription)
+        const pushInfo = JSON.parse(jsonPushInfo)
+        const data = {
+          endpoint: pushInfo.endpoint,
+          expirationTime: pushInfo.expirationTime,
+          auth: pushInfo.keys.auth,
+          p256dh: pushInfo.keys.p256dh,
+          user: pb.authStore.model.id,
+        }
 
-      try {
-        await pb.collection("pushInfos").create(data)
-        window.localStorage.setItem("pushInfo", "true")
-        setModal("알림이 등록되었습니다.")
-        setNoti(true)
-      } catch (e) {
-        window.localStorage.setItem("pushInfo", "true")
-        setModal("이미 등록된 기기입니다.")
-        setNoti(true)
+        try {
+          await pb.collection("pushInfos").create(data)
+          window.localStorage.setItem("pushInfo", "true")
+          setModal("알림이 등록되었습니다.")
+          setNoti(true)
+        } catch {
+          window.localStorage.setItem("pushInfo", "true")
+          setModal("이미 등록된 기기입니다.")
+          setNoti(true)
+        }
       }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
@@ -48,31 +52,34 @@ export default function RegisterPush() {
   }
 
   async function register() {
-    console.log("start register")
-    const result = await window.Notification.requestPermission()
-    if (result === "denied") {
-      setModal("알림이 거부됨")
-      return
-    } else {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.pushManager
-          .getSubscription()
-          .then(async (subscription) => {
-            if (subscription) {
-              pushInfo(subscription)
-            } else {
-              registration.pushManager
-                .subscribe({
-                  userVisibleOnly: true,
-                  applicationServerKey:
-                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
-                })
-                .then(async (subscription) => {
-                  pushInfo(subscription)
-                })
-            }
-          })
-      })
+    try {
+      const result = await window.Notification.requestPermission()
+      if (result === "denied") {
+        setModal("알림이 거부됨")
+        return
+      } else {
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.pushManager
+            .getSubscription()
+            .then(async (subscription) => {
+              if (subscription) {
+                pushInfo(subscription)
+              } else {
+                registration.pushManager
+                  .subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey:
+                      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+                  })
+                  .then(async (subscription) => {
+                    pushInfo(subscription)
+                  })
+              }
+            })
+        })
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
