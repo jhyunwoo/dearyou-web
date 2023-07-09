@@ -76,9 +76,9 @@ export default function Report() {
       <BottomBar />
       <HeadBar title="프로필" />
       <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-slate-50 dark:bg-black/50">
-        <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900">
-          <div className="text-lg font-bold text-center">
-            {user?.name}님을 신고합니까?
+        <div className="relative m-2 p-6 rounded-lg border-2 w-4/5 bg-white dark:bg-gray-900 max-w-md">
+          <div className="text-lg font-bold text-center dark:text-white">
+            {user?.name}님을 신고하시겠습니까?
           </div>
           <form onSubmit={handleSubmit(handleReport)} className="flex flex-col">
             <button
@@ -87,7 +87,9 @@ export default function Report() {
             >
               신고
             </button>
-            <div className="text-lg font-semibold mt-4">신고 사유</div>
+            <div className="text-lg font-semibold mt-4 dark:text-white">
+              신고 사유
+            </div>
             <select
               {...register("reason", { required: true })}
               className="p-2 rounded-lg outline-none ring-2 ring-amber-400 hover:ring-offset-2 transition duration-200 my-2"
