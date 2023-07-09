@@ -8,6 +8,7 @@ import BottomBar from "@/components/BottomBar"
 import HeadBar from "@/components/HeadBar"
 import Layout from "@/components/Layout"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function ChatList() {
   const { user } = usePbAuth()
@@ -23,7 +24,7 @@ export default function ChatList() {
 
         setChats(list)
       } catch (e) {
-        console.log(e)
+        errorTransmission(e)
       }
     }
 
@@ -32,9 +33,13 @@ export default function ChatList() {
 
   useEffect(() => {
     async function subscribeChat() {
-      pb.collection("chats").subscribe("*", async function (e) {
-        setUpdateChats((prev) => prev + 1)
-      })
+      try {
+        pb.collection("chats").subscribe("*", async function (e) {
+          setUpdateChats((prev) => prev + 1)
+        })
+      } catch (e) {
+        errorTransmission(e)
+      }
     }
     subscribeChat()
   }, [])

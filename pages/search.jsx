@@ -9,6 +9,7 @@ import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
 import ProductGrid from "@/components/ProductGrid"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function Search() {
   const [searched, setSearched] = useState([])
@@ -17,25 +18,33 @@ export default function Search() {
   const searchInput = useRef("")
 
   async function doSearch(word, isOpenOnly) {
-    if (word.length === 0) return
+    try {
+      if (word.length === 0) return
 
-    const searchResult = await pb.collection("products").getFullList({
-      filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
+      const searchResult = await pb.collection("products").getFullList({
+        filter: `(name~"${word}"||explain~"${word}"||seller.name~"${word}")&&isConfirmed=True 
       ${isOpenOnly ? `&&soldDate=null` : ""}`,
-      expand: "seller",
-    })
+        expand: "seller",
+      })
 
-    // 화면에 표시할 정보만을 담은 'searched' state 설정
-    setSearched(searchResult)
+      // 화면에 표시할 정보만을 담은 'searched' state 설정
+      setSearched(searchResult)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   async function handleSearch(event) {
-    event.preventDefault()
-    let word = searchInput?.current?.value // 검색어
-    if (word.length === 0) return
+    try {
+      event.preventDefault()
+      let word = searchInput?.current?.value // 검색어
+      if (word.length === 0) return
 
-    setSearchWord(word)
-    await doSearch(word, openOnly)
+      setSearchWord(word)
+      await doSearch(word, openOnly)
+    } catch (e) {
+      errorTransmission(e)
+    }
   }
 
   // SearchBar -> 'searchQuery' state에 검색어 저장

@@ -3,16 +3,16 @@ import { useEffect, useState } from "react"
 import Head from "next/head"
 import Router from "next/router"
 import Script from "next/script"
-import { useRouter } from "next/router"
 import { RecoilRoot } from "recoil"
 import * as gtag from "@/lib/gtags"
 import { Analytics } from "@vercel/analytics/react"
 import AuthWrapper from "@/contexts/AuthWrapper"
 import Loading from "@/components/Loading"
-
 import { IBM_Plex_Sans_KR } from "next/font/google"
 import Modal from "@/components/Modal"
 import ProtectedPage from "@/components/ProtectedPage"
+import errorTransmission from "@/lib/errorTransmission"
+
 const plex_sans = IBM_Plex_Sans_KR({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -24,23 +24,27 @@ export default function App({ Component, pageProps }) {
   gtag.useGtag()
 
   useEffect(() => {
-    const start = () => {
-      // NProgress.start();
-      setLoading(true)
-    }
-    const end = () => {
-      // NProgress.done();
-      setLoading(false)
-    }
+    try {
+      const start = () => {
+        // NProgress.start();
+        setLoading(true)
+      }
+      const end = () => {
+        // NProgress.done();
+        setLoading(false)
+      }
 
-    Router.events.on("routeChangeStart", start)
-    Router.events.on("routeChangeComplete", end)
-    Router.events.on("routeChangeError", end)
+      Router.events.on("routeChangeStart", start)
+      Router.events.on("routeChangeComplete", end)
+      Router.events.on("routeChangeError", end)
 
-    return () => {
-      Router.events.off("routeChangeStart", start)
-      Router.events.off("routeChangeComplete", end)
-      Router.events.off("routeChangeError", end)
+      return () => {
+        Router.events.off("routeChangeStart", start)
+        Router.events.off("routeChangeComplete", end)
+        Router.events.off("routeChangeError", end)
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }, [])
 

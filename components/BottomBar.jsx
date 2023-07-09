@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react"
 import Link from "next/link"
-import pb from "@/lib/pocketbase"
 import {
   HomeIcon,
   ChatBubbleBottomCenterTextIcon,

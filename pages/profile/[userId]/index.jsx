@@ -16,6 +16,7 @@ import {
   MegaphoneIcon,
 } from "@heroicons/react/24/outline"
 import SEO from "@/components/SEO"
+import errorTransmission from "@/lib/errorTransmission"
 
 export default function Profile() {
   const router = useRouter()
@@ -24,14 +25,22 @@ export default function Profile() {
   const userId = router.query["userId"]
   const [user, setUser] = useState(null)
 
-  async function getUserRecord() {
-    const record = await pb.collection("users")?.getOne(userId)
-    setUser(record)
-  }
   useEffect(() => {
-    if (!router.isReady) return
-    getUserRecord()
-  }, [router.isReady])
+    async function getUserRecord() {
+      try {
+        const record = await pb.collection("users")?.getOne(userId)
+        setUser(record)
+      } catch (e) {
+        errorTransmission(e)
+      }
+    }
+    try {
+      if (!router.isReady) return
+      getUserRecord()
+    } catch (e) {
+      errorTransmission(e)
+    }
+  }, [router.isReady, userId])
 
   // user가 등록한 물품 조회
   const [products, setProducts] = useState([])
@@ -51,8 +60,11 @@ export default function Profile() {
       if (data.items.length) {
         page.current += 1
       }
-    } catch (err) {}
+    } catch (e) {
+      errorTransmission(e)
+    }
   }, [])
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetch()

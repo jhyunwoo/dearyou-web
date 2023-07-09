@@ -1,3 +1,4 @@
+import errorTransmission from "@/lib/errorTransmission"
 import pb from "@/lib/pocketbase"
 import { isNoti, modalState } from "@/lib/recoil"
 import { BellIcon } from "@heroicons/react/24/outline"
@@ -32,12 +33,13 @@ export default function RegisterPush() {
         window.localStorage.setItem("pushInfo", "true")
         setModal("이미 등록된 기기입니다.")
         setNoti(true)
+        errorTransmission(e)
       }
     }
   }
 
   function isIOS() {
-    const agent = navigator.userAgent.toLowerCase()
+    const agent = navigator?.userAgent.toLowerCase()
     return (
       agent.includes("iphone") ||
       agent.includes("ipad") ||
@@ -47,47 +49,52 @@ export default function RegisterPush() {
   }
 
   async function register() {
-    const result = await window.Notification.requestPermission()
-    if (result === "denied") {
-      setModal("알림이 거부됨")
-      return
-    } else {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.pushManager
-          .getSubscription()
-          .then(async (subscription) => {
-            if (subscription) {
-              pushInfo(subscription)
-            } else {
-              registration.pushManager
-                .subscribe({
-                  userVisibleOnly: true,
-                  applicationServerKey:
-                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
-                })
-                .then(async (subscription) => {
-                  pushInfo(subscription)
-                })
-            }
-          })
-      })
+    try {
+      const result = await window.Notification.requestPermission()
+      if (result === "denied") {
+        setModal("알림이 거부됨")
+        return
+      } else {
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.pushManager
+            .getSubscription()
+            .then(async (subscription) => {
+              if (subscription) {
+                pushInfo(subscription)
+              } else {
+                registration.pushManager
+                  .subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey:
+                      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+                  })
+                  .then(async (subscription) => {
+                    pushInfo(subscription)
+                  })
+              }
+            })
+        })
+      }
+    } catch (e) {
+      errorTransmission(e)
     }
   }
 
   useEffect(() => {
-    if (isIOS() && !("standalone" in window.navigator)) {
-      window.localStorage.setItem("pushInfo", "true")
-      setNoti(true)
-    } else {
-      try {
+    try {
+      if (isIOS() && !("standalone" in window.navigator)) {
+        window.localStorage.setItem("pushInfo", "true")
+        setNoti(true)
+      } else {
         if (Notification?.permission === "granted") {
           setNoti(true)
         } else {
           setNoti(false)
         }
-      } catch {
-        setNoti(false)
       }
+    } catch (e) {
+      setNoti(false)
+      errorTransmission(e)
     }
   }, [router, setNoti])
 
