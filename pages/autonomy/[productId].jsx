@@ -3,20 +3,15 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import pb from "@/lib/pocketbase"
-import {
-  CheckIcon,
-  PencilSquareIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline"
+import { CheckIcon, XCircleIcon } from "@heroicons/react/24/outline"
 import getUploadedTime from "@/lib/getUploadedTime"
 import { usePbAuth } from "@/contexts/AuthWrapper"
-import ProtectedPage from "@/components/ProtectedPage"
 import BottomBar from "@/components/BottomBar"
-import Layout from "@/components/Layout"
 import ProductImageView from "@/components/ProductImageView"
 import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
+import sendPush from "@/lib/client-send-push"
 
 // productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
@@ -44,7 +39,7 @@ export default function ProductDetail({ productId }) {
   const { register, handleSubmit } = useForm()
   const setModal = useSetRecoilState(modalState)
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   // 물품 정보 저장
   const [productInfo, setProductInfo] = useState("")
   // 승인 되었는지 저장
@@ -62,6 +57,7 @@ export default function ProductDetail({ productId }) {
 
     await pb.collection("products").update(productInfo.id, newInfo)
     setModal(`승인되었습니다.`)
+    sendPush(productInfo.seller, "자율위원회", "등록한 물품이 승인되었습니다.")
 
     router.push("/autonomy")
   }
@@ -78,11 +74,16 @@ export default function ProductDetail({ productId }) {
 
     try {
       await pb.collection("products").update(productInfo.id, newInfo)
+      sendPush(
+        productInfo.seller,
+        "자율위원회",
+        "등록한 물품이 반려되었습니다.",
+      )
+      setModal(`반려 처리되었습니다. 사유: "${data.type}"`)
     } catch (e) {
       setModal("반려 처리 오류")
       console.log(e)
     }
-    setModal(`반려 처리되었습니다. 사유: "${data.type}"`)
 
     await router.push("/autonomy")
   }
@@ -91,7 +92,7 @@ export default function ProductDetail({ productId }) {
     /** 물품 정보 불러오기 expand seller, confirmedBy */
     async function getProductInfo() {
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         const record = await pb.collection("products").getOne(productId, {
           expand: "seller, confirmedBy",
         })
@@ -100,9 +101,9 @@ export default function ProductDetail({ productId }) {
         } else {
           setProductInfo(false)
         }
-        setIsLoading(false);
+        setIsLoading(false)
       } catch (e) {
-        setIsLoading(false);
+        setIsLoading(false)
         console.log(e)
       }
     }
@@ -227,9 +228,7 @@ export default function ProductDetail({ productId }) {
                       물건 검토
                     </div>
                     <div className="text-center text-slate-500 mt-2">
-                    <Link href='/autonomy/guideline'>
-                      검토 기준 보기
-                    </Link>
+                      <Link href="/autonomy/guideline">검토 기준 보기</Link>
                     </div>
                     <button
                       className="w-full bg-green-500 hover:bg-green-600 transition duration-200  text-white dark:text-black p-2 px-12 rounded-full text-base font-semibold mt-4"
@@ -270,14 +269,14 @@ export default function ProductDetail({ productId }) {
             ""
           )}
         </div>
-      ) : (
-        isLoading ? 
-        (<div className="text-center mt-12 font-semibold text-slate-500">
+      ) : isLoading ? (
+        <div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보를 불러오는 중입니다...</div>
-        </div>) :
-        (<div className="text-center mt-12 font-semibold text-slate-500">
+        </div>
+      ) : (
+        <div className="text-center mt-12 font-semibold text-slate-500">
           <div>정보가 없습니다.</div>
-        </div>)
+        </div>
       )}
 
       <BottomBar />
