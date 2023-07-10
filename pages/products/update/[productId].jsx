@@ -10,6 +10,7 @@ import { modalState } from "@/lib/recoil"
 import BottomBar from "@/components/BottomBar"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 export const getServerSideProps = async (context) => {
   const { query } = context
@@ -48,6 +49,7 @@ export default function UpdateProduct({ productId }) {
 
   async function onSubmit(data) {
     try {
+      va.track("UpdateProduct")
       setIsLoading(true)
       let newInfo = productInfo
       newInfo.name = data.name

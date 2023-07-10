@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import pb from "../lib/pocketbase"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 const AuthContext = createContext(null)
 
@@ -58,11 +59,13 @@ const AuthWrapper = ({ children }) => {
     const redirectUrl = `${location.origin}/signin`
     const url = kakaoAuthProvider?.authUrl + redirectUrl
     router.push(url)
+    va.track("Signup")
   }
 
   const signOut = () => {
     setUser(null)
     pb.authStore.clear()
+    va.track("Signout")
   }
 
   return (

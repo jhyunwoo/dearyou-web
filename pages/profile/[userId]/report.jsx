@@ -10,6 +10,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 export default function Report() {
   const currentUser = usePbAuth().user
@@ -43,6 +44,7 @@ export default function Report() {
 
   async function handleReport(data) {
     try {
+      va.track("Report")
       if (data.reason === reportOptions[0]) {
         setModal("신고 사유를 선택하세요.")
         return
