@@ -113,7 +113,10 @@ export default function Profile() {
                   <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600" />
                 ) : null}
               </div>
-              <div className="dark:text-white">{user?.studentId}</div>
+              <div className="dark:text-white">
+                {user?.studentId < 20000
+                 ? "교사용 계정" : user?.studentId}
+              </div>
             </div>
             <Link href={`/profile/${userId}/report`} className="ml-auto mr-2 ">
               <MegaphoneIcon className="w-8 h-8 stroke-red-400" />

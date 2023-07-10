@@ -252,7 +252,9 @@ export default function ProductDetail({ productId }) {
                             className="text-lg font-semibold text-black dark:text-white"
                           >
                             {productInfo.expand.seller?.name} (
-                            {productInfo.expand.seller?.studentId})
+                              {productInfo.expand.seller?.studentId < 20000
+                              ? "교사"
+                              : productInfo.expand.seller?.studentId})
                           </Link>
 
                           {currentUser?.id ===
