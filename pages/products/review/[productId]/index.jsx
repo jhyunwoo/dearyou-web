@@ -129,7 +129,7 @@ export default function MyReviews() {
               className={`${
                 selectedUser === data
                   ? "bg-amber-500 text-white dark:text-black"
-                  : "bg-white dark:bg-gray-900 hover:bg-amber-100 "
+                  : "bg-white dark:bg-gray-900 hover:bg-amber-100 dark:hover:bg-amber-800 "
               } p-2 px-4 rounded-lg transition duration-200`}
             >
               <div className="dark:text-white">{data.name}</div>
