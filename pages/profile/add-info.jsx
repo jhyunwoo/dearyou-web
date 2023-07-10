@@ -7,9 +7,12 @@ import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
 import Link from "next/link"
+import { ExclamationCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
+
+  const [isTeacher, setIsTeacher] = useState(false)
 
   const setModal = useSetRecoilState(modalState)
 
@@ -71,9 +74,40 @@ export default function AddInfo() {
     }
   }
 
+  function TeacherPopUp() {
+    return (
+      <div className="fixed top-0 bottom-0 right-0 left-0 bg-slate-100/50 dark:bg-slate-500/50 flex justify-center items-center p-8">
+        <div className="bg-white relative dark:bg-black p-6 rounded-lg max-w-md flex flex-col">
+          <XCircleIcon
+            className="w-8 h-8 absolute -top-1 -right-1 cursor-pointer "
+            onClick={() => setIsTeacher(false)}
+          />
+          <div className="text-lg font-semibold">
+            선생님께서는 아래 카카오톡 채팅으로 이동하셔서 교사용 계정을
+            요청해주세요.
+          </div>
+          <div className="bg-slate-900 p-2 rounded-lg mt-4">
+            <div className="font-semibold">필요한 정보</div>
+            <ul className="list-disc ml-6">
+              <li>이름</li>
+              <li>카카오톡 이메일</li>
+            </ul>
+          </div>
+          <Link
+            href={"https://open.kakao.com/o/sGLY1utf"}
+            className="w-full text-center p-2 rounded-lg bg-amber-400 hover:bg-amber-500 text-white dark:bg-amber-500 dark:hover:bg-amber-400 transition duration-200 dark:text-black font-bold mt-4"
+          >
+            교사용 계정 요청
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-black p-4 flex flex-col sm:justify-center sm:items-center dark:text-white">
       <SEO title={"사용자 정보 변경"} />
+      {isTeacher ? <TeacherPopUp /> : ""}
       <div className="text-xl p-4 font-bold sm:fixed sm:top-0 sm:right-0 sm:left-0">
         사용자 정보 변경
       </div>
@@ -109,15 +143,6 @@ export default function AddInfo() {
               확인
             </button>
           </div>
-
-
-          <div className="p-2">
-            <div className="text-slate-500 mb-2">혹시 선생님이신가요? 아래 링크로 들어가셔서 카카오 계정(이메일 주소)과 성함을 알려 주세요.</div>
-            <Link href="https://open.kakao.com/o/sGLY1utf"
-            className="text-amber-500">
-              교사용 계정 신청
-            </Link>
-          </div>  
           {errors.studentId && <span>{errors.studentId.message}</span>}
 
           <button
@@ -128,6 +153,13 @@ export default function AddInfo() {
           </button>
         </form>
       </div>
+      <button
+        onClick={() => setIsTeacher(true)}
+        className="text-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-200 duration-200 trnasition text-sm mt-6 flex items-center"
+      >
+        <ExclamationCircleIcon className="w-6 h-6 mr-1" />
+        선생님이신가요?
+      </button>
     </div>
   )
 }
