@@ -8,6 +8,7 @@ import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
 import Link from "next/link"
 import { ExclamationCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
+import va from "@vercel/analytics"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
@@ -30,6 +31,7 @@ export default function AddInfo() {
   /** 사용자가 입력한 이름과 학번을 사용자 계정에 업데이트 */
   async function onSubmit(data) {
     try {
+      va.track("ChangeUserInfo")
       const userUpdate = {
         name: data.userName,
         studentId: data.studentId,

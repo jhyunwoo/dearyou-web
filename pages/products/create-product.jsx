@@ -9,6 +9,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 export default function CreateProduct() {
   const imgRef = useRef()
@@ -60,6 +61,7 @@ export default function CreateProduct() {
         setModal("이미지를 업로드해주세요")
         return
       } else {
+        va.track("UploadProduct")
         setIsLoading(true)
         const formData = new FormData()
         showImages.map(async (data) => {

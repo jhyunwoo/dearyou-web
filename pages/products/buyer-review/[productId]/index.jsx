@@ -12,6 +12,7 @@ import SEO from "@/components/SEO"
 import sendPush from "@/lib/client-send-push"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 export default function MyReviews() {
   const router = useRouter()
@@ -32,6 +33,7 @@ export default function MyReviews() {
   async function onSubmit(data) {
     try {
       if (rating) {
+        va.track("ReviewSeller")
         const reviewData = {
           product: productId,
           to: sellerId,

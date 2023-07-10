@@ -13,6 +13,7 @@ import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import sendPush from "@/lib/client-send-push"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 // productId를 서버사이드에서 수집
 export const getServerSideProps = async (context) => {
@@ -64,7 +65,7 @@ export default function ProductDetail({ productId }) {
         "자율위원회",
         "등록한 물품이 승인되었습니다.",
       )
-
+      va.track("ConfirmProduct")
       router.push("/autonomy")
     } catch (e) {
       errorTransmission(e)
@@ -88,6 +89,7 @@ export default function ProductDetail({ productId }) {
         "자율위원회",
         "등록한 물품이 반려되었습니다.",
       )
+      va.track("RejectProduct")
       setModal(`반려 처리되었습니다. 사유: "${data.type}"`)
     } catch (e) {
       setModal("반려 처리 오류")
@@ -146,8 +148,9 @@ export default function ProductDetail({ productId }) {
                             >
                               {productInfo.expand.seller?.name} (
                               {productInfo.expand.seller?.studentId < 20000
-                              ? "교사"
-                              : productInfo.expand.seller?.studentId})
+                                ? "교사"
+                                : productInfo.expand.seller?.studentId}
+                              )
                             </Link>
                           </div>
                         </div>

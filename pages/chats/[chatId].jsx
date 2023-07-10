@@ -3,7 +3,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useInView } from "react-intersection-observer"
 import { useForm } from "react-hook-form"
-import axios from "axios"
 import pb from "@/lib/pocketbase"
 import TextareaAutosize from "react-textarea-autosize"
 import {
@@ -16,6 +15,7 @@ import SEO from "@/components/SEO"
 import { usePbAuth } from "@/contexts/AuthWrapper"
 import sendPush from "@/lib/client-send-push"
 import errorTransmission from "@/lib/errorTransmission"
+import va from "@vercel/analytics"
 
 /** 주소에서 chatId 가져오기 */
 export const getServerSideProps = async (context) => {
@@ -74,6 +74,7 @@ export default function Chat({ chatId }) {
         user.name,
         data.text,
       )
+      va.track("SendTextMessage")
       setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
     } catch (e) {
       errorTransmission(e)
@@ -107,7 +108,7 @@ export default function Chat({ chatId }) {
         user.name,
         "<사진>",
       )
-
+      va.track("SendImageMessage")
       setTimeout(() => setUpdateMessages((prev) => prev + 1), 2000)
     } catch (e) {
       errorTransmission(e)
