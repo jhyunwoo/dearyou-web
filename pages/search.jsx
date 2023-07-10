@@ -3,7 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import pb from "@/lib/pocketbase"
 import BottomBar from "@/components/BottomBar"
-
+import va from "@vercel/analytics"
 import { EyeSlashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import Layout from "@/components/Layout"
 import HeadBar from "@/components/HeadBar"
@@ -54,10 +54,10 @@ export default function Search() {
 
   async function handleSearch(event) {
     try {
+      va.track("Search")
       event.preventDefault()
       let word = searchInput?.current?.value // 검색어
       if (word.length === 0) return
-
       setSearchWord(word)
       await doSearch(word, openOnly, searchType)
     } catch (e) {
