@@ -54,7 +54,10 @@ export default function Profile() {
               <CheckBadgeIcon className="w-6 h-6 ml-1 stroke-slate-600" />
             ) : null}
           </div>
-          <div className="dark:text-white">{user?.studentId}</div>
+          <div className="dark:text-white">
+              { user?.studentId < 20000
+               ? "교사용 계정" : user?.studentId}
+          </div>
           <div className="dark:text-white">{user?.email}</div>
 
           <div className=" flex flex-col my-4 justify-center items-center">

@@ -35,7 +35,9 @@ export default function ProductCard(props) {
               {props.data?.expand?.seller?.name}
             </div>
             <div className="dark:text-white">
-              {props.data?.expand?.seller?.studentId}
+              {props.data?.expand?.seller?.studentId < 20000
+                ? "교사"
+                : props.data?.expand?.seller?.studentId}
             </div>
             <div className="text-amber-500">
               {props.data?.soldDate ? "나눔 완료" : ""}
