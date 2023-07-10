@@ -3,17 +3,20 @@ import pb from "@/lib/pocketbase"
 import { isNoti, modalState } from "@/lib/recoil"
 import { BellIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useSetRecoilState } from "recoil"
 import { useRecoilState } from "recoil"
+import Loading from "./Loading"
 
 export default function RegisterPush() {
   const [noti, setNoti] = useRecoilState(isNoti)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const setModal = useSetRecoilState(modalState)
 
   async function pushInfo(subscription) {
     try {
+      setIsLoading(true)
       if (pb.authStore.model?.id) {
         const jsonPushInfo = JSON.stringify(subscription)
         const pushInfo = JSON.parse(jsonPushInfo)
@@ -36,7 +39,9 @@ export default function RegisterPush() {
           setNoti(true)
         }
       }
+      setIsLoading(false)
     } catch (e) {
+      setIsLoading(false)
       errorTransmission(e)
     }
   }
@@ -53,6 +58,7 @@ export default function RegisterPush() {
 
   async function register() {
     try {
+      setIsLoading(true)
       const result = await window.Notification.requestPermission()
       if (result === "denied") {
         setModal("알림이 거부됨")
@@ -78,7 +84,9 @@ export default function RegisterPush() {
             })
         })
       }
+      setIsLoading(false)
     } catch (e) {
+      setIsLoading(false)
       errorTransmission(e)
     }
   }
@@ -102,6 +110,7 @@ export default function RegisterPush() {
 
   return (
     <div className="">
+      {isLoading ? <Loading /> : ""}
       {!noti ? (
         <button
           onClick={register}
