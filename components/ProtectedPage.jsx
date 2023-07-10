@@ -73,7 +73,7 @@ export default function ProtectedPage(props) {
     return (
       <div className="w-full h-screen bg-slate-50 dark:bg-black flex justify-center items-center p-4">
         <div className="bg-white dark:bg-gray-900 shadow-lg p-4 flex flex-col">
-          <div className="text-lg font-bold mx-auto mt-4">
+          <div className="text-lg font-bold mx-auto mt-4 dark:text-white">
             학번과 이름 등록이 필요합니다 .
           </div>
           <div className="mx-auto my-4">
