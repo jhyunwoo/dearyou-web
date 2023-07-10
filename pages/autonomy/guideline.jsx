@@ -48,6 +48,7 @@ export default function Autonomy() {
                 이 페이지는 자율위원이 사용할 수 있는 기능과 규칙을 안내하는
                 페이지입니다. 더 궁금한 점이 있다면
                 자율(부)위원장 <span className="text-amber-500">우예원/최진우/이준희
+                </span> 혹은 Beatus 기획팀 <span className="text-amber-500">김형진
                 </span>, 웹사이트 오류가 있거나 기술적 도움이 필요하다면 Beatus
                 개발팀 <span className="text-amber-500">전현우/김연준</span>에게
                 문의해 주세요.
