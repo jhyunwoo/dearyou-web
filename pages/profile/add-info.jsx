@@ -6,6 +6,7 @@ import { useSetRecoilState } from "recoil"
 import { modalState } from "@/lib/recoil"
 import SEO from "@/components/SEO"
 import errorTransmission from "@/lib/errorTransmission"
+import Link from "next/link"
 
 export default function AddInfo() {
   const [validStudentId, setValidStudentId] = useState(false)
@@ -96,7 +97,7 @@ export default function AddInfo() {
               {...register("studentId", {
                 required: true,
                 min: { value: 200101, message: "올바른 학번을 입력해주세요" },
-                max: { value: 999999, message: "올바른 학번을 입력해주세요" },
+                max: { value: 231299, message: "올바른 학번을 입력해주세요" },
               })}
               defaultValue={pb?.authStore?.model?.studentId}
             />
@@ -108,10 +109,19 @@ export default function AddInfo() {
               확인
             </button>
           </div>
+
+
+          <div className="p-2">
+            <div className="text-slate-500 mb-2">혹시 선생님이신가요? 아래 링크로 들어가셔서 카카오 계정(이메일 주소)과 성함을 알려 주세요.</div>
+            <Link href="https://open.kakao.com/o/sGLY1utf"
+            className="text-amber-500">
+              교사용 계정 신청
+            </Link>
+          </div>  
           {errors.studentId && <span>{errors.studentId.message}</span>}
 
           <button
-            className="bg-amber-400 mt-12 text-lg font-bold text-white dark:text-black p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
+            className="bg-amber-400 mt-6 text-lg font-bold text-white dark:text-black p-2 px-12 rounded-full mx-auto hover:bg-amber-500 transition duration-200"
             type="submit"
           >
             확인
