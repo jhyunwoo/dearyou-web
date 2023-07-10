@@ -55,8 +55,7 @@ export default function Profile() {
             ) : null}
           </div>
           <div className="dark:text-white">
-              { user?.studentId < 20000
-               ? "교사용 계정" : user?.studentId}
+            {user?.studentId < 20000 ? "교사용 계정" : user?.studentId}
           </div>
           <div className="dark:text-white">{user?.email}</div>
 
