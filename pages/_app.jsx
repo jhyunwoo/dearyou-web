@@ -84,7 +84,19 @@ export default function App({ Component, pageProps }) {
       <RecoilRoot>
         <Modal />
         <ProtectedPage>
-          <Component {...pageProps} />
+          {process.env.NEXT_PUBLIC_SERVICE_STATE === "OFF" ? (
+            <div className="w-full min-h-screen bg-slate-100 flex justify-center items-center">
+              <div className="bg-white p-4 rounded-lg shadow-xl">
+                <div className="text-xl font-bold">서비스 기간 종료</div>
+                <div className="text-lg font-semibold">
+                  지금까지 드려유를 이용해주셔서 감사합니다. 더 나은 모습으로
+                  돌아올 수 있도록 하겠습니다.
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </ProtectedPage>
       </RecoilRoot>
     </AuthWrapper>
