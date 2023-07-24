@@ -16,6 +16,19 @@ export default function Home() {
   const page = useRef(1)
   const [ref, inView] = useInView()
 
+  const [annMsg, setAnnMsg] = useState(null)
+  useEffect(() => {
+    async function getData(){
+      const data = await pb.collection("announcements").getFullList({
+        sort: "-created",
+      })
+      if(data.length){
+        setAnnMsg(data[0]?.content)
+      }
+    }
+    getData();
+  }, [])
+
   const fetch = useCallback(async () => {
     try {
       const data = await pb.collection("products").getList(page.current, 40, {
@@ -42,6 +55,18 @@ export default function Home() {
   return (
     <Layout>
       <SEO title={"Home"} />
+      <div>
+        {annMsg ? (
+          <div className="w-full rounded-xl p-3 my-3 text-sm bg-yellow-100">
+            <span className="font-bold text-orange-500">
+              공지
+            </span>
+            <span className="ml-2">
+              {annMsg}
+            </span>
+          </div>
+        ) : null}
+      </div>
       <ProductGrid>
         {products.map((data, key) => (
           <ProductCard data={data} key={key} />
